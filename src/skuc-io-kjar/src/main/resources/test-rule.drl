@@ -1,0 +1,10 @@
+package skuc.io.rules;
+
+import skuc.io.skuciocore.models.Test;
+
+rule "Test Rule"
+  when
+    Test()
+  then
+    System.out.println("Hello World");
+end
