@@ -1,6 +1,7 @@
 package skuc.io.skuciocore.models.csm;
 
 public class User extends BaseCsm {
+  private String email;
   private String password;
   private String fullName;
   private String Address;
@@ -9,11 +10,20 @@ public class User extends BaseCsm {
   public User() {
   }
 
-  public User(String password, String fullName, String Address, String PhoneNumber) {
+  public User(String email, String password, String fullName, String Address, String PhoneNumber) {
+    this.email = email;
     this.password = password;
     this.fullName = fullName;
     this.Address = Address;
     this.PhoneNumber = PhoneNumber;
+  }
+
+  public String getEmail() {
+    return this.email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public String getPassword() {

@@ -1,12 +1,14 @@
 package skuc.io.skuciocore.persistence;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.UUID;
 
 import net.ravendb.client.documents.session.IDocumentSession;
 import skuc.io.skuciocore.models.csm.BaseCsm;
 
-public class CrudRepository<T extends BaseCsm> {
+public class CrudRepository<T extends BaseCsm> implements Closeable {
 
   private IDocumentSession session;
   private Class<T> concreteClass;
@@ -16,32 +18,40 @@ public class CrudRepository<T extends BaseCsm> {
   }
 
   public Collection<T> get() {
-    return session.query(concreteClass).toList();
+    return getSession().query(concreteClass).toList();
   }
 
   public T get(UUID id) {
-    return session.load(concreteClass, id.toString());
+    return getSession().load(concreteClass, id.toString());
   }
 
-  public void save(T entity) {
-    session.store(entity);
-    session.saveChanges();
+  public void store(T entity) {
+    getSession().store(entity, entity.getId().toString());
+    save();
   }
 
-  public void delete(T entity) {
-    session.delete(entity.getId());
-    session.saveChanges();
+  public void delete(UUID id) {
+    getSession().delete(id.toString());
+    save();
   }
 
-  public void openSession() {
+  public void save() {
+    getSession().saveChanges();
+  }
+
+  protected IDocumentSession getSession() {
     if (session == null) {
       session = DocumentStoreHolder.getStore().openSession();
     }
+
+    return session;
   }
 
-  public void closeSession() {
-    session.close();
-    session = null;
+  @Override
+  public void close() throws IOException {
+    if (session != null) {
+      session.close();
+      session = null;
+    }
   }
-
 }
