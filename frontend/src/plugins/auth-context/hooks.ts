@@ -2,35 +2,27 @@ import { useContext } from "react";
 import { AuthContext } from "./Context";
 
 export type IsAuthorizedParams = {
-  permissions?: string[];
-  oneOfPermissions?: string[];
+  roles?: string[];
 };
 
 export type IsAuthorizedFunction = (params?: IsAuthorizedParams) => boolean;
 
 export function useIsAuthorized(): IsAuthorizedFunction {
-  const { isAuthenticated, userPermissions } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
 
-  return ({ permissions = undefined, oneOfPermissions = undefined } = {}) => {
-    const hasAllPermissions =
-      !permissions ||
-      (userPermissions &&
-        permissions.reduce<boolean>(
-          (acc, curr) => {
-            const hasPermissions = !!userPermissions[curr];
-            return acc || (curr.startsWith('!') ? !hasPermissions : hasPermissions)
-          }, false
-        ));
+  return ({ roles = undefined } = {}) => {
 
-    const hasOneOfPermissions =
-      !oneOfPermissions ||
-      (userPermissions &&
-        oneOfPermissions.reduce<boolean>(          
-          (acc, curr) => acc || userPermissions[curr],
+    const userRole = 'TODO';
+
+    const hasOneOfRoles =
+      !roles ||
+      (userRole &&
+        roles.reduce<boolean>(          
+          (acc, curr) => acc || curr === userRole,
           false
         ));
 
-    return hasAllPermissions && hasOneOfPermissions && isAuthenticated;
+    return hasOneOfRoles && isAuthenticated;
   };
 }
 

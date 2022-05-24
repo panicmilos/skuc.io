@@ -2,18 +2,16 @@ import { FC } from "react";
 import { useIsAuthorized } from "../auth-context/hooks";
 
 type Props = {
-  permissions?: string[];
-  oneOfPermissions?: string[];
+  roles?: string[];
 };
 
 export const Authorized: FC<Props> = ({
   children,
-  permissions = undefined,
-  oneOfPermissions = undefined,
+  roles = undefined,
 }) => {
   const isAuthorized = useIsAuthorized();
 
-  return isAuthorized({ permissions, oneOfPermissions }) ? (
+  return isAuthorized({ roles }) ? (
     <>{children}</>
   ) : (
     <></>
