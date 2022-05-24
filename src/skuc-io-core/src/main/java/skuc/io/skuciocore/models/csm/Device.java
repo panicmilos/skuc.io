@@ -1,17 +1,17 @@
 package skuc.io.skuciocore.models.csm;
 
-import java.util.UUID;
-
 public class Device extends BaseCsm {
   private String name;
-  private UUID locationId;
+  private String groupId;
+  private String locationId;
   private String deviceId;
 
   public Device() {
   }
 
-  public Device(String Name, UUID LocationId, String DeviceId) {
+  public Device(String Name, String groupId, String LocationId, String DeviceId) {
     this.name = Name;
+    this.groupId = groupId;
     this.locationId = LocationId;
     this.deviceId = DeviceId;
   }
@@ -24,11 +24,19 @@ public class Device extends BaseCsm {
     this.name = name;
   }
 
-  public UUID getLocationId() {
+  public String getGroupId() {
+    return this.groupId;
+  }
+
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
+  }
+
+  public String getLocationId() {
     return this.locationId;
   }
 
-  public void setLocationId(UUID locationId) {
+  public void setLocationId(String locationId) {
     this.locationId = locationId;
   }
 

@@ -1,17 +1,15 @@
 package skuc.io.skuciocore.models.csm;
 
-import java.util.UUID;
-
 public class Location extends BaseCsm {
   private String name;
-  private UUID userId;
+  private String groupId;
 
   public Location() {
   }
 
-  public Location(String name, UUID userId) {
+  public Location(String name, String groupId) {
     this.name = name;
-    this.userId = userId;
+    this.groupId = groupId;
   }
 
   public String getName() {
@@ -22,12 +20,12 @@ public class Location extends BaseCsm {
     this.name = name;
   }
 
-  public UUID getUserId() {
-    return this.userId;
+  public String getGroupId() {
+    return this.groupId;
   }
 
-  public void setUserId(UUID userId) {
-    this.userId = userId;
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
   }
 
 }

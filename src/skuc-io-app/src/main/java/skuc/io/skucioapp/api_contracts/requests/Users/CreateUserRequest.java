@@ -1,31 +1,21 @@
-package skuc.io.skuciocore.models.csm;
+package skuc.io.skucioapp.api_contracts.requests.Users;
 
-public class User extends BaseCsm {
-  private String groupId;
+public class CreateUserRequest {
   private String email;
   private String password;
   private String fullName;
   private String address;
   private String phoneNumber;
 
-  public User() {
+  public CreateUserRequest() {
   }
 
-  public User(String groupId, String email, String password, String fullName, String address, String phoneNumber) {
-    this.groupId = groupId;
+  public CreateUserRequest(String email, String password, String fullName, String address, String phoneNumber) {
     this.email = email;
     this.password = password;
     this.fullName = fullName;
     this.address = address;
     this.phoneNumber = phoneNumber;
-  }
-
-  public String getGroupId() {
-    return this.groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
   }
 
   public String getEmail() {
@@ -67,4 +57,5 @@ public class User extends BaseCsm {
   public void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;
   }
+
 }
