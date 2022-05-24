@@ -20,13 +20,13 @@ import skuc.io.skuciocore.services.GroupService;
 
 @RestController
 @RequestMapping("groups")
-public class GroupController {
+public class GroupsController {
   
   private final GroupService _groupService;
   private final ModelMapper _mapper;
 
   @Autowired
-  public GroupController(GroupService groupService, ModelMapper mapper) {
+  public GroupsController(GroupService groupService, ModelMapper mapper) {
     _groupService = groupService;
     _mapper = mapper;
   }

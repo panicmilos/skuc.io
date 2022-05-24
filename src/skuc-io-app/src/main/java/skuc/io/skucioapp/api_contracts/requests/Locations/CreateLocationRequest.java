@@ -1,19 +1,17 @@
-package skuc.io.skuciocore.models.csm;
+package skuc.io.skucioapp.api_contracts.requests.Locations;
 
-public class Location extends BaseCsm {
+public class CreateLocationRequest {
   private String name;
   private double lng;
   private double lat;
-  private String groupId;
 
-  public Location() {
+  public CreateLocationRequest() {
   }
 
-  public Location(String name, double lng, double lat, String groupId) {
+  public CreateLocationRequest(String name, double lng, double lat) {
     this.name = name;
     this.lng = lng;
     this.lat = lat;
-    this.groupId = groupId;
   }
 
   public String getName() {
@@ -38,14 +36,6 @@ public class Location extends BaseCsm {
 
   public void setLat(double lat) {
     this.lat = lat;
-  }
-
-  public String getGroupId() {
-    return this.groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
   }
 
 }

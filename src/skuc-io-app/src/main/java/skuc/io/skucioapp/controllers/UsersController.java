@@ -52,9 +52,10 @@ public class UsersController {
   }
 
   @PutMapping("{groupId}/users/{userId}")
-  public ResponseEntity<User> updateUser(@PathVariable String userId, @RequestBody UpdateUserRequest request) {
+  public ResponseEntity<User> updateUser(@PathVariable String groupId, @PathVariable String userId, @RequestBody UpdateUserRequest request) {
     var user = _mapper.map(request, User.class);
     user.setId(userId);
+    user.setGroupId(groupId);
 
     return ResponseEntity.ok(_userService.update(user));
   }
