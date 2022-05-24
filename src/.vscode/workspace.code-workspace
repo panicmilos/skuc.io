@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "..\\skuc-io-app"
+		},
+		{
+			"path": "..\\skuc-io-core"
+		},
+		{
+			"path": "..\\skuc-io-kjar"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

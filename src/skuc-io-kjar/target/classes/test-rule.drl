@@ -1,10 +1,10 @@
 package skuc.io.rules;
 
-import skuc.io.skuciocore.models.Test;
+import skuc.io.skuciocore.models.csm.User;
 
 rule "Test Rule"
   when
-    Test()
+    User()
   then
     System.out.println("Hello World");
 end

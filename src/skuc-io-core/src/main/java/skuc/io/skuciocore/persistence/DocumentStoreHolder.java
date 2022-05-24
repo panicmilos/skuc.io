@@ -6,7 +6,7 @@ import net.ravendb.client.documents.IDocumentStore;
 public class DocumentStoreHolder {
 
   private static class DocumentStoreContainer {
-    public static final IDocumentStore store = new DocumentStore("http://bjelicaluka.com:8888", "obezbedio_db");
+    public static final IDocumentStore store = new DocumentStore("http://bjelicaluka.com:8888", "skucio_db");
 
     static {
       store.initialize();
