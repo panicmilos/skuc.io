@@ -1,4 +1,4 @@
-export { USERS_SERVICE_URL } from "../../urls";
+export { BACKEND_API } from "../../urls";
 
 export type { FeaturePlugin, Theme } from "../../core";
 
