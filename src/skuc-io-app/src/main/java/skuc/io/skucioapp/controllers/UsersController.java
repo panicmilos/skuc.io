@@ -40,7 +40,7 @@ public class UsersController {
 
   @GetMapping("{groupId}/users/{userId}")
   public ResponseEntity<User> getUser(@PathVariable String userId) {
-    return ResponseEntity.ok(_userService.get(userId));
+    return ResponseEntity.ok(_userService.getOrThrow(userId));
   }
 
   @PostMapping("{groupId}/users")

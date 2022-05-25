@@ -39,7 +39,7 @@ public class LocationsController {
 
   @GetMapping("{groupId}/locations/{locationId}")
   public ResponseEntity<Location> getLocation(@PathVariable String locationId) {
-    return ResponseEntity.ok(_locationService.get(locationId));
+    return ResponseEntity.ok(_locationService.getOrThrow(locationId));
   }
 
   @PostMapping("{groupId}/locations")

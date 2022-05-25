@@ -1,18 +1,16 @@
-package skuc.io.skuciocore.models.csm.configuration;
+package skuc.io.skucioapp.api_contracts.requests.Contexts;
 
-import skuc.io.skuciocore.models.csm.BaseCsm;
+import skuc.io.skuciocore.models.csm.configuration.Configuration;
 
-public class Context extends BaseCsm {
+public class CreateContextRequest {
   private String name;
-  private String groupId;
   private Configuration configuration;
 
-  public Context() {
+  public CreateContextRequest() {
   }
 
-  public Context(String name, String groupId, Configuration configuration) {
+  public CreateContextRequest(String name, Configuration configuration) {
     this.name = name;
-    this.groupId = groupId;
     this.configuration = configuration;
   }
 
@@ -24,14 +22,6 @@ public class Context extends BaseCsm {
     this.name = name;
   }
 
-  public String getGroupId() {
-    return this.groupId;
-  }
-
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
-  }
-
   public Configuration getConfiguration() {
     return this.configuration;
   }
@@ -39,5 +29,5 @@ public class Context extends BaseCsm {
   public void setConfiguration(Configuration configuration) {
     this.configuration = configuration;
   }
-
+  
 }

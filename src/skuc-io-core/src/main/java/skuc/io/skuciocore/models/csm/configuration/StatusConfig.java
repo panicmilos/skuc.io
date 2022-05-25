@@ -1,20 +1,20 @@
 package skuc.io.skuciocore.models.csm.configuration;
 
 public class StatusConfig {
-  private DeviceStatus expectedValue;
+  private String expectedValue;
 
   public StatusConfig() {
   }
 
-  public StatusConfig(DeviceStatus expectedValue) {
+  public StatusConfig(String expectedValue) {
     this.expectedValue = expectedValue;
   }
 
-  public DeviceStatus getExpectedValue() {
+  public String getExpectedValue() {
     return this.expectedValue;
   }
 
-  public void setExpectedValue(DeviceStatus expectedValue) {
+  public void setExpectedValue(String expectedValue) {
     this.expectedValue = expectedValue;
   }
 

@@ -39,7 +39,7 @@ public class DevicesController {
 
   @GetMapping("{groupId}/locations/{locationId}/devices/{deviceId}")
   public ResponseEntity<Device> getDevice(@PathVariable String deviceId) {
-    return ResponseEntity.ok(_deviceService.get(deviceId));
+    return ResponseEntity.ok(_deviceService.getOrThrow(deviceId));
   }
 
   @PostMapping("{groupId}/locations/{locationId}/devices")
