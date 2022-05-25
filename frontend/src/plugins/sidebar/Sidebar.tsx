@@ -139,7 +139,7 @@ export const Sidebar: FC<Props> = () => {
             <div className={classes.sidebarTop}>
               <span onClick={() => nav('/')} className={classes.sidebarTopLogo}>
                 <MapsHomeWorkIcon />
-                <h3>obezbed.io</h3>
+                <h3>skuc.io</h3>
               </span>
               <IconButton onClick={closeSidebar}>
                 <CloseIcon className={classes.sidebarCloser} />
