@@ -12,7 +12,7 @@ export function getPluginDefinition(): FeaturePlugin {
     menuItems: [
       {
         label: 'Login',
-        path: '/',
+        path: '/login',
         icon: <LoginIcon/>,
         shouldShow: unauthorized()
       }
@@ -20,7 +20,7 @@ export function getPluginDefinition(): FeaturePlugin {
     pages: [
       {
         component: <Login/>,
-        path: '/'
+        path: '/login'
       }
     ]
   }
