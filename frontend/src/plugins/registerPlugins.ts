@@ -1,11 +1,11 @@
 import { Plugin } from '../core/Context';
 
-export const registerPlugins = (registerPlugin: (plugin: Plugin) => any) => {
+export const registerPlugins = (registerPlugins: (plugins: Plugin[]) => any) => {
   import('.').then((module: { [key: string]: () => Plugin }) => {
-    Object.keys(module).forEach((pluginKey: string) => {
+    const plugins = Object.keys(module).map((pluginKey: string) => {
       const getPluginDefinition = module[pluginKey];
-      const plugin = getPluginDefinition();
-      registerPlugin(plugin);
+      return getPluginDefinition();
     });
+    registerPlugins(plugins);
   });
 }
