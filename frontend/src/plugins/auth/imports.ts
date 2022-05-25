@@ -1,20 +1,6 @@
-export { USERS_SERVICE_URL } from "../../urls";
+export { BACKEND_API } from "../../urls";
 
 export type { FeaturePlugin, Theme } from "../../core";
-export type User = {
-  id: string;
-  name: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  roles: Role[] | undefined;
-  groupId: string;
-};
-export type Role = {
-  id: string;
-  name: string;
-  permissions: string[];
-};
 
 export {
   Card,
@@ -29,4 +15,4 @@ export {
   Service
 } from "../../core";
 
-export { AuthContext, is2FactCode, setAxiosInterceptors } from '../auth-context';
+export { AuthContext, setAxiosInterceptors } from '../auth-context';

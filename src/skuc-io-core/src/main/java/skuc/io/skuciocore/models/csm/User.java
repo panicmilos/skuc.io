@@ -1,21 +1,31 @@
 package skuc.io.skuciocore.models.csm;
 
 public class User extends BaseCsm {
+  private String groupId;
   private String email;
   private String password;
   private String fullName;
-  private String Address;
-  private String PhoneNumber;
+  private String address;
+  private String phoneNumber;
 
   public User() {
   }
 
-  public User(String email, String password, String fullName, String Address, String PhoneNumber) {
+  public User(String groupId, String email, String password, String fullName, String address, String phoneNumber) {
+    this.groupId = groupId;
     this.email = email;
     this.password = password;
     this.fullName = fullName;
-    this.Address = Address;
-    this.PhoneNumber = PhoneNumber;
+    this.address = address;
+    this.phoneNumber = phoneNumber;
+  }
+
+  public String getGroupId() {
+    return this.groupId;
+  }
+
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
   }
 
   public String getEmail() {
@@ -43,18 +53,18 @@ public class User extends BaseCsm {
   }
 
   public String getAddress() {
-    return this.Address;
+    return this.address;
   }
 
-  public void setAddress(String Address) {
-    this.Address = Address;
+  public void setAddress(String address) {
+    this.address = address;
   }
 
   public String getPhoneNumber() {
-    return this.PhoneNumber;
+    return this.phoneNumber;
   }
 
-  public void setPhoneNumber(String PhoneNumber) {
-    this.PhoneNumber = PhoneNumber;
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
   }
 }

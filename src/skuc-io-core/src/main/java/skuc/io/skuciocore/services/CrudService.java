@@ -1,7 +1,6 @@
 package skuc.io.skuciocore.services;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import skuc.io.skuciocore.exceptions.MissingEntityException;
 import skuc.io.skuciocore.models.csm.BaseCsm;
@@ -19,11 +18,11 @@ public class CrudService<T extends BaseCsm> {
     return repository.get();
   }
 
-  public T get(UUID id) {
+  public T get(String id) {
     return repository.get(id);
   }
 
-  public T getOrThrow(UUID id) {
+  public T getOrThrow(String id) {
     var entity = repository.get(id);
     if (entity == null) {
       throw new MissingEntityException(String.format("Entity with id %s is not in the system.", id));
@@ -32,17 +31,23 @@ public class CrudService<T extends BaseCsm> {
     return entity;
   }
 
-  public void create(T entity) {
+  public T create(T entity) {
     repository.store(entity);
+
+    return entity;
   }
 
-  public void update(T entity) {
+  public T update(T entity) {
     repository.save();
+
+    return entity;
   }
 
-  public void delete(UUID id) {
-    getOrThrow(id);
-    repository.delete(id);
+  public T delete(String id) {
+    var entity = getOrThrow(id);
+    repository.delete(entity.getId());
+
+    return entity;
   }
 
 }

@@ -1,0 +1,3 @@
+export const ADD_LOCATION = 'ADD_LOCATION';
+export const UPDATE_LOCATION = 'UPDATE_LOCATION';
+export const DELETE_LOCATION = 'DELETE_USER';

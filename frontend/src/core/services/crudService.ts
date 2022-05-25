@@ -18,10 +18,6 @@ export class CrudService<T, CT=T, UT=T> {
   public async fetchAll(): Promise<T[]> {
     return (await axios.get(`${this.baseUrl}`)).data;
   }
-
-  public async fetchPage(page: PageInfo): Promise<PageResult<T>> {
-    return (await axios.get(`${this.baseUrl}/page`, {params: { ...page }})).data;
-  }
   
   public async fetch(id: string): Promise<T> {
     return (await axios.get(`${this.baseUrl}/${id}`)).data;

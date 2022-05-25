@@ -62,10 +62,6 @@ export function getToken() {
   return sessionStorage.getItem('jwt-token');
 }
 
-export function is2FactCode(str: string): boolean {
-  return str.startsWith('2FactAuth ');
-}
-
 export function getUserIdFromToken() {
 	return decodeToken()?.sub;
 }

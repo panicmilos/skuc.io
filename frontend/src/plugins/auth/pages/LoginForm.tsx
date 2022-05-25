@@ -13,11 +13,9 @@ import {
   Theme,
   Button,
   FormTextInput,
-  Modal,
   AuthContext,
   NotificationService,
   extractErrorMessage,
-  is2FactCode,
   setAxiosInterceptors,
 } from '../imports';
 import axios, { AxiosError } from "axios";
@@ -69,9 +67,6 @@ export const LoginForm: FC<Props> = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
-  const [is2FactModalOpened, set2FactModalOpened] = useState(false);
-  const [twoFactAuthorization, setTwoFactAuthorization] = useState('');
-
   const schema = Yup.object().shape({
     email: Yup.string()
       .required(() => ({ email: "Email must be provided." }))
@@ -91,9 +86,6 @@ export const LoginForm: FC<Props> = () => {
       })),
   });
 
-  const schema2Fact = Yup.object().shape({
-    pin: Yup.number().required(() => ({ pin: "Pin must be provided." })),
-  });
 
   const handleAuthResponse = (response: AuthResponse) => {
     sessionStorage.setItem("jwt-token", response.token.value);
@@ -112,14 +104,7 @@ export const LoginForm: FC<Props> = () => {
             onSubmit={(values) => {
               authService
                 .login(values.email, values.password)
-                .then((response) => {
-                  if (!is2FactCode(response.token.value)) {
-                    handleAuthResponse(response);
-                  } else {
-                    setTwoFactAuthorization(response.token.value);
-                    set2FactModalOpened(true);
-                  }
-                })
+                .then(handleAuthResponse)
                 .catch((error: AxiosError) => notificationService.error(extractErrorMessage(error.response?.data)));
             }}
           >
@@ -140,33 +125,6 @@ export const LoginForm: FC<Props> = () => {
             </Container>
           </Form>
         </Card>
-        <Modal
-          open={is2FactModalOpened}
-          onClose={() => set2FactModalOpened(false)}
-          title="2 Fact Code"
-        >
-          <Form
-            schema={schema2Fact}
-            onSubmit={(values) => {
-              authService
-                .login2Step(twoFactAuthorization, values.pin)
-                .then((response) => {
-                  handleAuthResponse(response);
-                  set2FactModalOpened(false);
-                })
-                .catch((error: AxiosError) => notificationService.error(extractErrorMessage(error.response?.data)));
-            }}
-          >
-            <Container>
-              <Col>
-                <FormTextInput label="PIN" name="pin" type="text" />
-              </Col>
-              <Button className={classes.submitButton} type="submit">
-                Submit
-              </Button>
-            </Container>
-          </Form>
-        </Modal>
       </Container>
     </Container>
   );
