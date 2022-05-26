@@ -29,7 +29,7 @@ public class AuthenticationService {
 
     public AuthenticatedUser authenticate(String email, String password) {
         var user = _userService.getByEmail(email);
-        var jwt = generateJwt(email, user.getPassword(), user.getId());
+        var jwt = generateJwt(email, password, user.getId());
         var token = new Token("Bearer " + jwt);
 
         return new AuthenticatedUser(user, token);
