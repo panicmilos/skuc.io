@@ -85,7 +85,9 @@ export const AddUpdateUserForm: FC<Props> = ({ groupId, existingUser = undefined
         onSubmit={!isEdit ? addUser : updateUser}
       >
         <FormTextInput label="Email" name="email" disabled={isEdit} />
-        <FormTextInput label="Password" name="password" type="password" disabled={isEdit} />
+        {
+          !isEdit && <FormTextInput label="Password" name="password" type="password" disabled={isEdit} />
+        }
         <FormTextInput label="Full name" name="fullName"/>
         <FormTextInput label="Address" name="address"/>
         <FormTextInput label="Phone number" name="phoneNumber"/>

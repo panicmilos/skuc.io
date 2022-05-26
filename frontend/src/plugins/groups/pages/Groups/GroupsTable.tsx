@@ -72,6 +72,7 @@ export const GroupsTable: FC<Props> = ({ groups }) => {
       <Button onClick={() => {setSelectedGroup(group); setIsDeleteOpen(true); }}>Delete</Button>
       <Link to={{ pathname: `/groups/${group?.id}/users` }}><Button>Users</Button></Link>
       <Link to={{ pathname: `/groups/${group?.id}/locations` }}><Button>Locations</Button></Link>
+      <Link to={{ pathname: `/groups/${group?.id}/contexts` }}><Button>Contexts</Button></Link>
     </div>
 
   useEffect(() => {

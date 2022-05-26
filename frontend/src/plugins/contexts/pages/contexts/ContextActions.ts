@@ -1,0 +1,3 @@
+export const ADD_CONTEXT = 'ADD_CONTEXT';
+export const UPDATE_CONTEXT = 'UPDATE_CONTEXT';
+export const DELETE_CONTEXT = 'DELETE_CONTEXT';
