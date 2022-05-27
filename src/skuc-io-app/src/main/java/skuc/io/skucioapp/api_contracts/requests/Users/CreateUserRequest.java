@@ -6,16 +6,18 @@ public class CreateUserRequest {
   private String fullName;
   private String address;
   private String phoneNumber;
+  private String role;
 
   public CreateUserRequest() {
   }
 
-  public CreateUserRequest(String email, String password, String fullName, String address, String phoneNumber) {
+  public CreateUserRequest(String email, String password, String fullName, String address, String phoneNumber, String role) {
     this.email = email;
     this.password = password;
     this.fullName = fullName;
     this.address = address;
     this.phoneNumber = phoneNumber;
+    this.role = role;
   }
 
   public String getEmail() {
@@ -58,4 +60,11 @@ public class CreateUserRequest {
     this.phoneNumber = phoneNumber;
   }
 
+  public String getRole() {
+    return this.role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
 }
