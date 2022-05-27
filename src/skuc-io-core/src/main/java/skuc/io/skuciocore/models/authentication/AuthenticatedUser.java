@@ -4,11 +4,11 @@ import skuc.io.skuciocore.models.csm.User;
 
 public class AuthenticatedUser {
     private User user;
-    private Token token;
+    private String token;
 
     public AuthenticatedUser() {}
 
-    public AuthenticatedUser(User user, Token token) {
+    public AuthenticatedUser(User user, String token) {
         this.user = user;
         this.token = token;
     }
@@ -21,11 +21,11 @@ public class AuthenticatedUser {
         this.user = user;
     }
 
-    public Token getToken() {
+    public String getToken() {
         return this.token;
     }
 
-    public void setToken(Token token) {
+    public void setToken(String token) {
         this.token = token;
     }
 }

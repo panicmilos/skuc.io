@@ -62,7 +62,7 @@ export const LoginForm: FC<Props> = () => {
 
   useEffect(() => {
     if(isAuthenticated) {
-      nav("/users/certificates");
+      nav("/groups");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
@@ -75,20 +75,20 @@ export const LoginForm: FC<Props> = () => {
       })),
     password: Yup.string()
       .required(() => ({ password: "Password must be provided." }))
-      .matches(LOWER_CASE_REGEX, () => ({
-        password: "Password must contain lower letters.",
-      }))
-      .matches(NUMERIC_REGEX, () => ({
-        password: "Password must contain numbers.",
-      }))
-      .matches(SPECIAL_CHARACTERS_REGEX, () => ({
-        password: "Password must contain special characters.",
-      })),
+      // .matches(LOWER_CASE_REGEX, () => ({
+      //   password: "Password must contain lower letters.",
+      // }))
+      // .matches(NUMERIC_REGEX, () => ({
+      //   password: "Password must contain numbers.",
+      // }))
+      // .matches(SPECIAL_CHARACTERS_REGEX, () => ({
+      //   password: "Password must contain special characters.",
+      // })),
   });
 
 
   const handleAuthResponse = (response: AuthResponse) => {
-    sessionStorage.setItem("jwt-token", response.token.value);
+    sessionStorage.setItem("jwt-token", response.token);
     setAuthenticated(true);
     setUser(response.user);
 

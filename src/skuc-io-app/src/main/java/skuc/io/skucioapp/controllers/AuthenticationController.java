@@ -29,4 +29,9 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(authenticatedUser);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<AuthenticatedUser> logout() {
+        return ResponseEntity.ok(null);
+    }
 }

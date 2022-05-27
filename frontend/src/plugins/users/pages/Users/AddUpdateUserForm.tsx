@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useMutation, useQueryClient } from "react-query";
-import { ALPHANUMERIC_REGEX, Button, EMAIL_REGEX, extractErrorMessage, Form, FormTextInput, LOWER_CASE_REGEX, NotificationService, NUMERIC_REGEX, PHONE_NUMBER_REGEX, SPECIAL_CHARACTERS_REGEX } from "../../imports";
+import { ALPHANUMERIC_REGEX, Button, EMAIL_REGEX, extractErrorMessage, Form, FormSelectOptionInput, FormTextInput, LOWER_CASE_REGEX, NotificationService, NUMERIC_REGEX, PHONE_NUMBER_REGEX, SPECIAL_CHARACTERS_REGEX } from "../../imports";
 import { CreateUserRequest, UpdateUserRequest, User } from "../../models"
 import { useUsersService } from "../../services";
 import { UsersContext } from "./Users";
@@ -91,6 +91,16 @@ export const AddUpdateUserForm: FC<Props> = ({ groupId, existingUser = undefined
         <FormTextInput label="Full name" name="fullName"/>
         <FormTextInput label="Address" name="address"/>
         <FormTextInput label="Phone number" name="phoneNumber"/>
+
+        <FormSelectOptionInput
+          label='Role'
+          name='role'
+          hasDefaultOption={false}
+          options={[
+            { label: 'User', value: 'User' },
+            { label: 'Admin', value: 'Admin' }
+          ]}
+        />
 
         <div className={classes.submitButton} >
           <Button type="submit">Submit</Button>

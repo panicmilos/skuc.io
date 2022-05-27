@@ -74,7 +74,7 @@ public class JwtUtil {
         return expiration.before(new Date());
     }
 
-    public String generateToken(Authentication authentication, String userId) {
+    public String generateToken(Authentication authentication, String userId, String groupId) {
         var authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -82,6 +82,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("UserId", userId)
+                .claim("GroupId", groupId)
                 .claim(authoritiesKey, authorities)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + tokenValidity))

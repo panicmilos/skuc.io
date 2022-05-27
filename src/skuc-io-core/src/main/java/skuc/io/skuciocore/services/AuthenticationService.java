@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import skuc.io.skuciocore.models.authentication.AuthenticatedUser;
-import skuc.io.skuciocore.models.authentication.Token;
 import skuc.io.skuciocore.security.utils.JwtUtil;
 
 @Service
@@ -29,16 +28,15 @@ public class AuthenticationService {
 
     public AuthenticatedUser authenticate(String email, String password) {
         var user = _userService.getByEmail(email);
-        var jwt = generateJwt(email, password, user.getId());
-        var token = new Token("Bearer " + jwt);
+        var jwt = generateJwt(email, password, user.getId(), user.getGroupId());
 
-        return new AuthenticatedUser(user, token);
+        return new AuthenticatedUser(user, "Bearer " + jwt);
     }
     
-    private String generateJwt(String email, String password, String userId) {
+    private String generateJwt(String email, String password, String userId, String groupId) {
         var authentication = getAuthentication(email, password);
 
-        return _jwtUtil.generateToken(authentication, userId);
+        return _jwtUtil.generateToken(authentication, userId, groupId);
     }
 
     private Authentication getAuthentication(String email, String password) {
