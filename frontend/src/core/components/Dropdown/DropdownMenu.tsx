@@ -12,7 +12,7 @@ const useStyles = createUseStyles((theme: Theme) => ({
     display: ({ show }: { show: boolean }) => show ? "block" : "none",
     position: "absolute",
     top: 'auto',
-    bottom: '100%',
+    bottom: 'auto',
     backgroundColor: "#f1f1f1",
     minWidth: "160px",
     overflow: "auto",
