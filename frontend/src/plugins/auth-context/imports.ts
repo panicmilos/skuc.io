@@ -10,6 +10,7 @@ export type User = {
   fullName: string;
   address: string;
   phoneNumber: string;
+  role: string;
 };
 
 export class UsersService extends CrudService<User> {

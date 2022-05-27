@@ -4,6 +4,7 @@ export type CreateUserRequest = {
   fullName: string,
   address: string,
   phoneNumber: string,
+  role: string,
 }
 
 export type UpdateUserRequest = {

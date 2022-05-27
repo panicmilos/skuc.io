@@ -10,7 +10,7 @@ export function getPluginDefinition(): FeaturePlugin {
     menuItems: [
       {
         label: "Diagram",
-        path: "/",
+        path: "/diagrams",
         icon: <LoginIcon />,
       },
     ],
@@ -21,7 +21,7 @@ export function getPluginDefinition(): FeaturePlugin {
             <Diagram diagramFilePath="/diagrams/test.xml" groupId="" />
           </PaddingContainer>
         ),
-        path: "/",
+        path: "/diagrams",
       },
     ],
   };

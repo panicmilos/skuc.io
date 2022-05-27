@@ -101,7 +101,7 @@ export const UsersTable: FC<Props> = ({ groupId, users,}) => {
       </div> 
 
       <Table hasPagination={false}>
-        <TableHead columns={['Email', 'Full Name', 'Phone number', 'Address', 'Action']}/>
+        <TableHead columns={['Email', 'Role', 'Full Name', 'Phone number', 'Address', 'Action']}/>
         <TableBody>
           {
             users?.map((user: User) => 
@@ -109,6 +109,7 @@ export const UsersTable: FC<Props> = ({ groupId, users,}) => {
             key={user.id}
             cells={[
               user.email,
+              user.role,
               user.fullName,
               user.phoneNumber,
               user.address,
