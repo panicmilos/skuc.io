@@ -37,7 +37,7 @@ export const TimePeriodActivations: FC<Props> = ({ type }) => {
 
   return (
     <TimePeriodActivationsContext.Provider value={{ result, setResult }}>
-      <Card title={type === 'activators' ? "TimePeriod Activators" : "TimePeriod Deactivators"}>
+      <Card title={type === 'activators' ? "Time Period Activators" : "Time Period Deactivators"}>
         <TimePeriodActivationsTable
           type={type}
           contextId={contextId ?? ''}

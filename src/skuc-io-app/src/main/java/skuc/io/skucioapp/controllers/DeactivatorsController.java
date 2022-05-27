@@ -1,7 +1,6 @@
 package skuc.io.skucioapp.controllers;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class DeactivatorsController {
   public ResponseEntity<EventDeactivator> createEventDeactivator(@PathVariable String contextId,
       @RequestBody CreateEventDeactivatorRequest request) {
     var eventDeactivator = _mapper.map(request, EventDeactivator.class);
-    eventDeactivator.setContextId(UUID.fromString(contextId));
+    eventDeactivator.setContextId(contextId);
 
     return ResponseEntity.ok(_eventDeactivatorService.create(eventDeactivator));
   }
@@ -64,7 +63,7 @@ public class DeactivatorsController {
       @PathVariable String eventDeactivatorId, @RequestBody UpdateEventDeactivatorRequest request) {
     var eventDeactivator = _mapper.map(request, EventDeactivator.class);
     eventDeactivator.setId(eventDeactivatorId);
-    eventDeactivator.setContextId(UUID.fromString(contextId));
+    eventDeactivator.setContextId(contextId);
 
     return ResponseEntity.ok(_eventDeactivatorService.update(eventDeactivator));
   }
@@ -90,7 +89,7 @@ public class DeactivatorsController {
   public ResponseEntity<TimePeriodDeactivator> createTimePeriodDeactivator(@PathVariable String contextId,
       @RequestBody CreateTimePeriodDeactivatorRequest request) {
     var timePeriodDeactivator = _mapper.map(request, TimePeriodDeactivator.class);
-    timePeriodDeactivator.setContextId(UUID.fromString(contextId));
+    timePeriodDeactivator.setContextId(contextId);
 
     return ResponseEntity.ok(_timePeriodDeactivatorService.create(timePeriodDeactivator));
   }
@@ -100,7 +99,7 @@ public class DeactivatorsController {
       @PathVariable String timePeriodDeactivatorId, @RequestBody UpdateTimePeriodDeactivatorRequest request) {
     var timePeriodDeactivator = _mapper.map(request, TimePeriodDeactivator.class);
     timePeriodDeactivator.setId(timePeriodDeactivatorId);
-    timePeriodDeactivator.setContextId(UUID.fromString(contextId));
+    timePeriodDeactivator.setContextId(contextId);
 
     return ResponseEntity.ok(_timePeriodDeactivatorService.update(timePeriodDeactivator));
   }

@@ -17,11 +17,11 @@ public class EventDeactivatorRepository extends CrudRepository<EventDeactivator>
     return getSession().query(this.concreteClass).whereEquals("contextId", contextId).toList();
   }
 
-  public Collection<EventDeactivator> getByContextAndEventType(String contextId, String eventType) {
+  public EventDeactivator getByContextAndEventType(String contextId, String eventType) {
     return getSession().query(this.concreteClass)
-    .whereEquals("contextId", contextId)
-    .whereEquals("eventType", eventType)
-    .toList();
+      .whereEquals("contextId", contextId)
+      .whereEquals("eventType", eventType)
+      .firstOrDefault();
   }
 
 }

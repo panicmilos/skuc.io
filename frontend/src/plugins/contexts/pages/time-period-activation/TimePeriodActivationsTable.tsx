@@ -80,16 +80,16 @@ export const TimePeriodActivationsTable: FC<Props> = ({ contextId, timePeriodAct
 
   return (
     <div className={classes.container}>
-      <Modal title={!selectedTimePeriodActivation ? `Add timePeriod ${activationName}` : `Update timePeriod ${activationName}`} open={isAddUpdateOpen} onClose={() => setIsAddUpdateOpen(false)}>
+      <Modal title={!selectedTimePeriodActivation ? `Add time period ${activationName}` : `Update time period ${activationName}`} open={isAddUpdateOpen} onClose={() => setIsAddUpdateOpen(false)}>
         <AddUpdateTimePeriodActivationForm type={type} contextId={contextId} existingTimePeriodActivation={selectedTimePeriodActivation} isEdit={!!selectedTimePeriodActivation} />
       </Modal>
 
       <ConfirmationModal title={`Delete timePeriod ${activationName}`} open={isDeleteOpen} onClose={() => setDeleteOpen(false)} onYes={onYes}>
-        <p>Are you sure you want to delete this timePeriod {activationName}?</p>
+        <p>Are you sure you want to delete this time period {activationName}?</p>
       </ConfirmationModal>
 
       <div className={classes.buttonAddTimePeriodActivation}>
-        <Button onClick={() => { setSelectedTimePeriodActivation(undefined); setIsAddUpdateOpen(true); }}>Add TimePeriod {activationName}</Button>
+        <Button onClick={() => { setSelectedTimePeriodActivation(undefined); setIsAddUpdateOpen(true); }}>Add Time Period {activationName}</Button>
       </div> 
 
       <Table hasPagination={false}>

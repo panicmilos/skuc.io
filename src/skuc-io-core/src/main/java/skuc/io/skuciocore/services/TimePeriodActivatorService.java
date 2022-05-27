@@ -27,7 +27,7 @@ public class TimePeriodActivatorService extends CrudService<TimePeriodActivator>
 
   @Override
   public TimePeriodActivator create(TimePeriodActivator timePeriodActivator) {
-    _contextService.getOrThrow(timePeriodActivator.getContextId().toString());
+    _contextService.getOrThrow(timePeriodActivator.getContextId());
 
     return super.create(timePeriodActivator);
   }

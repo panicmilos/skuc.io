@@ -28,12 +28,12 @@ public class EventActivatorService extends CrudService<EventActivator> {
 
   @Override
   public EventActivator create(EventActivator eventActivator) {
-    _contextService.getOrThrow(eventActivator.getContextId().toString());
+    _contextService.getOrThrow(eventActivator.getContextId());
 
     var eventActivatorWithSameTypeForContext = _eventActivatorRepository
-        .getByContextAndEventType(eventActivator.getContextId().toString(), eventActivator.getEventType());
-    if (eventActivatorWithSameTypeForContext.size() != 0) {
-      throw new BadLogicException("EventActivator with the same type already exists for the context.");
+        .getByContextAndEventType(eventActivator.getContextId(), eventActivator.getEventType());
+    if (eventActivatorWithSameTypeForContext != null) {
+      throw new BadLogicException("Activator for the given event type already exists for in the context.");
     }
 
     return super.create(eventActivator);
@@ -44,9 +44,9 @@ public class EventActivatorService extends CrudService<EventActivator> {
     var existingEventActivator = getOrThrow(eventActivator.getId());
 
     var eventActivatorWithSameTypeForContext = _eventActivatorRepository
-        .getByContextAndEventType(eventActivator.getContextId().toString(), eventActivator.getEventType());
-    if (eventActivatorWithSameTypeForContext.size() != 0) {
-      throw new BadLogicException("EventActivator with the same type already exists for the context.");
+        .getByContextAndEventType(eventActivator.getContextId(), eventActivator.getEventType());
+    if (eventActivatorWithSameTypeForContext != null && !eventActivatorWithSameTypeForContext.getId().equals(existingEventActivator.getId())) {
+      throw new BadLogicException("Activator for the given event type already exists for in the context.");
     }
 
     existingEventActivator.setEventType(eventActivator.getEventType());

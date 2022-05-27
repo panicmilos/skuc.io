@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useMutation, useQueryClient } from "react-query";
-import { ALPHANUMERIC_REGEX, Button, extractErrorMessage, Form, FormTextInput, NotificationService } from "../../imports";
+import { Button, extractErrorMessage, Form, FormTextInput, JAVA_CLASS_REGEX, NotificationService } from "../../imports";
 import { CreateEventActivationReqest, EventActivation, UpdateEventActivationRequest } from "../../models"
 import { useEventActivationsService } from "../../services";
 import { EventActivationsContext } from "./EventActivations";
@@ -34,8 +34,8 @@ export const AddUpdateEventActivationForm: FC<Props> = ({ type, contextId, exist
 
   const schema = Yup.object().shape({
     eventType: Yup.string()
-      .required(() => ({ eventType: "Name must be provided." })) 
-      .matches(ALPHANUMERIC_REGEX, () => ({eventType: "Must be a valid eventType."}))
+      .required(() => ({ eventType: "Event type must be provided." })) 
+      .matches(JAVA_CLASS_REGEX, () => ({ eventType: "Must be a valid event type."}))
   });
 
   const addEventActivationMutation = useMutation((newEventActivation: CreateEventActivationReqest) => eventActivationService.add(newEventActivation), {

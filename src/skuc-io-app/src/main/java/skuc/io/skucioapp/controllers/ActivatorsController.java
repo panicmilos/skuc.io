@@ -1,7 +1,6 @@
 package skuc.io.skucioapp.controllers;
 
 import java.util.Collection;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class ActivatorsController {
   public ResponseEntity<EventActivator> createEventActivator(@PathVariable String contextId,
       @RequestBody CreateEventActivatorRequest request) {
     var eventActivator = _mapper.map(request, EventActivator.class);
-    eventActivator.setContextId(UUID.fromString(contextId));
+    eventActivator.setContextId(contextId);
 
     return ResponseEntity.ok(_eventActivatorService.create(eventActivator));
   }
@@ -64,7 +63,7 @@ public class ActivatorsController {
       @PathVariable String eventActivatorId, @RequestBody UpdateEventActivatorRequest request) {
     var eventActivator = _mapper.map(request, EventActivator.class);
     eventActivator.setId(eventActivatorId);
-    eventActivator.setContextId(UUID.fromString(contextId));
+    eventActivator.setContextId(contextId);
 
     return ResponseEntity.ok(_eventActivatorService.update(eventActivator));
   }
@@ -89,7 +88,7 @@ public class ActivatorsController {
   public ResponseEntity<TimePeriodActivator> createTimePeriodActivator(@PathVariable String contextId,
       @RequestBody CreateTimePeriodActivatorRequest request) {
     var timePeriodActivator = _mapper.map(request, TimePeriodActivator.class);
-    timePeriodActivator.setContextId(UUID.fromString(contextId));
+    timePeriodActivator.setContextId(contextId);
 
     return ResponseEntity.ok(_timePeriodActivatorService.create(timePeriodActivator));
   }
@@ -99,7 +98,7 @@ public class ActivatorsController {
       @PathVariable String timePeriodActivatorId, @RequestBody UpdateTimePeriodActivatorRequest request) {
     var timePeriodActivator = _mapper.map(request, TimePeriodActivator.class);
     timePeriodActivator.setId(timePeriodActivatorId);
-    timePeriodActivator.setContextId(UUID.fromString(contextId));
+    timePeriodActivator.setContextId(contextId);
 
     return ResponseEntity.ok(_timePeriodActivatorService.update(timePeriodActivator));
   }

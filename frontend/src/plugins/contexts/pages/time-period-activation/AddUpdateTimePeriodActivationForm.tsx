@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useMutation, useQueryClient } from "react-query";
-import { ALPHANUMERIC_REGEX, Button, extractErrorMessage, Form, FormTextInput, NotificationService } from "../../imports";
+import { Button, CRON_REGEX, extractErrorMessage, Form, FormTextInput, NotificationService } from "../../imports";
 import { CreateTimePeriodActivationReqest, TimePeriodActivation, UpdateTimePeriodActivationRequest } from "../../models"
 import { useTimePeriodActivationsService } from "../../services";
 import { TimePeriodActivationsContext } from "./TimePeriodActivations";
@@ -34,11 +34,11 @@ export const AddUpdateTimePeriodActivationForm: FC<Props> = ({ type, contextId, 
 
   const schema = Yup.object().shape({
     cronStart: Yup.string()
-      .required(() => ({ cronStart: "Cron start statement must be provided." })) 
-      .matches(ALPHANUMERIC_REGEX, () => ({cronStart: "Must be a valid cronStart."})),
+      .required(() => ({ cronStart: "Cron start must be provided." })) 
+      .matches(CRON_REGEX, () => ({cronStart: "Must be a valid cron statement."})),
     cronEnd: Yup.string()
-      .required(() => ({ cronEnd: "Cron end statement must be provided." })) 
-      .matches(ALPHANUMERIC_REGEX, () => ({cronEnd: "Must be a valid cronEnd."}))
+      .required(() => ({ cronEnd: "Cron end must be provided." })) 
+      .matches(CRON_REGEX, () => ({cronEnd: "Must be a valid cron statement."}))
   });
 
   const addTimePeriodActivationMutation = useMutation((newTimePeriodActivation: CreateTimePeriodActivationReqest) => timePeriodActivationService.add(newTimePeriodActivation), {

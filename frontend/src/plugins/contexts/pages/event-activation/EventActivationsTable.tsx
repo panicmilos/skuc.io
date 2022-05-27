@@ -30,6 +30,8 @@ const useStyles = createUseStyles({
 
 export const EventActivationsTable: FC<Props> = ({ contextId, eventActivations, type }) => {
 
+  const activationName = type === 'activators' ? 'activator' : 'deactivator';
+
   const [isAddUpdateOpen, setIsAddUpdateOpen] = useState(false);
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedEventActivation, setSelectedEventActivation] = useState<EventActivation|undefined>(undefined);
@@ -44,7 +46,7 @@ export const EventActivationsTable: FC<Props> = ({ contextId, eventActivations, 
   const deleteMutation = useMutation(() => eventActivationsService.delete(selectedEventActivation?.id ?? ''), {
     onSuccess: () => {
       queryClient.invalidateQueries(eventActivationsService.ID);
-      notificationService.success('You have successfully deleted event activation.');
+      notificationService.success(`You have successfully deleted event ${activationName}.`);
 
       setResult({ status: 'OK', action:  DELETE_EVENT_ACTIVATION });
     },
@@ -76,7 +78,6 @@ export const EventActivationsTable: FC<Props> = ({ contextId, eventActivations, 
   </>
   
   const classes = useStyles();
-  const activationName = type === 'activators' ? 'activator' : 'deactivator';
 
   return (
     <div className={classes.container}>

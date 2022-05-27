@@ -1,24 +1,22 @@
 package skuc.io.skuciocore.models.csm.context;
 
-import java.util.UUID;
-
 import skuc.io.skuciocore.models.csm.BaseCsm;
 
 public class BaseContextCsm extends BaseCsm {
-  private UUID contextId;
+  private String contextId;
 
   public BaseContextCsm() {
   }
 
-  public BaseContextCsm(UUID contextId) {
+  public BaseContextCsm(String contextId) {
     this.contextId = contextId;
   }
 
-  public UUID getContextId() {
+  public String getContextId() {
     return this.contextId;
   }
 
-  public void setContextId(UUID contextId) {
+  public void setContextId(String contextId) {
     this.contextId = contextId;
   }
 

@@ -28,12 +28,12 @@ public class EventDeactivatorService extends CrudService<EventDeactivator> {
 
   @Override
   public EventDeactivator create(EventDeactivator eventDeactivator) {
-    _contextService.getOrThrow(eventDeactivator.getContextId().toString());
+    _contextService.getOrThrow(eventDeactivator.getContextId());
 
     var eventDeactivatorWithSameTypeForContext = _eventDeactivatorRepository
-        .getByContextAndEventType(eventDeactivator.getContextId().toString(), eventDeactivator.getEventType());
-    if (eventDeactivatorWithSameTypeForContext.size() != 0) {
-      throw new BadLogicException("EventDeactivator with the same type already exists for the context.");
+        .getByContextAndEventType(eventDeactivator.getContextId(), eventDeactivator.getEventType());
+    if (eventDeactivatorWithSameTypeForContext != null) {
+      throw new BadLogicException("Deactivator for the given event type already exists for in the context.");
     }
 
     return super.create(eventDeactivator);
@@ -44,9 +44,9 @@ public class EventDeactivatorService extends CrudService<EventDeactivator> {
     var existingEventDeactivator = getOrThrow(eventDeactivator.getId());
 
     var eventDeactivatorWithSameTypeForContext = _eventDeactivatorRepository
-        .getByContextAndEventType(eventDeactivator.getContextId().toString(), eventDeactivator.getEventType());
-    if (eventDeactivatorWithSameTypeForContext.size() != 0) {
-      throw new BadLogicException("EventDeactivator with the same type already exists for the context.");
+        .getByContextAndEventType(eventDeactivator.getContextId(), eventDeactivator.getEventType());
+    if (eventDeactivatorWithSameTypeForContext != null && !eventDeactivatorWithSameTypeForContext.getId().equals(existingEventDeactivator.getId())) {
+      throw new BadLogicException("Deactivator for the given event type already exists for in the context.");
     }
 
     existingEventDeactivator.setEventType(eventDeactivator.getEventType());

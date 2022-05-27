@@ -27,7 +27,7 @@ public class TimePeriodDeactivatorService extends CrudService<TimePeriodDeactiva
 
   @Override
   public TimePeriodDeactivator create(TimePeriodDeactivator timePeriodDeactivator) {
-    _contextService.getOrThrow(timePeriodDeactivator.getContextId().toString());
+    _contextService.getOrThrow(timePeriodDeactivator.getContextId());
 
     return super.create(timePeriodDeactivator);
   }
