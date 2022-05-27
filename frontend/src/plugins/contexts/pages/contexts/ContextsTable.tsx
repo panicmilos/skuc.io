@@ -2,7 +2,8 @@ import { AxiosError } from "axios";
 import { FC, useContext, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useMutation, useQueryClient } from "react-query";
-import { Button, ConfirmationModal, extractErrorMessage, Modal, NotificationService, Table, TableBody, TableHead, TableRow } from "../../imports";
+import { useNavigate } from "react-router-dom";
+import { Button, ConfirmationModal, DropdownItem, DropdownMenu, extractErrorMessage, Modal, NotificationService, Table, TableBody, TableHead, TableRow } from "../../imports";
 import { Configuration, Context } from "../../models"
 import { useContextsService } from "../../services";
 import { AddUpdateContextForm } from "./AddUpdateContextForm";
@@ -68,10 +69,18 @@ export const ContextsTable: FC<Props> = ({ groupId, contexts }) => {
 
   const onYes = () => deleteMutation.mutate();
 
+  const nav = useNavigate();
+
   const ActionsButtonGroup = ({ context }: any) =>
   <>
     <Button onClick={() => { setSelectedContext(context); setIsAddUpdateOpen(true); }}>Update</Button>
     <Button onClick={() => { setSelectedContext(context); setDeleteOpen(true); }}>Delete</Button>
+    <DropdownMenu title={"Context Activations"}>
+      <DropdownItem title="Event Activators" onClick={() => { nav(`/groups/${groupId}/contexts/${context.id}/event-activators`) }}></DropdownItem>
+      <DropdownItem title="Time Period Activators" onClick={() => { nav(`/groups/${groupId}/contexts/${context.id}/time-period-activators`) }}></DropdownItem>
+      <DropdownItem title="Event Deactivators" onClick={() => { nav(`/groups/${groupId}/contexts/${context.id}/event-deactivators`) }}></DropdownItem>
+      <DropdownItem title="Time Period Deactivators" onClick={() => { nav(`/groups/${groupId}/contexts/${context.id}/time-period-deactivators`) }}></DropdownItem>
+    </DropdownMenu>
   </>
   
   const classes = useStyles();
