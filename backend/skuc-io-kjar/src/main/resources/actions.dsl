@@ -7,10 +7,10 @@
 
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")
 
-[when]are{query:\w*}\(\)=are{query}()
-[when]is{query:\w*}\(\)=is{query}()
-[when]aren't{query:\w*}\(\)=not are{query}()
-[when]isn't{query:\w*}\(\)=not is{query}()
+[when]are {query:\w*}\(\)=are{query}()
+[when]is {query:\w*}\(\)=is{query}()
+[when]aren't {query:\w*}\(\)=not are{query}()
+[when]isn't {query:\w*}\(\)=not is{query}()
 
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getContextIfActive\({contextName:\w*}\)=${definedParam} : Context(name == "{contextName}")
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getAnyContextIfActive\(\)=exists(Context()) \n $allContexts : ArrayList() from collect (Context()) \n ${definedParam} : Context() from $allContexts.get(0)

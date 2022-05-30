@@ -2,6 +2,6 @@ package skuc.io.rules;
 
 import skuc.io.skuciocore.models.events.kjar.EventOccured;
 
-query areWindowsClosed()
-  EventOccured()
+query areWindowsOpen()
+  eval(true==true)
 end
