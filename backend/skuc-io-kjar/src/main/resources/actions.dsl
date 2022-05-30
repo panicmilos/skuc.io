@@ -9,8 +9,10 @@
 
 [when]are {query:\w*}\(\)=are{query}()
 [when]is {query:\w*}\(\)=is{query}()
+[when]has {query:\w*}\(\)=has{query}()
 [when]aren't {query:\w*}\(\)=not are{query}()
 [when]isn't {query:\w*}\(\)=not is{query}()
+[when]hasn't {query:\w*}\(\)=not has{query}()
 
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getContextIfActive\({contextName:\w*}\)=${definedParam} : Context(name == "{contextName}")
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getContextIfActive\({contextName1:\w*} or {contextName2:\w*}\)=exists(Context()) \n $orContexts : ArrayList() from collect (Context(name == "{contextName1}" || name == "{contextName2}")) \n ${definedParam} : Context() from $orContexts.get(0)

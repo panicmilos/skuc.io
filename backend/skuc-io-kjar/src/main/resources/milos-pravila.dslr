@@ -1,0 +1,139 @@
+paketic skuc.io.rules;
+
+use dispatch;
+use most common imports;
+
+rule "Potential Robery Movement By Cam"
+  when
+    def $context = getContextIfActive(AFH or Night)
+    has OutdoorCamDetectedPerson()
+  then
+    dispatch(InformUser);
+    dispatch(StartVideoRecording);
+    dispatch(PotentialRoberyMovement);
+end;
+
+rule "Potential Robery Movement By Movement Sensor"
+  when
+    def $context = getContextIfActive(AFH or Night)
+    def $max_movement = C[$context][max_movement]
+    curr_movement
+      - vece od $max_movement
+  then
+    dispatch(InformUser);
+    dispatch(StartVideoRecording);
+    dispatch(PotentialRoberyMovement);
+end;
+
+rule "Potential Robery Movement By Sound"
+  when
+    def $context = getContextIfActive(AFH or Night)
+    def $max_sound = C[$context][max_sound]
+    curr_sound
+      - vece od $max_sound
+  then
+    dispatch(InformUser);
+    dispatch(StartVideoRecording);
+    dispatch(PotentialRoberySound);
+end;
+
+rule "Potential Robery"
+  when
+    PotentialRoberyMovement has occured
+    PotentialRoberySound has occured
+  then
+    dispatch(ActivateAlarmSystem);
+    dispatch(InformUserOfAlarm);
+end;
+
+rule "Potential Robery because of Door or Window"
+  when
+    def $context = getContextIfActive(AFH)
+    DoorOrWindowsStatusChanged has occured
+  then
+    dispatch(ActivateAlarmSystem);
+    dispatch(InformUserOfAlarm);
+end;
+
+rule "Low temperature"
+  when
+    def $any = getAnyContextIfActive()
+    def $min_temp = C[$any][min_temp]
+    curr_temp
+      - manje od $min_temp
+  then
+    dispatch(TemperatureTooLow);
+    dispatch(InformUser);
+end;
+
+rule "Open windows on Hot Summer Nights"
+  when
+    def $summer = getContextIfActive(Summer)
+    def $night = getContextIfActive(Nightly)
+    TemperatureTooHigh has occured
+  then
+    dispatch(OpenWindows);
+end;
+
+rule "Turn on ac on Hot Summer Days"
+  when
+    def $summer = getContextIfActive(Summer)
+    def $night = getContextIfActive(Daily)
+    TemperatureTooHigh has occured
+  then
+    dispatch(TurnOnAC);
+end;
+
+rule "Turn off ac on Cold Summer Days"
+  when
+    def $summer = getContextIfActive(Summer)
+    def $night = getContextIfActive(Daily)
+    TemperatureTooLow has occured
+    is ACOn()
+  then
+    dispatch(TurnOffAC);
+end;
+
+rule "Open windows on Cold Summer Days"
+  when
+    def $summer = getContextIfActive(Summer)
+    def $night = getContextIfActive(Daily)
+    TemperatureTooLow has occured
+    isn't ACOn()
+  then
+    dispatch(OpenWindows);
+end;
+
+rule "Close windows when ac is on"
+  when
+    def $summer = getContextIfActive(Summer)
+    is ACOn()
+    are WindowsOpen()
+  then
+    dispatch(CloseWindows);
+end;
+
+rule "Turn off heating on Hot Winter days"
+  when
+    def $winter = getContextIfActive(Winter)
+    TemperatureTooHigh has occured
+  then
+    dispatch(TurnOffHeating);
+end;
+
+rule "Turn on heating on Hot Winter days"
+  when
+    def $winter = getContextIfActive(Winter)
+    TemperatureTooLow has occured
+  then
+    dispatch(TurnOnHeating);
+end;
+
+rule "Close windows on Cold Winter days"
+  when
+    def $winter = getContextIfActive(Winter)
+    is HeatingOn()
+    are WindowsOpen()
+  then
+    dispatch(CloseWindows);
+end;
