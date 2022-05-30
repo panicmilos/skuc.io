@@ -6,12 +6,12 @@ import java.util.UUID;
 public class ContextDeactivated extends ContextEvent {
   private LocalDateTime from;
 
-  public ContextDeactivated(UUID contextId, LocalDateTime from) {
-    super(UUID.randomUUID(), contextId);
+  public ContextDeactivated(String contextId, LocalDateTime from) {
+    super(UUID.randomUUID().toString(), contextId);
     this.from = from;
   }
 
-  public ContextDeactivated(UUID id, UUID contextId, LocalDateTime createdAt, LocalDateTime occuredAt) {
+  public ContextDeactivated(String id, String contextId, LocalDateTime createdAt, LocalDateTime occuredAt) {
     super(id, contextId, createdAt, occuredAt);
     this.from = occuredAt;
   }

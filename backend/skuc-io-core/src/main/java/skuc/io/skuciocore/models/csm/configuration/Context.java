@@ -40,4 +40,16 @@ public class Context extends BaseCsm {
     this.configuration = configuration;
   }
 
+  public float getMin(String key) {
+    return configuration.getThresholdConfiguration().get(key).getMin();
+  }
+
+  public float getMax(String key) {
+    return configuration.getThresholdConfiguration().get(key).getMax();
+  }
+
+  public String getStatus(String key) {
+    return configuration.getStatusConfiguration().get(key).getExpectedValue();
+  }
+
 }

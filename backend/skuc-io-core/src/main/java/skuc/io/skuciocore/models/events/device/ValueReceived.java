@@ -6,18 +6,25 @@ import java.util.UUID;
 public class ValueReceived extends DeviceEvent {
   private String paramName;
   private float value;
+  private boolean isProcessed;
 
-  public ValueReceived(UUID id, UUID deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType, String paramName, float value) {
+  public ValueReceived() {
+    super();
+    super.setId(UUID.randomUUID().toString());
+  }
+
+  public ValueReceived(String id, String deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType, String paramName, float value, boolean isProcessed) {
     super(id, deviceId, createdAt, occuredAt, deviceType);
     this.paramName = paramName;
     this.value = value;
+    this.isProcessed = isProcessed;
   }
 
-  public ValueReceived(UUID id, UUID deviceId, String deviceType) {
+  public ValueReceived(String id, String deviceId, String deviceType) {
     super(id, deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType);
   }
 
-  public UUID getDeviceId() {
+  public String getDeviceId() {
     return this.getStreamId();
   }
 
@@ -35,6 +42,14 @@ public class ValueReceived extends DeviceEvent {
 
   public void setValue(float value) {
     this.value = value;
+  }
+
+  public boolean isProcessed() {
+    return this.isProcessed;
+  }
+
+  public void setIsProcessed(boolean isProcessed) {
+    this.isProcessed = isProcessed;
   }
 
 }

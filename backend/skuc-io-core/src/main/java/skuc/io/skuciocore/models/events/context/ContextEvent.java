@@ -1,21 +1,20 @@
 package skuc.io.skuciocore.models.events.context;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import skuc.io.skuciocore.models.events.BaseEvent;
 
 public class ContextEvent extends BaseEvent {
 
-  public ContextEvent(UUID id, UUID contextId, LocalDateTime createdAt, LocalDateTime occuredAt) {
+  public ContextEvent(String id, String contextId, LocalDateTime createdAt, LocalDateTime occuredAt) {
     super(id, contextId, createdAt, occuredAt);
   }
 
-  public ContextEvent(UUID id, UUID contextId) {
+  public ContextEvent(String id, String contextId) {
     super(id, contextId, LocalDateTime.now(), LocalDateTime.now());
   }
 
-  public UUID getContextId() {
+  public String getContextId() {
     return this.getStreamId();
   }
 

@@ -1,0 +1,13 @@
+paketic skuc.io.rules;
+
+use dispatch;
+use most common imports;
+
+rule "Neki kao test"
+  when
+    def $any = getAnyContextIfActive()
+    aren'tWindowsClosed()
+  then
+    sisaj("A nesto i radi kao");
+    dispatch(Milos);
+end;

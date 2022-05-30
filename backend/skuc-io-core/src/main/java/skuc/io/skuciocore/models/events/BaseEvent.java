@@ -3,28 +3,38 @@ package skuc.io.skuciocore.models.events;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import skuc.io.skuciocore.utils.JsonDateDeserializer;
+import skuc.io.skuciocore.utils.JsonDateSerializer;
+
 public class BaseEvent {
-  private UUID id = UUID.randomUUID();
-  private UUID streamId = UUID.randomUUID();
+  private String id = UUID.randomUUID().toString();
+  private String streamId = UUID.randomUUID().toString();
   private String type = this.getClass().getSimpleName();
+  @JsonSerialize(using = JsonDateSerializer.class)
+  @JsonDeserialize(using = JsonDateDeserializer.class)
   private LocalDateTime createdAt = LocalDateTime.now();
+  @JsonSerialize(using = JsonDateSerializer.class)
+  @JsonDeserialize(using = JsonDateDeserializer.class)
   private LocalDateTime occuredAt = LocalDateTime.now();
 
   public BaseEvent() {
   }
 
-  public BaseEvent(UUID id, UUID streamId, LocalDateTime createdAt, LocalDateTime occuredAt) {
+  public BaseEvent(String id, String streamId, LocalDateTime createdAt, LocalDateTime occuredAt) {
     this.id = id;
     this.streamId = streamId;
     this.createdAt = createdAt;
     this.occuredAt = occuredAt;
   }
 
-  public UUID getId() {
+  public String getId() {
     return this.id;
   }
 
-  public void setId(UUID id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -52,11 +62,11 @@ public class BaseEvent {
     this.type = type;
   }
 
-  public UUID getStreamId() {
+  public String getStreamId() {
     return this.streamId;
   }
 
-  public void setStreamId(UUID streamId) {
+  public void setStreamId(String streamId) {
     this.streamId = streamId;
   }
 

@@ -1,6 +1,10 @@
 package skuc.io.rules;
 
+import java.util.List;
 import skuc.io.skuciocore.models.csm.User;
+import skuc.io.skuciocore.models.csm.configuration.Context;
+import skuc.io.skuciocore.models.events.device.ValueReceived;
+import function skuc.io.functions.IsContextActive.isContextActive;
 
 rule "Test Rule"
   when
@@ -8,3 +12,11 @@ rule "Test Rule"
   then
     System.out.println("Hello World");
 end
+
+rule "Test Rule2"
+  when
+    $context : Context(name == "1251251")
+  then
+  System.out.println($context.getMin("21521"));
+end;
+

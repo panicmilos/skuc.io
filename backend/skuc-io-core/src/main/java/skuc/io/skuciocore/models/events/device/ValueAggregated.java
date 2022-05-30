@@ -1,14 +1,13 @@
 package skuc.io.skuciocore.models.events.device;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class ValueAggregated extends DeviceEvent {
   private String paramName;
   private int resolution;
   private Aggregate aggregate;
 
-  public ValueAggregated(UUID id, UUID deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType,
+  public ValueAggregated(String id, String deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType,
       String paramName, int resolution, Aggregate aggregate) {
     super(id, deviceId, createdAt, occuredAt, deviceType);
     this.paramName = paramName;
@@ -16,7 +15,7 @@ public class ValueAggregated extends DeviceEvent {
     this.aggregate = aggregate;
   }
 
-  public UUID getDeviceId() {
+  public String getDeviceId() {
     return this.getStreamId();
   }
 
