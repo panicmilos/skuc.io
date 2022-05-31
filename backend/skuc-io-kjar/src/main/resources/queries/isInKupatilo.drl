@@ -1,0 +1,7 @@
+package skuc.io.rules;
+
+import skuc.io.skuciocore.models.events.kjar.EventOccured;
+
+query isInKupatilo()
+  eval(true==true)
+end

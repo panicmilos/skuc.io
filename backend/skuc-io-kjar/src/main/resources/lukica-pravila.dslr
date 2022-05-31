@@ -1,0 +1,100 @@
+paketic skuc.io.rules;
+
+use dispatch;
+use most common imports;
+
+rule "Potential Pet Home Escape"
+  when
+    ensureContextNotActive(PetWalk)
+    def $context = getAnyContextIfActive()
+    def $max_homeradius = C[$context][max_homeradius]
+    curr_homeradius
+      - vece od $max_homeradius
+  then
+    dispatch(InformUser);
+    dispatch(PotentialPetMissing);
+end;
+
+rule "Potential Pet Neighborhood Escape"
+  when
+    ensureContextNotActive(PetWalk)
+    PotentialPetMissing has occured
+    def $context = getAnyContextIfActive()
+    def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
+    curr_neighborhoodradius
+      - vece od $max_neighborhoodradius
+  then
+    dispatch(InformUser);
+    dispatch(PetMissing);
+end;
+
+rule "Pet Missing"
+  when
+    def $context = getContextIfActive(AFH)
+    PetMissing has occured
+  then
+    dispatch(AlarmUser);
+    dispatch(PetMissing);
+    dispatch(StartSendingRealTimeLocation);
+end;
+
+rule "Potential Pet Neighborhood Comeback"
+  when
+    is PetMissing()
+    def $context = getAnyContextIfActive()
+    def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
+    curr_neighborhoodradius
+      - manje od $max_neighborhoodradius
+  then
+    dispatch(InformUser);
+    dispatch(PotentialPetComeback);
+end;
+
+rule "Potential Pet Home Comeback"
+  when
+    PotentialPetComeback has occured
+    def $context = getAnyContextIfActive()
+    def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
+    curr_neighborhoodradius
+      - manje od $max_neighborhoodradius
+  then
+    dispatch(InformUser);
+    dispatch(PetComeback);
+    dispatch(StopSendingRealTimeLocation);
+end;
+
+rule "Person Enters Koopatilo"
+  when
+    def $context = getContextIfActive(AH)
+    def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
+    curr_prisutnostkupatilo
+      - vece od $max_prisutnostkupatilo
+    is NotInKupatilo()
+  then
+    dispatch(TurnOffBoiler);
+    dispatch(TurnLightsOn);
+    dispatch(InKupatilo);
+end;
+
+rule "Person Exits Koopatilo"
+  when
+    def $context = getContextIfActive(AH)
+    def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
+    curr_prisutnostkupatilo
+      - manje od $max_prisutnostkupatilo
+    is InKupatilo()
+  then
+    dispatch(TurnOnBoiler);
+    dispatch(TurnLightsOff);
+    dispatch(NotInKupatilo);
+end;
+
+rule "Turn on Washing Machine for Cheap Customers"
+  when
+    def $nightly = getContextIfActive(Nightly)
+    def $eco = getContextIfActive(Eco)
+    is WashingMachineOff()
+  then
+    dispatch(TurnOnWashingMachine);
+    dispatch(WashingMachineOn);
+end;
