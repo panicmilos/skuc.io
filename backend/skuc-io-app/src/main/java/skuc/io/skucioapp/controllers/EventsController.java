@@ -1,5 +1,6 @@
 package skuc.io.skucioapp.controllers;
 
+import java.text.ParseException;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import skuc.io.skucioapp.api_contracts.requests.Events.ValueReceivedRequest;
 import skuc.io.skuciocore.ksessions.SessionManager;
 import skuc.io.skuciocore.models.events.device.ValueReceived;
+import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
 import skuc.io.skuciocore.services.DeviceService;
 import skuc.io.skuciocore.services.events.ValueReceivedService;
 
@@ -52,6 +54,18 @@ public class EventsController {
     System.out.println(session.getFactCount());
 
     return ResponseEntity.ok(_service.create(valueReceived));
+  }
+
+  @PostMapping("test-active")
+  public ResponseEntity<ValueReceived> createValue() throws ParseException {
+
+    var session = _sessionManager.getSession("5390ba11-857d-40c2-816a-9a2b716baa91");
+    session.insert(new ActivateContextByName("Night"));
+    session.fireAllRules();
+
+    System.out.println(session.getFactCount());
+
+    return ResponseEntity.ok(null);
   }
 
 

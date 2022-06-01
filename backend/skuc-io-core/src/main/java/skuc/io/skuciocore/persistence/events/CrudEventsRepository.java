@@ -1,16 +1,13 @@
 package skuc.io.skuciocore.persistence.events;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.Collection;
 
 import net.ravendb.client.documents.session.IDocumentSession;
 import skuc.io.skuciocore.models.events.BaseEvent;
 import skuc.io.skuciocore.persistence.DocumentStoreHolder;
 
-public class CrudEventsRepository<T extends BaseEvent> implements Closeable {
+public class CrudEventsRepository<T extends BaseEvent> {
 
-  private IDocumentSession session;
   protected Class<T> concreteClass;
 
   public CrudEventsRepository(Class<T> concreClass) {
@@ -18,36 +15,26 @@ public class CrudEventsRepository<T extends BaseEvent> implements Closeable {
   }
 
   public Collection<T> get() {
-    return getSession().query(concreteClass).toList();
+    try (var session = getSession()) {
+      return session.query(concreteClass).toList();
+    }
   }
 
   public T get(String id) {
-    return getSession().load(concreteClass, id);
-  }
-
-  public void save() {
-    getSession().saveChanges();
+    try (var session = getSession()) {
+      return session.load(concreteClass, id);
+    }
   }
 
   protected IDocumentSession getSession() {
-    if (session == null) {
-      session = DocumentStoreHolder.getStore().openSession();
-    }
-
-    return session;
+    return DocumentStoreHolder.getStore().openSession();
   }
 
   public void store(T entity) {
-    getSession().store(entity, entity.getId());
-    save();
-  }
-
-  @Override
-  public void close() throws IOException {
-    if (session != null) {
-      session.close();
-      session = null;
+    try (var session = getSession()) {
+      session.store(entity, entity.getId());
+      session.saveChanges();
     }
   }
-  
+
 }

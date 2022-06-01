@@ -22,6 +22,10 @@ public class EventActivatorService extends CrudService<EventActivator> {
     _eventActivatorRepository = repository;
   }
 
+  public Collection<EventActivator> getByGroup(String groupId) {
+    return _eventActivatorRepository.getByGroup(groupId);
+  }
+
   public Collection<EventActivator> getByContext(String contextId) {
     return _eventActivatorRepository.getByContext(contextId);
   }

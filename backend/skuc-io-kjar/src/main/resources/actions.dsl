@@ -3,6 +3,7 @@
 [keyword]paketic {package:.*}=package {package}
 
 [keyword]use dispatch=import skuc.io.skuciocore.models.events.kjar.EventOccured
+[keyword]use activateContext=import skuc.io.skuciocore.models.events.kjar.ActivateContextById;import skuc.io.skuciocore.models.events.kjar.ActivateContextByName
 [keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
 
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")
@@ -16,7 +17,7 @@
 
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getContextIfActive\({contextName:\w*}\)=${definedParam} : Context(name == "{contextName}")
 [when]ensureContextNotActive\({contextName:\w*}\)=not Context(name == "{contextName}")
-[when]def ${definedParam:[\w_-]*}\s?\=\s? getContextIfActive\({contextName1:\w*} or {contextName2:\w*}\)=exists(Context()) \n $orContexts : ArrayList() from collect (Context(name == "{contextName1}" || name == "{contextName2}")) \n ${definedParam} : Context() from $orContexts.get(0)
+[when]def ${definedParam:[\w_-]*}\s?\=\s? getContextIfActive\({contextName1:\w*} or {contextName2:\w*}\)=exists(Context(name == "{contextName1}" || name == "{contextName2}")) \n $orContexts : ArrayList() from collect (Context(name == "{contextName1}" || name == "{contextName2}")) \n ${definedParam} : Context() from $orContexts.get(0)
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getAnyContextIfActive\(\)=exists(Context()) \n $allContexts : ArrayList() from collect (Context()) \n ${definedParam} : Context() from $allContexts.get(0)
 
 [when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[max_{paramName:\w*}\]=${definedParam} : Float() from ${contextParam}.getMax("{paramName}")
@@ -33,3 +34,4 @@
 
 [then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}
 [then]dispatch\({eventName:\w*}\)=insert(new EventOccured("{eventName}"))
+[then]activateContext\({contextName:\w*}\)=insert(new ActivateContextByName("{contextName}"))

@@ -21,6 +21,11 @@ public class TimePeriodActivatorService extends CrudService<TimePeriodActivator>
     _timePeriodActivatorRepository = repository;
   }
 
+  public Collection<TimePeriodActivator> getByGroup(String groupId) {
+    return _timePeriodActivatorRepository.getByGroup(groupId);
+  }
+
+
   public Collection<TimePeriodActivator> getByContext(String contextId) {
     return _timePeriodActivatorRepository.getByContext(contextId);
   }

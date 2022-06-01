@@ -1,5 +1,9 @@
 package skuc.io.skuciocore.models.csm.context.activation;
 
+import java.util.Date;
+
+import org.drools.core.time.impl.CronExpression;
+
 import skuc.io.skuciocore.models.csm.context.BaseContextCsm;
 
 public class TimePeriodActivator extends BaseContextCsm {
@@ -28,6 +32,20 @@ public class TimePeriodActivator extends BaseContextCsm {
 
   public void setCronEnd(String cronEnd) {
     this.cronEnd = cronEnd;
+  }
+
+  public boolean matches() {
+    var date = new Date();
+    date.setTime(date.getTime() - 1000);
+
+    try {
+      var next = new CronExpression(cronStart).getNextValidTimeAfter(date);
+
+      return next.toLocaleString().equals(new Date().toLocaleString());
+    } catch (Exception e) {
+      return false;
+    }
+
   }
 
 }

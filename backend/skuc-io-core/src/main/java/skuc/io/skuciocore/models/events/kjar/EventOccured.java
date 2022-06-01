@@ -6,6 +6,7 @@ import skuc.io.skuciocore.models.events.BaseEvent;
 
 public class EventOccured extends BaseEvent {
   private String name;
+  private boolean processedByActivator;
 
   public EventOccured() {
     super();
@@ -27,6 +28,14 @@ public class EventOccured extends BaseEvent {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean getProcessedByActivator() {
+    return this.processedByActivator;
+  }
+
+  public void setProcessedByActivator(boolean processedByActivator) {
+    this.processedByActivator = processedByActivator;
   }
 
 }

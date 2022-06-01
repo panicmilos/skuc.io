@@ -23,6 +23,11 @@ public class BaseEvent {
   public BaseEvent() {
   }
 
+  public BaseEvent(String id, String streamId) {
+    this.id = id;
+    this.streamId = streamId;
+  }
+
   public BaseEvent(String id, String streamId, LocalDateTime createdAt, LocalDateTime occuredAt) {
     this.id = id;
     this.streamId = streamId;

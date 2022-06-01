@@ -26,6 +26,10 @@ public class ContextService extends CrudService<Context> {
     return _contextRepository.getByGroup(groupId);
   }
 
+  public Context getByGroupAndName(String groupId, String name) {
+    return _contextRepository.getByGroupAndName(groupId, name);
+  }
+
   @Override
   public Context create(Context context) {
     _groupService.getOrThrow(context.getGroupId());
