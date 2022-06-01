@@ -14,15 +14,32 @@ public class LocationRepository extends CrudRepository<Location> {
   }
 
   public Collection<Location> getByGroup(String groupId) {
-    return getSession().query(this.concreteClass).whereEquals("groupId", groupId).toList();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("groupId", groupId).toList();
+    }
   }
 
   public Location getByGroupAndName(String groupId, String name) {
-    return getSession().query(this.concreteClass)
-    .whereEquals("groupId", groupId)
-    .whereEquals("name", name)
-    .firstOrDefault();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass)
+        .whereEquals("groupId", groupId)
+        .whereEquals("name", name)
+        .firstOrDefault();
+    }
   }
 
+  @Override
+  public void update(Location location) {
+    try (var session = getSession()) {
+      var existingLocation = session.load(concreteClass, location.getId());
+
+      existingLocation.setName(location.getName());
+      existingLocation.setLng(location.getLng());
+      existingLocation.setLat(location.getLat());
+
+      session.saveChanges();
+    }
+    
+  }
 
 }

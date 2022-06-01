@@ -37,9 +37,7 @@ public class GroupService extends CrudService<Group> {
       throw new BadLogicException(String.format("Group with given name %s already exists.", group.getName()));
     }
 
-    existingGroup.setName(group.getName());
-
-    return super.update(existingGroup);
+    return super.update(group);
   }
 
 

@@ -38,7 +38,7 @@ public class CrudService<T extends BaseCsm> {
   }
 
   public T update(T entity) {
-    repository.save();
+    repository.update(entity);
 
     return entity;
   }

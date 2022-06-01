@@ -47,11 +47,7 @@ public class LocationService extends CrudService<Location> {
       throw new BadLogicException("Location with the same name already exists in the group.");
     }
 
-    existingLocation.setName(location.getName());
-    existingLocation.setLng(location.getLng());
-    existingLocation.setLat(location.getLat());
-
-    return super.update(existingLocation);
+    return super.update(location);
   }
 
 }

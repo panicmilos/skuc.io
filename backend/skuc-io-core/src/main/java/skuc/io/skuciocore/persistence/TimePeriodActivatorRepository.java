@@ -14,7 +14,22 @@ public class TimePeriodActivatorRepository extends CrudRepository<TimePeriodActi
   }
 
   public Collection<TimePeriodActivator> getByContext(String contextId) {
-    return getSession().query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    }
+  }
+
+  @Override
+  public void update(TimePeriodActivator timePeriodActivator) {
+    try (var session = getSession()) {
+      var existingTimePeriodActivator = session.load(concreteClass, timePeriodActivator.getId());
+
+      existingTimePeriodActivator.setCronStart(timePeriodActivator.getCronStart());
+      existingTimePeriodActivator.setCronEnd(timePeriodActivator.getCronEnd());
+  
+      session.saveChanges();
+    }
+    
   }
 
 }

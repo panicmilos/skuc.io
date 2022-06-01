@@ -14,18 +14,35 @@ public class DeviceRepository extends CrudRepository<Device> {
   }
 
   public Collection<Device> getByLocation(String locationId) {
-    return getSession().query(this.concreteClass).whereEquals("locationId", locationId).toList();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("locationId", locationId).toList();
+    }
   }
 
   public Device getByDevice(String deviceId) {
-    return getSession().query(this.concreteClass).whereEquals("deviceId", deviceId).firstOrDefault();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("deviceId", deviceId).firstOrDefault();
+    }
   }
 
   public Device getByLocationAndName(String locationId, String name) {
-    return getSession().query(this.concreteClass)
-    .whereEquals("locationId", locationId)
-    .whereEquals("name", name)
-    .firstOrDefault();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass)
+        .whereEquals("locationId", locationId)
+        .whereEquals("name", name)
+        .firstOrDefault();
+    }
+  }
+
+  @Override
+  public void update(Device device) {
+    try (var session = getSession()) {
+      var existingDevice = session.load(concreteClass, device.getDeviceId());
+
+      existingDevice.setName(device.getName());
+
+      session.saveChanges();
+    }
   }
 
 

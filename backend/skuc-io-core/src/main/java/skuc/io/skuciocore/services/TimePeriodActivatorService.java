@@ -34,12 +34,9 @@ public class TimePeriodActivatorService extends CrudService<TimePeriodActivator>
 
   @Override
   public TimePeriodActivator update(TimePeriodActivator timePeriodActivator) {
-    var existingTimePeriodActivator = getOrThrow(timePeriodActivator.getId());
+    getOrThrow(timePeriodActivator.getId());
 
-    existingTimePeriodActivator.setCronStart(timePeriodActivator.getCronStart());
-    existingTimePeriodActivator.setCronEnd(timePeriodActivator.getCronEnd());
-
-    return super.update(existingTimePeriodActivator);
+    return super.update(timePeriodActivator);
   }
 
 }

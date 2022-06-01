@@ -14,7 +14,22 @@ public class TimePeriodDeactivatorRepository extends CrudRepository<TimePeriodDe
   }
 
   public Collection<TimePeriodDeactivator> getByContext(String contextId) {
-    return getSession().query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    }
+  }
+
+  @Override
+  public void update(TimePeriodDeactivator timePeriodDeactivator) {
+    try (var session = getSession()) {
+      var existingTimePeriodDeactivator = session.load(concreteClass, timePeriodDeactivator.getId());
+      
+      existingTimePeriodDeactivator.setCronStart(timePeriodDeactivator.getCronStart());
+      existingTimePeriodDeactivator.setCronEnd(timePeriodDeactivator.getCronEnd());  
+
+      session.saveChanges();
+    }
+    
   }
 
 }

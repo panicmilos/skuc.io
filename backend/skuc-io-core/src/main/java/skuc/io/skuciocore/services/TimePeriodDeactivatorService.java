@@ -34,12 +34,9 @@ public class TimePeriodDeactivatorService extends CrudService<TimePeriodDeactiva
 
   @Override
   public TimePeriodDeactivator update(TimePeriodDeactivator timePeriodDeactivator) {
-    var existingTimePeriodDeactivator = getOrThrow(timePeriodDeactivator.getId());
+    getOrThrow(timePeriodDeactivator.getId());
 
-    existingTimePeriodDeactivator.setCronStart(timePeriodDeactivator.getCronStart());
-    existingTimePeriodDeactivator.setCronEnd(timePeriodDeactivator.getCronEnd());
-
-    return super.update(existingTimePeriodDeactivator);
+    return super.update(timePeriodDeactivator);
   }
 
 }

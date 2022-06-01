@@ -49,9 +49,7 @@ public class EventDeactivatorService extends CrudService<EventDeactivator> {
       throw new BadLogicException("Deactivator for the given event type already exists for in the context.");
     }
 
-    existingEventDeactivator.setEventType(eventDeactivator.getEventType());
-
-    return super.update(existingEventDeactivator);
+    return super.update(eventDeactivator);
   }
 
 }

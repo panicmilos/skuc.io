@@ -57,11 +57,7 @@ public class UserService extends CrudService<User> implements UserDetailsService
 
   @Override
   public User update(User user) {
-    var existingUser = getOrThrow(user.getId());
-
-    existingUser.setFullName(user.getFullName());
-    existingUser.setAddress(user.getAddress());
-    existingUser.setPhoneNumber(existingUser.getPhoneNumber());
+    getOrThrow(user.getId());
 
     return super.update(user);
   }
@@ -74,8 +70,9 @@ public class UserService extends CrudService<User> implements UserDetailsService
     }
 
     existingUser.setPassword(newPassword);
+    _userRepository.changePassword(existingUser);
 
-    return super.update(existingUser);
+    return existingUser;
   }
 
   @Override

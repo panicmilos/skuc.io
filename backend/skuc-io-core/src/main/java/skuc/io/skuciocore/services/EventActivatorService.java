@@ -49,9 +49,7 @@ public class EventActivatorService extends CrudService<EventActivator> {
       throw new BadLogicException("Activator for the given event type already exists for in the context.");
     }
 
-    existingEventActivator.setEventType(eventActivator.getEventType());
-
-    return super.update(existingEventActivator);
+    return super.update(eventActivator);
   }
 
 }

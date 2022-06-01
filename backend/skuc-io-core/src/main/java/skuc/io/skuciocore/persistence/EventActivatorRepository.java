@@ -14,14 +14,31 @@ public class EventActivatorRepository extends CrudRepository<EventActivator> {
   }
 
   public Collection<EventActivator> getByContext(String contextId) {
-    return getSession().query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    }
   }
 
   public EventActivator getByContextAndEventType(String contextId, String eventType) {
-    return getSession().query(this.concreteClass)
-      .whereEquals("contextId", contextId)
-      .whereEquals("eventType", eventType)
-      .firstOrDefault();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass)
+        .whereEquals("contextId", contextId)
+        .whereEquals("eventType", eventType)
+        .firstOrDefault();
     }
+  }
+
+  @Override
+  public void update(EventActivator eventActivator) {
+    try (var session = getSession()) {
+      var existingEventActivator = session.load(concreteClass, eventActivator.getId());
+
+      existingEventActivator.setEventType(eventActivator.getEventType());
+
+      session.saveChanges();
+    }
+
+    
+  }
 
 }

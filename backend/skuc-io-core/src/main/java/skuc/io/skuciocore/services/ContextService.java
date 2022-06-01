@@ -47,8 +47,6 @@ public class ContextService extends CrudService<Context> {
       throw new BadLogicException("Context with the same name already exists in the group.");
     }
 
-    existingContext.setConfiguration(context.getConfiguration());
-
     return super.update(context);
   }
 

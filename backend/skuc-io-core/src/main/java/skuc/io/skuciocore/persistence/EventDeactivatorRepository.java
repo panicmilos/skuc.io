@@ -14,14 +14,30 @@ public class EventDeactivatorRepository extends CrudRepository<EventDeactivator>
   }
 
   public Collection<EventDeactivator> getByContext(String contextId) {
-    return getSession().query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("contextId", contextId).toList();
+    }
   }
 
   public EventDeactivator getByContextAndEventType(String contextId, String eventType) {
-    return getSession().query(this.concreteClass)
-      .whereEquals("contextId", contextId)
-      .whereEquals("eventType", eventType)
-      .firstOrDefault();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass)
+        .whereEquals("contextId", contextId)
+        .whereEquals("eventType", eventType)
+        .firstOrDefault();
+    }
+  }
+
+  @Override
+  public void update(EventDeactivator eventDeactivator) {
+    try (var session = getSession()) {
+      var existingEventDeactivator = session.load(concreteClass, eventDeactivator.getId());
+
+      existingEventDeactivator.setEventType(eventDeactivator.getEventType());
+
+      session.saveChanges();
+    }
+    
   }
 
 }

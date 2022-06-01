@@ -12,6 +12,20 @@ public class GroupRepository extends CrudRepository<Group> {
   }
 
   public Group getByName(String name) {
-    return getSession().query(this.concreteClass).whereEquals("name", name).firstOrDefault();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("name", name).firstOrDefault();
+    }
+  }
+
+  @Override
+  public void update(Group group) {
+    try (var session = getSession()) {
+      var existingGroup = session.load(concreteClass, group.getId());
+      
+      existingGroup.setName(group.getName());
+
+      session.saveChanges();
+    }
+    
   }
 }

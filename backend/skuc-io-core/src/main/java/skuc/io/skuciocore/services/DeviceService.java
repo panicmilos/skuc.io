@@ -52,8 +52,6 @@ public class DeviceService extends CrudService<Device> {
       throw new BadLogicException("Device with the same name already exists at the location.");
     }
 
-    existingDevice.setName(device.getName());
-
     return super.update(device);
   }
 }

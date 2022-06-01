@@ -14,14 +14,29 @@ public class ContextRepository extends CrudRepository<Context> {
   }
 
   public Collection<Context> getByGroup(String groupId) {
-    return getSession().query(this.concreteClass).whereEquals("groupId", groupId).toList();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass).whereEquals("groupId", groupId).toList();
+    }
   }
 
   public Context getByGroupAndName(String groupId, String name) {
-    return getSession().query(this.concreteClass)
-    .whereEquals("groupId", groupId)
-    .whereEquals("name", name)
-    .firstOrDefault();
+    try (var session = getSession()) {
+      return session.query(this.concreteClass)
+        .whereEquals("groupId", groupId)
+        .whereEquals("name", name)
+        .firstOrDefault();
+    }
+  }
+
+  @Override
+  public void update(Context context) {
+    try (var session = getSession()) {
+      var existingContext = session.load(concreteClass, context.getId());
+      
+      existingContext.setConfiguration(context.getConfiguration());
+
+      session.saveChanges();
+    }
   }
 
 }
