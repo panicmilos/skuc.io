@@ -9,6 +9,7 @@ public abstract class Notification {
 
   public Notification(String type, String groupId) {
     this.type = type;
+    this.groupId = groupId;
   }
 
   public String getType() {

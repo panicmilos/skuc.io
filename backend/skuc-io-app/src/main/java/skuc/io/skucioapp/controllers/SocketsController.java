@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import skuc.io.skucioapp.sockets.SocketsModule;
 
 @RestController
-@RequestMapping("sockets/")
+@RequestMapping("sockets-initialization")
 public class SocketsController {
 
   private final SocketsModule _socketsModule;
@@ -20,9 +20,9 @@ public class SocketsController {
     _socketsModule = socketsModule;
   }
 
-  @PostMapping("{groupId}/infos/initialization")
-  public ResponseEntity<Object> initializeInfos(@PathVariable String groupId) {
-    var namespace = groupId + "/infos";
+  @PostMapping("{groupId}/{namespaceName}")
+  public ResponseEntity<Object> initializeNamespace(@PathVariable String groupId, @PathVariable String namespaceName) {
+    var namespace = groupId + "/" + namespaceName;
 
     _socketsModule.tryToRegisterNameSpace(namespace);
 

@@ -11,3 +11,4 @@ export { getPluginDefinition as getPluginContexts } from './contexts'
 // Contexts
 export { getPluginDefinition as getPluginAuthContext } from './auth-context'
 export { getPluginDefinition as getPluginReactQueryContext } from './react-query-context'
+export { getPluginDefinition as getPluginSocketsContext } from './sockets-contexts'
