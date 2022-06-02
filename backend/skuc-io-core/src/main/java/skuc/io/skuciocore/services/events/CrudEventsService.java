@@ -2,13 +2,10 @@ package skuc.io.skuciocore.services.events;
 
 import java.util.Collection;
 
-import org.springframework.stereotype.Service;
-
 import skuc.io.skuciocore.exceptions.MissingEntityException;
 import skuc.io.skuciocore.models.events.BaseEvent;
 import skuc.io.skuciocore.persistence.events.CrudEventsRepository;
 
-@Service
 public class CrudEventsService<T extends BaseEvent> {
   
   protected CrudEventsRepository<T> repository;

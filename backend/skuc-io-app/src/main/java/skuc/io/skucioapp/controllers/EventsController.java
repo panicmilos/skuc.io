@@ -68,6 +68,20 @@ public class EventsController {
     return ResponseEntity.ok(null);
   }
 
+  @PostMapping("test-inform")
+  public ResponseEntity<ValueReceived> createValue2222() throws ParseException {
+
+    var session = _sessionManager.getSession("5390ba11-857d-40c2-816a-9a2b716baa91");
+    // session.insert(new ActivateContextByName("Night"));
+    session.insert(5);
+    session.fireAllRules();
+
+
+    System.out.println(session.getFactCount());
+
+    return ResponseEntity.ok(null);
+  }
+
 
   
 }

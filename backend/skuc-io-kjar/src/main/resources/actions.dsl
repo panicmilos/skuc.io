@@ -2,6 +2,7 @@
 
 [keyword]paketic {package:.*}=package {package}
 
+[keyword]use informUser=import skuc.io.skuciocore.models.csm.Group; import skuc.io.functions.GroupObjectFilterer; import skuc.io.skuciocore.models.utilityClasses.KeyValue;import skuc.io.skuciocore.services.NotificationService; global NotificationService notificationService
 [keyword]use dispatch=import skuc.io.skuciocore.models.events.kjar.EventOccured
 [keyword]use activateContext=import skuc.io.skuciocore.models.events.kjar.ActivateContextById;import skuc.io.skuciocore.models.events.kjar.ActivateContextByName
 [keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
@@ -31,6 +32,10 @@
 [when]- vece ili jednako sa ${definedParam:[\w_-]*}=value >= ${definedParam}
 [when]- jednako sa ${definedParam:[\w_-]*}=value == ${definedParam}
 [when]- razlicito od ${definedParam:[\w_-]*}=value != ${definedParam}
+
+[then]informUser\(\)=Group group = (Group) kcontext.getKieRuntime().getObjects(new GroupObjectFilterer()).iterator().next(); \n EventOccured informUserEvent = new EventOccured("InformUser", new KeyValue<String, String>("groupId", group.getId()));
+[then]\s?with \"{param:[\w-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
+[then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
 [then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}
 [then]dispatch\({eventName:\w*}\)=insert(new EventOccured("{eventName}"))

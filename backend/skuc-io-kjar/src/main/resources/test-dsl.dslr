@@ -1,7 +1,17 @@
 paketic skuc.io.rules;
 
+use informUser;
 use dispatch;
 use most common imports;
+
+rule "Test inform"
+  when
+>    b: Number()
+  then
+    informUser()
+      with "about" : "Milos Panic je car"
+    ===>
+end;
 
 rule "High temperature"
   when

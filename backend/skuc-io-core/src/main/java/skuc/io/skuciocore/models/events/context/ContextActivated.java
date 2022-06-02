@@ -3,7 +3,15 @@ package skuc.io.skuciocore.models.events.context;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import skuc.io.skuciocore.utils.JsonDateDeserializer;
+import skuc.io.skuciocore.utils.JsonDateSerializer;
+
 public class ContextActivated extends ContextEvent {
+  @JsonSerialize(using = JsonDateSerializer.class)
+  @JsonDeserialize(using = JsonDateDeserializer.class)
   private LocalDateTime from;
 
   public ContextActivated(String contextId, LocalDateTime from) {

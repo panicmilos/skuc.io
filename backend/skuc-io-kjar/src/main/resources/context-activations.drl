@@ -1,20 +1,24 @@
 package skuc.io.rules;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import skuc.io.skuciocore.models.csm.Group;
 import skuc.io.skuciocore.models.csm.configuration.Context;
 import skuc.io.skuciocore.models.csm.context.activation.EventActivator;
 import skuc.io.skuciocore.models.csm.context.activation.TimePeriodActivator;
+import skuc.io.skuciocore.models.events.context.ContextActivated;
 import skuc.io.skuciocore.models.events.kjar.ActivateContextById;
 import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
 import skuc.io.skuciocore.models.events.kjar.EventOccured;
 import skuc.io.skuciocore.services.ContextService;
 import skuc.io.skuciocore.services.EventActivatorService;
 import skuc.io.skuciocore.services.TimePeriodActivatorService;
+import skuc.io.skuciocore.services.events.ContextActivatedService;
 
 global ContextService contextService;
 global EventActivatorService eventActivatorService;
 global TimePeriodActivatorService timePeriodActivatorService;
+global ContextActivatedService contextActivatedService;
 
 
 rule "Activate Context By Name"
@@ -25,6 +29,7 @@ rule "Activate Context By Name"
   then
     Context context = contextService.getByGroupAndName($group.getId(), $activateByName.getContextName());
 
+    contextActivatedService.create(new ContextActivated(context.getId(), LocalDateTime.now()));
     insert(context);
 end;
 
@@ -44,6 +49,7 @@ rule "Activate Context By Id"
   then
     Context context = contextService.get($activateById.getContextId());
 
+    contextActivatedService.create(new ContextActivated(context.getId(), LocalDateTime.now()));
     insert(context);
 end;
 
