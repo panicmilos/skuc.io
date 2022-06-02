@@ -45,7 +45,6 @@ rule "Activate Context By Id"
   when
     $activateById : ActivateContextById()
     not Context(id == $activateById.contextId)
-    $group : Group()
   then
     Context context = contextService.get($activateById.getContextId());
 
