@@ -1,0 +1,78 @@
+package skuc.io.rules;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import skuc.io.skuciocore.models.csm.Group;
+import skuc.io.skuciocore.models.csm.configuration.Context;
+import skuc.io.skuciocore.models.csm.context.deactivation.EventDeactivator;
+import skuc.io.skuciocore.models.csm.context.deactivation.TimePeriodDeactivator;
+import skuc.io.skuciocore.models.events.context.ContextDeactivated;
+import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;
+import skuc.io.skuciocore.models.events.kjar.DeactivateContextByName;
+import skuc.io.skuciocore.models.events.kjar.EventOccured;
+import skuc.io.skuciocore.services.ContextService;
+import skuc.io.skuciocore.services.EventDeactivatorService;
+import skuc.io.skuciocore.services.TimePeriodDeactivatorService;
+import skuc.io.skuciocore.services.events.ContextDeactivatedService;
+
+global ContextService contextService;
+global EventDeactivatorService eventDeactivatorService;
+global TimePeriodDeactivatorService timePeriodDeactivatorService;
+global ContextDeactivatedService contextDeactivatedService;
+
+
+rule "Deactivate Context By Name"
+  when
+    $deactivateByName : DeactivateContextByName()
+    $context : Context(name == $deactivateByName.contextName)
+  then
+    contextDeactivatedService.create(new ContextDeactivated($context.getId(), LocalDateTime.now()));
+    delete($context);
+end;
+
+rule "Clear Deactivate Context By Name"
+  salience -100
+  when
+    $deactivateByName : DeactivateContextByName()
+  then
+    delete($deactivateByName);
+end;
+
+rule "Deactivate Context By Id"
+  when
+    $deactivateById : DeactivateContextById()
+    $context : Context(id == $deactivateById.contextId)
+  then
+    contextDeactivatedService.create(new ContextDeactivated($context.getId(), LocalDateTime.now()));
+    delete($context);
+end;
+
+rule "Clear Deactivate Context By Id"
+  salience -100
+  when
+    $deactivateById : DeactivateContextById()
+  then
+    delete($deactivateById);
+end;
+
+rule "Deactivate Context By Event Deactivator"
+  when
+    $eventOccured : EventOccured(processedByActivator == false)
+    $group : Group()
+    $eventDeactivator : EventDeactivator(eventType == $eventOccured.name) from eventDeactivatorService.getByGroup($group.id)
+  then
+    modify($eventOccured) {
+      setProcessedByActivator(true);
+    }
+    insert(new DeactivateContextById($eventDeactivator.getContextId()));
+end;
+
+rule "Deactivate Context By Time Period Deactivator"
+  timer (int: 0s 1s)
+  enabled ($timePeriodDeactivator.matches())
+when
+  $group : Group()
+  $timePeriodDeactivator : TimePeriodDeactivator() from timePeriodDeactivatorService.getByGroup($group.id)
+then
+  insert(new DeactivateContextById($timePeriodDeactivator.getContextId()));
+end;

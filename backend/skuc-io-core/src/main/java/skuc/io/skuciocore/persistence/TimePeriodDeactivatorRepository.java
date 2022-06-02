@@ -8,7 +8,7 @@ import skuc.io.skuciocore.models.csm.context.deactivation.TimePeriodDeactivator;
 
 @Repository
 public class TimePeriodDeactivatorRepository extends CrudRepository<TimePeriodDeactivator> {
-  
+
   public TimePeriodDeactivatorRepository() {
     super(TimePeriodDeactivator.class);
   }

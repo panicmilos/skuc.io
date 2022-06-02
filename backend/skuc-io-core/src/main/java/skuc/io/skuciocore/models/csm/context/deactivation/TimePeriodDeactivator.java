@@ -1,5 +1,9 @@
 package skuc.io.skuciocore.models.csm.context.deactivation;
 
+import java.util.Date;
+
+import org.drools.core.time.impl.CronExpression;
+
 import skuc.io.skuciocore.models.csm.context.BaseContextCsm;
 
 public class TimePeriodDeactivator extends BaseContextCsm {
@@ -28,6 +32,20 @@ public class TimePeriodDeactivator extends BaseContextCsm {
 
   public void setCronEnd(String cronEnd) {
     this.cronEnd = cronEnd;
+  }
+
+  public boolean matches() {
+    var date = new Date();
+    date.setTime(date.getTime() - 1000);
+
+    try {
+      var next = new CronExpression(cronEnd).getNextValidTimeAfter(date);
+
+      return next.toLocaleString().equals(new Date().toLocaleString());
+    } catch (Exception e) {
+      return false;
+    }
+
   }
 
 }

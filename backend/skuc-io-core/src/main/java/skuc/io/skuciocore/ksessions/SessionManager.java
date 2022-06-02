@@ -11,11 +11,14 @@ import org.springframework.stereotype.Component;
 
 import skuc.io.skuciocore.services.ContextService;
 import skuc.io.skuciocore.services.EventActivatorService;
+import skuc.io.skuciocore.services.EventDeactivatorService;
 import skuc.io.skuciocore.services.GroupService;
 import skuc.io.skuciocore.services.LocationService;
 import skuc.io.skuciocore.services.NotificationService;
 import skuc.io.skuciocore.services.TimePeriodActivatorService;
+import skuc.io.skuciocore.services.TimePeriodDeactivatorService;
 import skuc.io.skuciocore.services.events.ContextActivatedService;
+import skuc.io.skuciocore.services.events.ContextDeactivatedService;
 
 @Component
 public class SessionManager {
@@ -25,12 +28,16 @@ public class SessionManager {
 
   private final GroupService _groupService;
   private final ContextService _contextService;
+
   private final EventActivatorService _eventActivatorService;
   private final TimePeriodActivatorService _timePeriodActivatorService;
-  private final LocationService _locationService;
-
   private final ContextActivatedService _contextActivatedService;
 
+  private final EventDeactivatorService _eventDeactivatorService;
+  private final TimePeriodDeactivatorService _timePeriodDeactivatorService;
+  private final ContextDeactivatedService _contextDeactivatedService;
+
+  private final LocationService _locationService;
   private final NotificationService _notificationService;
   
   
@@ -39,24 +46,32 @@ public class SessionManager {
     KieContainer kieContainer,
     GroupService groupService,
     ContextService contextService,
+
     EventActivatorService eventActivatorService,
     TimePeriodActivatorService timePeriodActivatorService,
-    LocationService locationService,
-
     ContextActivatedService contextActivatedService,
+    
+    EventDeactivatorService eventDeactivatorService,
+    TimePeriodDeactivatorService timePeriodDeactivatorService,
+    ContextDeactivatedService contextDeactivatedService,
 
+    LocationService locationService,
     NotificationService notificationService
   ) {
     _kieContainer = kieContainer;
 
     _groupService = groupService;
     _contextService = contextService;
+
     _eventActivatorService = eventActivatorService;
     _timePeriodActivatorService = timePeriodActivatorService;
-    _locationService = locationService;
-  
     _contextActivatedService = contextActivatedService;
 
+    _eventDeactivatorService = eventDeactivatorService;
+    _timePeriodDeactivatorService = timePeriodDeactivatorService;
+    _contextDeactivatedService = contextDeactivatedService;
+
+    _locationService = locationService;
     _notificationService = notificationService;
   }
 
@@ -81,10 +96,14 @@ public class SessionManager {
       }
 
       session.setGlobal("contextService", _contextService);
+
       session.setGlobal("eventActivatorService", _eventActivatorService);
       session.setGlobal("timePeriodActivatorService", _timePeriodActivatorService);
-
       session.setGlobal("contextActivatedService", _contextActivatedService);
+
+      session.setGlobal("eventDeactivatorService", _eventDeactivatorService);
+      session.setGlobal("timePeriodDeactivatorService", _timePeriodDeactivatorService);
+      session.setGlobal("contextDeactivatedService", _contextDeactivatedService);
 
       session.setGlobal("notificationService", _notificationService);
 
