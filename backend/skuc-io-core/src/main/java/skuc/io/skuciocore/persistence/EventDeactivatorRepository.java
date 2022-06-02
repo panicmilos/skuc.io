@@ -8,28 +8,9 @@ import skuc.io.skuciocore.models.csm.context.deactivation.EventDeactivator;
 
 @Repository
 public class EventDeactivatorRepository extends CrudRepository<EventDeactivator> {
-
-  private final ContextRepository _contextRepository;
   
-  public EventDeactivatorRepository(ContextRepository contextRepository) {
+  public EventDeactivatorRepository() {
     super(EventDeactivator.class);
-    _contextRepository = contextRepository;
-  }
-
-  public Collection<EventDeactivator> getByGroup(String groupId) {
-    var contextsInGroup = _contextRepository.getByGroup(groupId);
-
-    try (var session = getSession()) {
-      var query = session.query(this.concreteClass);
-      
-      for (var context : contextsInGroup) {
-        query = query.whereEquals("contextId", context.getId()).orElse();
-      }
-      
-      query.whereEquals("groupId", groupId);
-      
-      return query.toList();
-    }
   }
 
   public Collection<EventDeactivator> getByContext(String contextId) {

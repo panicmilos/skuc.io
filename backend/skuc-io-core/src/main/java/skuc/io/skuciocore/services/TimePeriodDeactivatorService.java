@@ -21,10 +21,6 @@ public class TimePeriodDeactivatorService extends CrudService<TimePeriodDeactiva
     _timePeriodDeactivatorRepository = repository;
   }
 
-  public Collection<TimePeriodDeactivator> getByGroup(String groupId) {
-    return _timePeriodDeactivatorRepository.getByGroup(groupId);
-  }
-
   public Collection<TimePeriodDeactivator> getByContext(String contextId) {
     return _timePeriodDeactivatorRepository.getByContext(contextId);
   }

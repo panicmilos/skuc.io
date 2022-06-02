@@ -22,10 +22,6 @@ public class EventDeactivatorService extends CrudService<EventDeactivator> {
     _eventDeactivatorRepository = repository;
   }
 
-  public Collection<EventDeactivator> getByGroup(String groupId) {
-    return _eventDeactivatorRepository.getByGroup(groupId);
-  }
-
   public Collection<EventDeactivator> getByContext(String contextId) {
     return _eventDeactivatorRepository.getByContext(contextId);
   }
