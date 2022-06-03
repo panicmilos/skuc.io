@@ -14,6 +14,10 @@ public class ContextActivated extends ContextEvent {
   @JsonDeserialize(using = JsonDateDeserializer.class)
   private LocalDateTime from;
 
+  public ContextActivated() {
+    super();
+  }
+
   public ContextActivated(String contextId, LocalDateTime from) {
     super(UUID.randomUUID().toString(), contextId);
     this.from = from;

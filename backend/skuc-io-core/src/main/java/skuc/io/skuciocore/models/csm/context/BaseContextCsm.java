@@ -4,6 +4,7 @@ import skuc.io.skuciocore.models.csm.BaseCsm;
 
 public class BaseContextCsm extends BaseCsm {
   private String contextId;
+  private String locationId;
 
   public BaseContextCsm() {
   }
@@ -20,4 +21,11 @@ public class BaseContextCsm extends BaseCsm {
     this.contextId = contextId;
   }
 
+  public void setLocationId(String locationId) {
+    this.locationId = locationId;
+  }
+
+  public String getLocationId() {
+    return this.locationId;
+  }
 }

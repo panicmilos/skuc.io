@@ -1,11 +1,13 @@
 package skuc.io.skucioapp.controllers;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import skuc.io.skucioapp.api_contracts.requests.Events.ValueReceivedRequest;
 import skuc.io.skuciocore.ksessions.SessionManager;
+import skuc.io.skuciocore.models.csm.configuration.Context;
 import skuc.io.skuciocore.models.events.device.ValueReceived;
 import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
+import skuc.io.skuciocore.services.ContextService;
 import skuc.io.skuciocore.services.DeviceService;
 import skuc.io.skuciocore.services.events.ValueReceivedService;
 
@@ -24,6 +28,7 @@ public class EventsController {
 
   private final ValueReceivedService _service;
   private final DeviceService _deviceService;
+  private final ContextService _contextService;
   private final SessionManager _sessionManager;
   private final ModelMapper _mapper;
 
@@ -31,11 +36,13 @@ public class EventsController {
   public EventsController(
     ValueReceivedService service,
     DeviceService deviceService,
+    ContextService contextService,
     SessionManager sessionManager,
     ModelMapper mapper
   ) {
     _service = service;
     _deviceService = deviceService;
+    _contextService = contextService;
     _sessionManager = sessionManager;
     _mapper = mapper;
   }
@@ -82,6 +89,9 @@ public class EventsController {
     return ResponseEntity.ok(null);
   }
 
-
+  @GetMapping("test-active-contexts")
+  public ResponseEntity<Collection<Context>> asdf() throws ParseException {
+    return ResponseEntity.ok(_contextService.getActiveContextsFor("4d1297cb-9f32-46d6-84dc-4ebcd847c830", "5390ba11-857d-40c2-816a-9a2b716baa91"));
+  }
   
 }
