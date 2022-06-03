@@ -1,4 +1,4 @@
-paketic skuc.io.rules;
+paketic skuc.io;
 
 use informUser;
 use dispatch;

@@ -64,8 +64,4 @@ public class EventOccured extends BaseEvent {
     this.params = params;
   }
 
-  public boolean isProcessedByActivator() {
-    return this.processedByActivator;
-  }
-
 }
