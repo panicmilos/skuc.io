@@ -2,6 +2,7 @@ package skuc.io.skuciocore.persistence;
 
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import skuc.io.skuciocore.models.csm.context.deactivation.EventDeactivator;
@@ -9,8 +10,28 @@ import skuc.io.skuciocore.models.csm.context.deactivation.EventDeactivator;
 @Repository
 public class EventDeactivatorRepository extends CrudRepository<EventDeactivator> {
   
-  public EventDeactivatorRepository() {
+  private final ContextRepository _contextRepository;
+
+  @Autowired
+  public EventDeactivatorRepository(ContextRepository contextRepository) {
     super(EventDeactivator.class);
+    _contextRepository = contextRepository;
+  }
+
+  public Collection<EventDeactivator> getByGroup(String groupId) {
+    var contextsInGroup = _contextRepository.getByGroup(groupId);
+
+    try (var session = getSession()) {
+      var query = session.query(this.concreteClass);
+      
+      for (var context : contextsInGroup) {
+        query = query.whereEquals("contextId", context.getId()).orElse();
+      }
+      
+      query.whereEquals("groupId", groupId);
+      
+      return query.toList();
+    }
   }
 
   public Collection<EventDeactivator> getByContext(String contextId) {

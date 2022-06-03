@@ -1,4 +1,4 @@
-paketic skuc.io.rules;
+paketic skuc.io;
 
 use dispatch;
 use most common imports;

@@ -1,4 +1,4 @@
-package skuc.io.rules;
+package skuc.io;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
