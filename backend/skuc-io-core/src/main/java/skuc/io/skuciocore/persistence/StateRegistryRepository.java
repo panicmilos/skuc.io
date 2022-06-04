@@ -13,22 +13,25 @@ public class StateRegistryRepository extends CrudRepository<StateRegistry> {
   }
 
   public StateRegistry getStateRegistryFor(String objectId) {
-    var stateRegistry = this.getSession()
-      .query(this.concreteClass)
-      .whereEquals("objectId", objectId)
-      .firstOrDefault();
-    if (stateRegistry == null) {
-      var newStateRegistry = new StateRegistry();
-      this.store(newStateRegistry);
-      return newStateRegistry;
+    try (var session = getSession()) {
+      var stateRegistry = session
+        .query(this.concreteClass)
+        .whereEquals("objectId", objectId)
+        .firstOrDefault();
+      if (stateRegistry == null) {
+        var newStateRegistry = new StateRegistry();
+        this.store(newStateRegistry);
+        return newStateRegistry;
+      }
+      return stateRegistry;
     }
-    return stateRegistry;
   }
 
   @Override
   public void update(StateRegistry stateRegistry) {
     stateRegistry.setUpdatedAt(LocalDateTime.now());
-    this.update(stateRegistry);
+    this.delete(stateRegistry.getId());
+    this.store(stateRegistry);
   }
 
 }

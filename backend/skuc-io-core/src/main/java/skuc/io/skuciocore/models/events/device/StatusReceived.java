@@ -3,9 +3,13 @@ package skuc.io.skuciocore.models.events.device;
 import java.time.LocalDateTime;
 
 public class StatusReceived extends DeviceEvent {
-  private float value;
+  private String value;
 
-  public StatusReceived(String id, String deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType, float value) {
+  public StatusReceived() {
+    
+  }
+
+  public StatusReceived(String id, String deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType, String value) {
     super(id, deviceId, createdAt, occuredAt, deviceType);
     this.value = value;
   }
@@ -18,11 +22,11 @@ public class StatusReceived extends DeviceEvent {
     return this.getStreamId();
   }
 
-  public float getValue() {
+  public String getValue() {
     return this.value;
   }
 
-  public void setValue(float value) {
+  public void setValue(String value) {
     this.value = value;
   }
 

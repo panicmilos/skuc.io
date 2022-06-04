@@ -1,7 +1,8 @@
 package skuc.io;
 
-import skuc.io.skuciocore.models.events.kjar.EventOccured;
+import skuc.io.skuciocore.models.csm.StateRegistry;
 
 query isInKupatilo()
-  eval(true==true)
+  $reg : StateRegistry()
+  eval($reg.isState("test", "test"))
 end

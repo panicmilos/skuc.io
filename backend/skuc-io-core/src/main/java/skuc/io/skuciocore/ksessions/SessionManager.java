@@ -15,6 +15,7 @@ import skuc.io.skuciocore.services.EventDeactivatorService;
 import skuc.io.skuciocore.services.GroupService;
 import skuc.io.skuciocore.services.LocationService;
 import skuc.io.skuciocore.services.NotificationService;
+import skuc.io.skuciocore.services.StateRegistryService;
 import skuc.io.skuciocore.services.TimePeriodActivatorService;
 import skuc.io.skuciocore.services.TimePeriodDeactivatorService;
 import skuc.io.skuciocore.services.events.ContextActivatedService;
@@ -39,6 +40,7 @@ public class SessionManager {
 
   private final LocationService _locationService;
   private final NotificationService _notificationService;
+  private final StateRegistryService _stateRegistryService;
   
   
   @Autowired
@@ -56,7 +58,8 @@ public class SessionManager {
     ContextDeactivatedService contextDeactivatedService,
 
     LocationService locationService,
-    NotificationService notificationService
+    NotificationService notificationService,
+    StateRegistryService stateRegistryService
   ) {
     _kieContainer = kieContainer;
 
@@ -73,6 +76,7 @@ public class SessionManager {
 
     _locationService = locationService;
     _notificationService = notificationService;
+    _stateRegistryService = stateRegistryService;
   }
 
 
@@ -106,6 +110,12 @@ public class SessionManager {
       session.setGlobal("contextDeactivatedService", _contextDeactivatedService);
 
       session.setGlobal("notificationService", _notificationService);
+      
+      session.setGlobal("stateRegistryService", _stateRegistryService);
+
+      var stateRegistry = _stateRegistryService.getStateRegistryFor(key);
+      stateRegistry.setState("test", "test");
+      session.insert(stateRegistry);
 
       _sessions.put(key, session);
     }
