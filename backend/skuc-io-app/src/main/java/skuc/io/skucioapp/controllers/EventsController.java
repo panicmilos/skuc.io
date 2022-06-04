@@ -60,6 +60,9 @@ public class EventsController {
 
     var device = _deviceService.getOrThrow(valueReceived.getDeviceId());
 
+    var aggregation_Session = _sessionManager.getAggregateSession();
+    aggregation_Session.insert(valueReceived);
+
     var session = _sessionManager.getSession(device.getLocationId().toString());
     session.insert(valueReceived);
     session.fireAllRules();

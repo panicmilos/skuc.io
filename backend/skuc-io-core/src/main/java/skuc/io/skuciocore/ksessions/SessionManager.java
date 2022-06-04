@@ -123,4 +123,31 @@ public class SessionManager {
     return _sessions.get(key);
   }
 
+  private class AggregationThread extends Thread {
+    private final KieSession _kieSession;
+    public AggregationThread(String name, KieSession kieSession) {
+      super(name);
+      _kieSession = kieSession;
+
+      setDaemon(true);
+    }
+
+    public void run() {
+      _kieSession.fireUntilHalt();
+    }
+  }
+
+  public KieSession getAggregateSession() {
+    if (!_sessions.containsKey("aggregation_session")) {
+      var session = _kieContainer.getKieBase("CepKBase").newKieSession();
+
+      new AggregationThread("AggregationThread", session).start();
+      
+      _sessions.put("aggregation_session", session);
+    }
+
+    return _sessions.get("aggregation_session");
+
+  }
+
 }

@@ -1,7 +1,10 @@
 <kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/kie/6.0.0/kmodule">
   
-  <kbase name="DefaultKBase" default="true" eventProcessingMode="stream" packages="rules, queries">
+  <kbase name="DefaultKBase" default="true" packages="rules, queries">
     <ksession name="DefaultSession" type="stateful" default="true" />
+  </kbase>
+
+  <kbase name="CepKBase" eventProcessingMode="stream" packages="cep">
   </kbase>
 
 </kmodule>

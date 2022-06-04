@@ -1,23 +1,41 @@
 package skuc.io.skuciocore.models.events.device;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
+
+@Role(Role.Type.EVENT)
+@Timestamp("timeStamp")
 public class ValueReceived extends DeviceEvent {
   private String paramName;
   private float value;
-  private boolean isProcessed;
+  private Date timeStamp = new Date();
 
   public ValueReceived() {
     super();
     super.setId(UUID.randomUUID().toString());
   }
 
-  public ValueReceived(String id, String deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType, String paramName, float value, boolean isProcessed) {
+  public ValueReceived(ValueReceived copy) {
+    setCreatedAt(copy.getCreatedAt());
+    setDeviceType(copy.getDeviceType());
+    setId(copy.getId());
+    setOccuredAt(copy.getOccuredAt());
+    setParamName(copy.getParamName());
+    setStreamId(copy.getStreamId());
+    setTimeStamp(copy.getTimeStamp());
+    setType(copy.getType());
+    setValue(copy.getValue());
+  }
+
+  public ValueReceived(String id, String deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String deviceType,
+      String paramName, float value) {
     super(id, deviceId, createdAt, occuredAt, deviceType);
     this.paramName = paramName;
     this.value = value;
-    this.isProcessed = isProcessed;
   }
 
   public ValueReceived(String id, String deviceId, String deviceType) {
@@ -44,12 +62,12 @@ public class ValueReceived extends DeviceEvent {
     this.value = value;
   }
 
-  public boolean isProcessed() {
-    return this.isProcessed;
+  public Date getTimeStamp() {
+    return this.timeStamp;
   }
 
-  public void setIsProcessed(boolean isProcessed) {
-    this.isProcessed = isProcessed;
+  public void setTimeStamp(Date timeStamp) {
+    this.timeStamp = timeStamp;
   }
 
 }
