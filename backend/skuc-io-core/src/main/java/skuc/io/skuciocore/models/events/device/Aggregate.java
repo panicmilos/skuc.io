@@ -1,16 +1,16 @@
 package skuc.io.skuciocore.models.events.device;
 
 public class Aggregate {
-  private float min;
-  private float max;
-  private float sum;
-  private float average;
-  private float count;
+  private Double min;
+  private Double max;
+  private Double sum;
+  private Double average;
+  private Long count;
 
   public Aggregate() {
   }
 
-  public Aggregate(float min, float max, float sum, float average, float count) {
+  public Aggregate(Double min, Double max, Double sum, Double average, Long count) {
     this.min = min;
     this.max = max;
     this.sum = sum;
@@ -18,43 +18,43 @@ public class Aggregate {
     this.count = count;
   }
 
-  public float getMin() {
+  public Double getMin() {
     return this.min;
   }
 
-  public void setMin(float min) {
+  public void setMin(Double min) {
     this.min = min;
   }
 
-  public float getMax() {
+  public Double getMax() {
     return this.max;
   }
 
-  public void setMax(float max) {
+  public void setMax(Double max) {
     this.max = max;
   }
 
-  public float getSum() {
+  public Double getSum() {
     return this.sum;
   }
 
-  public void setSum(float sum) {
+  public void setSum(Double sum) {
     this.sum = sum;
   }
 
-  public float getAverage() {
+  public Double getAverage() {
     return this.average;
   }
 
-  public void setAverage(float average) {
+  public void setAverage(Double average) {
     this.average = average;
   }
 
-  public float getCount() {
+  public Long getCount() {
     return this.count;
   }
 
-  public void setCount(float count) {
+  public void setCount(Long count) {
     this.count = count;
   }
 
