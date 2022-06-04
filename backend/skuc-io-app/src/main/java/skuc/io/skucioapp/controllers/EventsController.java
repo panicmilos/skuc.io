@@ -22,6 +22,7 @@ import skuc.io.skuciocore.models.events.device.ValueReceived;
 import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
 import skuc.io.skuciocore.services.ContextService;
 import skuc.io.skuciocore.services.DeviceService;
+import skuc.io.skuciocore.services.NotificationService;
 import skuc.io.skuciocore.services.events.StatusReceivedService;
 import skuc.io.skuciocore.services.events.ValueReceivedService;
 
@@ -34,6 +35,7 @@ public class EventsController {
   private final DeviceService _deviceService;
   private final ContextService _contextService;
   private final SessionManager _sessionManager;
+  private final NotificationService _nofiticationService;
   private final ModelMapper _mapper;
 
   @Autowired
@@ -43,6 +45,7 @@ public class EventsController {
     DeviceService deviceService,
     ContextService contextService,
     SessionManager sessionManager,
+    NotificationService nofiticationService,
     ModelMapper mapper
   ) {
     _service = service;
@@ -50,6 +53,7 @@ public class EventsController {
     _deviceService = deviceService;
     _contextService = contextService;
     _sessionManager = sessionManager;
+    _nofiticationService = nofiticationService;
     _mapper = mapper;
   }
 
@@ -67,7 +71,7 @@ public class EventsController {
     session.insert(valueReceived);
     session.fireAllRules();
 
-    System.out.println(session.getFactCount());
+    _nofiticationService.sendFrom(valueReceived);
 
     return ResponseEntity.ok(_service.create(valueReceived));
   }
@@ -83,7 +87,7 @@ public class EventsController {
     session.insert(statusReceived);
     session.fireAllRules();
 
-    System.out.println(session.getFactCount());
+    _nofiticationService.sendFrom(statusReceived);
 
     return ResponseEntity.ok(_statusService.create(statusReceived));
   }
