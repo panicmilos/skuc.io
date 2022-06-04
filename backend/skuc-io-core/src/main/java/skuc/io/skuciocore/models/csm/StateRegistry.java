@@ -24,6 +24,19 @@ public class StateRegistry extends BaseCsm {
     this.registry = registry;
   }
 
+  public void setState(String key, String value) {
+    this.registry.put(key, value);
+  }
+
+  public String getState(String key) {
+    return this.registry.get(key);
+  }
+
+  public boolean isState(String key, String value) {
+    if(!this.registry.containsKey(key)) return false;
+    return this.registry.get(key).equals(value);
+  }
+
   public String getObjectId() {
     return this.objectId;
   }

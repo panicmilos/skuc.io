@@ -13,13 +13,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import skuc.io.skucioapp.api_contracts.requests.Events.StatusReceivedRequest;
 import skuc.io.skucioapp.api_contracts.requests.Events.ValueReceivedRequest;
 import skuc.io.skuciocore.ksessions.SessionManager;
 import skuc.io.skuciocore.models.csm.configuration.Context;
+import skuc.io.skuciocore.models.events.device.StatusReceived;
 import skuc.io.skuciocore.models.events.device.ValueReceived;
 import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
 import skuc.io.skuciocore.services.ContextService;
 import skuc.io.skuciocore.services.DeviceService;
+import skuc.io.skuciocore.services.events.StatusReceivedService;
 import skuc.io.skuciocore.services.events.ValueReceivedService;
 
 @RestController
@@ -27,6 +30,7 @@ import skuc.io.skuciocore.services.events.ValueReceivedService;
 public class EventsController {
 
   private final ValueReceivedService _service;
+  private final StatusReceivedService _statusService;
   private final DeviceService _deviceService;
   private final ContextService _contextService;
   private final SessionManager _sessionManager;
@@ -35,12 +39,14 @@ public class EventsController {
   @Autowired
   public EventsController(
     ValueReceivedService service,
+    StatusReceivedService statusService,
     DeviceService deviceService,
     ContextService contextService,
     SessionManager sessionManager,
     ModelMapper mapper
   ) {
     _service = service;
+    _statusService = statusService;
     _deviceService = deviceService;
     _contextService = contextService;
     _sessionManager = sessionManager;
@@ -61,6 +67,22 @@ public class EventsController {
     System.out.println(session.getFactCount());
 
     return ResponseEntity.ok(_service.create(valueReceived));
+  }
+
+  @PostMapping("statuses")
+  public ResponseEntity<StatusReceived> createStatus(@RequestBody StatusReceivedRequest request) {
+    var statusReceived = _mapper.map(request, StatusReceived.class);
+    statusReceived.setId(UUID.randomUUID().toString());
+
+    var device = _deviceService.getOrThrow(statusReceived.getDeviceId());
+
+    var session = _sessionManager.getSession(device.getLocationId().toString());
+    session.insert(statusReceived);
+    session.fireAllRules();
+
+    System.out.println(session.getFactCount());
+
+    return ResponseEntity.ok(_statusService.create(statusReceived));
   }
 
   @PostMapping("test-active")
