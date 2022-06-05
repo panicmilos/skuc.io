@@ -18,13 +18,13 @@ public class ContextActivated extends ContextEvent {
     super();
   }
 
-  public ContextActivated(String contextId, LocalDateTime from) {
-    super(UUID.randomUUID().toString(), contextId);
+  public ContextActivated(String contextId, String locationId, LocalDateTime from) {
+    super(UUID.randomUUID().toString(), contextId, locationId);
     this.from = from;
   }
 
-  public ContextActivated(String id, String contextId, LocalDateTime createdAt, LocalDateTime occuredAt) {
-    super(id, contextId, createdAt, occuredAt);
+  public ContextActivated(String id, String contextId, String locationId, LocalDateTime createdAt, LocalDateTime occuredAt) {
+    super(id, contextId, locationId, createdAt, occuredAt);
     this.from = occuredAt;
   }
 
