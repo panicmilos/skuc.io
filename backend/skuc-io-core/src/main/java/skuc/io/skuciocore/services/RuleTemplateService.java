@@ -48,7 +48,6 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
 
             var correctedRule = parsedRule.replaceAll("template_start", "@{")
                                           .replaceAll("template_end", "}");
-
             return correctedRule;
         } catch (DroolsParserException e) {
             throw new BadLogicException("Rule is not in correct format!");
