@@ -18,7 +18,7 @@ export function getPluginDefinition(): FeaturePlugin {
       {
         component: (
           <PaddingContainer>
-            <Diagram diagramFilePath="/diagrams/test.xml" groupId="" />
+            <Diagram diagramFilePath="/diagrams/diagram.drawio.xml" groupId="" />
           </PaddingContainer>
         ),
         path: "/diagrams",

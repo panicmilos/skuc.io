@@ -120,8 +120,8 @@ export function initElements({
         // Style elements
         elementObject.setStyle('cursor', 'pointer');
         elementObject.setStyle('display', 'flex');
-        elementObject.setStyle('width', '100px');
-        elementObject.setStyle('height', '100px');
+        element.tagName !== 'image' && elementObject.setStyle('width', '100px');
+        element.tagName !== 'image' && elementObject.setStyle('height', '100px');
         elementObject.setStyle('alignItems', 'center');
         elementObject.setStyle('justifyContent', 'center');
         elementObject.setStyle('userSelect', 'none');

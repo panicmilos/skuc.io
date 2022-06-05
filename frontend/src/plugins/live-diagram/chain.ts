@@ -164,6 +164,10 @@ const when =
   (type: WhenType, data: any) => {
     if (conditionType === type) {
       // Interpolate values and evaluate the expression
+      const matches = [...conditionExpression.matchAll(/exists\((.*?)\)/g)];
+      matches.forEach(match => {
+        conditionExpression = conditionExpression.replaceAll(match[0], `'\${${match[1]}}' != 'undefined'`);
+      })
       // eslint-disable-next-line no-eval
       if (eval(interpolate(conditionExpression, data))) {
         successors?.forEach((succ) => succ(type, data));

@@ -37,6 +37,7 @@ const useStyles = createUseStyles((theme: Theme) => ({
     height: "100%",
     backgroundColor: theme.colors.primary,
     borderRadius: "0 15px 15px 0",
+    zIndex: '99999'
   },
   sidebar: {
     color: theme.colors.textLight,
