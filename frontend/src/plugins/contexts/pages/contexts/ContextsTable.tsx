@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, ConfirmationModal, DropdownItem, DropdownMenu, extractErrorMessage, Modal, NotificationService, Table, TableBody, TableHead, TableRow } from "../../imports";
 import { Configuration, Context } from "../../models"
 import { useContextsService } from "../../services";
+import { ActivateDeactivateContextForm } from "./ActivateDeactivateContextForm";
 import { AddUpdateContextForm } from "./AddUpdateContextForm";
 import { ADD_CONTEXT, DELETE_CONTEXT, UPDATE_CONTEXT } from "./ContextActions";
 import { ContextsContext } from "./Contexts";
@@ -31,6 +32,8 @@ const useStyles = createUseStyles({
 export const ContextsTable: FC<Props> = ({ groupId, contexts }) => {
 
   const [isAddUpdateOpen, setIsAddUpdateOpen] = useState(false);
+  const [isActivateDeactivateOpen, setIsActivateDeactivateOpen] = useState(false);
+  const [activateDeactivateAction, setActivateDeactivateAction] = useState('');
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedContext, setSelectedContext] = useState<Context|undefined>(undefined);
 
@@ -75,6 +78,8 @@ export const ContextsTable: FC<Props> = ({ groupId, contexts }) => {
   <>
     <Button onClick={() => { setSelectedContext(context); setIsAddUpdateOpen(true); }}>Update</Button>
     <Button onClick={() => { setSelectedContext(context); setDeleteOpen(true); }}>Delete</Button>
+    <Button onClick={() => { setSelectedContext(context); setActivateDeactivateAction('activate'); setIsActivateDeactivateOpen(true); }}>Activate</Button>
+    <Button onClick={() => { setSelectedContext(context); setActivateDeactivateAction('deactivate'); setIsActivateDeactivateOpen(true); }}>Deactivate</Button>
     <DropdownMenu title={"Context Activations"}>
       <DropdownItem title="Event Activators" onClick={() => { nav(`/groups/${groupId}/contexts/${context.id}/event-activators`) }}></DropdownItem>
       <DropdownItem title="Time Period Activators" onClick={() => { nav(`/groups/${groupId}/contexts/${context.id}/time-period-activators`) }}></DropdownItem>
@@ -91,6 +96,10 @@ export const ContextsTable: FC<Props> = ({ groupId, contexts }) => {
     <div className={classes.container}>
       <Modal title={!selectedContext ? "Add context" : "Update context"} open={isAddUpdateOpen} onClose={() => setIsAddUpdateOpen(false)}>
         <AddUpdateContextForm groupId={groupId} existingContext={selectedContext} isEdit={!!selectedContext} />
+      </Modal>
+
+      <Modal title={activateDeactivateAction === 'activate' ? "Activate" : "Deactivate"} open={isActivateDeactivateOpen} onClose={() => setIsActivateDeactivateOpen(false)}>
+        <ActivateDeactivateContextForm groupId={groupId} contextId={selectedContext?.id ?? ''} action={activateDeactivateAction} />
       </Modal>
 
       <ConfirmationModal title="Delete context" open={isDeleteOpen} onClose={() => setDeleteOpen(false)} onYes={onYes}>

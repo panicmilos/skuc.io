@@ -122,6 +122,13 @@ public class SessionManager {
     return _sessions.get(key);
   }
 
+  public void insertToAllSessions(Object object) {
+    for(var session : _sessions.values()) {
+      session.insert(object);
+      session.fireAllRules();
+    }
+  }
+
   private class AggregationThread extends Thread {
     private final KieSession _kieSession;
     public AggregationThread(String name, KieSession kieSession) {

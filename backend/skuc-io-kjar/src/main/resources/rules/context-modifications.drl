@@ -1,0 +1,44 @@
+package skuc.io;
+
+import skuc.io.skuciocore.models.csm.configuration.Context;
+import skuc.io.skuciocore.models.events.kjar.ContextUpdated;
+import skuc.io.skuciocore.models.events.kjar.ContextDeleted;
+import skuc.io.skuciocore.services.ContextService;
+
+global ContextService contextService;
+
+
+rule "Context Updated"
+  when
+    $contextUpdated : ContextUpdated()
+    $context : Context(id == $contextUpdated.contextId)
+  then
+    delete($context);
+end;
+
+rule "Clear Context Updated"
+  salience -100
+  when
+    $contextUpdated : ContextUpdated()
+  then
+    delete($contextUpdated);
+
+    Context context = contextService.get($contextUpdated.getContextId());
+    insert(context);
+end;
+
+rule "Context Deleted"
+  when
+    $contextDeleted : ContextDeleted()
+    $context : Context(id == $contextDeleted.contextId)
+  then
+    delete($context);
+end;
+
+rule "Clear Context Deleted"
+  salience -100
+  when
+    $contextDeleted : ContextDeleted()
+  then
+    delete($contextDeleted);
+end;

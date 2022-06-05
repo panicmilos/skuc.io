@@ -93,18 +93,17 @@ export const TimePeriodActivationsTable: FC<Props> = ({ contextId, timePeriodAct
       </div> 
 
       <Table hasPagination={false}>
-        <TableHead columns={['Cron Start', 'Cron End', 'Action']}/>
+        <TableHead columns={['Cron', 'Action']}/>
         <TableBody>
           {
             timePeriodActivations?.map((timePeriodActivation: TimePeriodActivation) => 
             <TableRow 
-            key={timePeriodActivation.id}
-            cells={[
-              timePeriodActivation.cronStart,
-              timePeriodActivation.cronEnd,
-              <ActionsButtonGroup timePeriodActivation={timePeriodActivation}/>
-            ]}/>
-            )
+              key={timePeriodActivation.id}
+              cells={[
+                activationName === 'activator' ? timePeriodActivation.cronStart : timePeriodActivation.cronEnd,
+                <ActionsButtonGroup timePeriodActivation={timePeriodActivation}/>
+              ]}
+            />)
           }
         </TableBody>
       </Table>
