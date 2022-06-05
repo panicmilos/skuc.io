@@ -17,6 +17,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import skuc.io.skucioapp.sockets.SocketsModule;
 import skuc.io.skuciocore.bus.Bus;
 import skuc.io.skuciocore.models.notifications.InformUserNotification;
+import skuc.io.skuciocore.models.notifications.Notification;
 
 @SpringBootApplication(scanBasePackages = { "skuc.io.skucioapp", "skuc.io.skuciocore" })
 public class SkucIoAppApplication {
@@ -67,6 +68,20 @@ public class SkucIoAppApplication {
 				var informUserNotification = (InformUserNotification) param;
 
 				socketsModule.brodcast(informUserNotification.getGroupId() + "/infos", informUserNotification);
+				return null;
+			});
+
+			bus.register("ValueReceived", (Object param) -> {
+				var notification = (Notification) param;
+
+				socketsModule.brodcast(notification.getGroupId() + "/events", notification);
+				return null;
+			});
+
+			bus.register("StatusReceived", (Object param) -> {
+				var notification = (Notification) param;
+
+				socketsModule.brodcast(notification.getGroupId() + "/events", notification);
 				return null;
 			});
 			

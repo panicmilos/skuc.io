@@ -1,0 +1,28 @@
+package skuc.io;
+
+import skuc.io.skuciocore.models.events.device.ValueReceived;
+import skuc.io.skuciocore.models.events.device.StatusReceived;
+import skuc.io.skuciocore.models.csm.StateRegistry;
+import skuc.io.skuciocore.services.StateRegistryService;
+
+global StateRegistryService stateRegistryService;
+
+rule "Update Status State"
+  lock-on-active
+  when
+    $reg : StateRegistry()
+    StatusReceived($deviceType: deviceType, $value: value)
+  then
+    modify($reg) {
+      setState($deviceType, $value);
+    }
+    stateRegistryService.update($reg);
+end;
+
+// TODO: Remove example of query
+rule "Test Koopateelo"
+  when
+    isInKupatilo()
+  then
+    System.out.println("KOOPATEELO");
+end;

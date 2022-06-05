@@ -15,6 +15,7 @@ import skuc.io.skuciocore.services.EventDeactivatorService;
 import skuc.io.skuciocore.services.GroupService;
 import skuc.io.skuciocore.services.LocationService;
 import skuc.io.skuciocore.services.NotificationService;
+import skuc.io.skuciocore.services.StateRegistryService;
 import skuc.io.skuciocore.services.TimePeriodActivatorService;
 import skuc.io.skuciocore.services.TimePeriodDeactivatorService;
 import skuc.io.skuciocore.services.events.ContextActivatedService;
@@ -39,6 +40,7 @@ public class SessionManager {
 
   private final LocationService _locationService;
   private final NotificationService _notificationService;
+  private final StateRegistryService _stateRegistryService;
   
   
   @Autowired
@@ -56,7 +58,8 @@ public class SessionManager {
     ContextDeactivatedService contextDeactivatedService,
 
     LocationService locationService,
-    NotificationService notificationService
+    NotificationService notificationService,
+    StateRegistryService stateRegistryService
   ) {
     _kieContainer = kieContainer;
 
@@ -73,6 +76,7 @@ public class SessionManager {
 
     _locationService = locationService;
     _notificationService = notificationService;
+    _stateRegistryService = stateRegistryService;
   }
 
 
@@ -89,10 +93,9 @@ public class SessionManager {
       var group = _groupService.getOrThrow(location.getGroupId());
       session.insert(group);
 
-      var contexts = _contextService.get();
+      var contexts = _contextService.getActiveContextsFor(group.getId(), location.getId());
       for (var context : contexts) {
         session.insert(context);
-        break;
       }
 
       session.setGlobal("contextService", _contextService);
@@ -106,11 +109,51 @@ public class SessionManager {
       session.setGlobal("contextDeactivatedService", _contextDeactivatedService);
 
       session.setGlobal("notificationService", _notificationService);
+      
+      session.setGlobal("stateRegistryService", _stateRegistryService);
+
+      var stateRegistry = _stateRegistryService.getStateRegistryFor(key);
+      stateRegistry.setState("test", "test");
+      session.insert(stateRegistry);
 
       _sessions.put(key, session);
     }
 
     return _sessions.get(key);
+  }
+
+  public void insertToAllSessions(Object object) {
+    for(var session : _sessions.values()) {
+      session.insert(object);
+      session.fireAllRules();
+    }
+  }
+
+  private class AggregationThread extends Thread {
+    private final KieSession _kieSession;
+    public AggregationThread(String name, KieSession kieSession) {
+      super(name);
+      _kieSession = kieSession;
+
+      setDaemon(true);
+    }
+
+    public void run() {
+      _kieSession.fireUntilHalt();
+    }
+  }
+
+  public KieSession getAggregateSession() {
+    if (!_sessions.containsKey("aggregation_session")) {
+      var session = _kieContainer.getKieBase("CepKBase").newKieSession();
+
+      new AggregationThread("AggregationThread", session).start();
+      
+      _sessions.put("aggregation_session", session);
+    }
+
+    return _sessions.get("aggregation_session");
+
   }
 
 }

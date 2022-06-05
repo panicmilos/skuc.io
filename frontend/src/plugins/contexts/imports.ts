@@ -5,6 +5,9 @@ export { AuthContext } from "../auth-context";
 
 export { BACKEND_API } from "../../urls";
 
+export { useLocationsService, } from '../locations'; 
+export type { Location } from "../locations";
+
 export type { FeaturePlugin, PageInfo, PageResult, Result, Theme } from "../../core";
 
 export {
