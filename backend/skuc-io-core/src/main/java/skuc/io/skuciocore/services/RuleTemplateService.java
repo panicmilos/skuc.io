@@ -2,7 +2,10 @@ package skuc.io.skuciocore.services;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -11,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import skuc.io.skuciocore.exceptions.BadLogicException;
-import skuc.io.skuciocore.models.csm.template.RuleTemplate;
+import skuc.io.skuciocore.models.csm.templates.RuleTemplate;
 import skuc.io.skuciocore.persistence.RuleTemplateRepository;
+import skuc.io.skuciocore.utils.ClassScannerUtils;
 
 
 @Service
@@ -20,11 +24,14 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
     
     private GroupService _groupService;
     private RuleTemplateRepository _ruleTemplateRepository;
+    private Map<String, String> _modelClasses;
 
     @Autowired
-    public RuleTemplateService(GroupService _groupService, RuleTemplateRepository repository) {
+    public RuleTemplateService(RuleTemplateRepository repository, GroupService groupService) {
         super(repository);
+        _groupService = groupService;
         _ruleTemplateRepository = repository;
+        _modelClasses =  ClassScannerUtils.findAllClasses("skuc.io.skuciocore.models");
     }
 
     public RuleTemplate create(String groupId, String name, List<String> parameters, String when, String then) {
@@ -32,7 +39,17 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
         var composedRule = composeRule(name, when, then);
 
         var parsedRule = parseRule(composedRule, templatesDsl);
-        var template = composeTemplate(parameters, parsedRule);
+        var imports = generateImports(parsedRule);
+        var template = composeTemplate(parameters, parsedRule, name, imports);
+
+        // var dataProvider = new ArrayDataProvider(new String[][] {
+        //     new String[] {"Peric"}
+        // });
+
+        // var targetStream = new ByteArrayInputStream(template.getBytes());
+
+        // var converter = new DataProviderCompiler();
+        // var drl = converter.compile(dataProvider, targetStream);
 
         var ruleTemplate = new RuleTemplate(groupId, name, parameters, template);
         return create(ruleTemplate);
@@ -54,7 +71,7 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
         }
     }
 
-    private String composeTemplate(List<String> parameters, String rule) {
+    private String composeTemplate(List<String> parameters, String rule, String name, String imports) {
         var sb = new StringBuilder();
 
         sb = sb.append("template header\n");
@@ -65,7 +82,16 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
             }
         }
 
+        rule = rule.replace("package skuc.io", "package skuc.io \n\n" + imports + "\n\n");
+
+        var ruleIndex = rule.indexOf("rule");
+        var beforeRule = rule.substring(0, ruleIndex);
+        var afterRule = rule.substring(ruleIndex);
+        beforeRule = beforeRule + "\ntemplate \"" + name + "\"\n\n";
+        rule = beforeRule + afterRule;
+
         sb.append(rule);
+        sb.append("\nend template");
 
         return sb.toString();
     }
@@ -74,17 +100,45 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
         var sb = new StringBuilder();
 
         sb = sb.append("paketic skuc.io;\n\n")
-               .append("use most common imports;\n\n")
-               .append("> template \"" + name +  "\"\n\n")
                .append("rule \"" + name +  "\"\n")
                .append("when\n")
                .append(when + "\n")
                .append("then\n")
                .append(then + "\n")
-               .append("end;")
-               .append("> end template");
+               .append("end ");
 
         return sb.toString();
+    }
+
+    private String generateImports(String rulePart) {
+        var potentialClasses = findAllPotentialClasses(rulePart);
+
+        var sb = new StringBuilder();
+        for (var potentialClass : potentialClasses) {
+            if (_modelClasses.containsKey(potentialClass)) {
+                sb.append("import " + _modelClasses.get(potentialClass) + ";\n");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private Set<String> findAllPotentialClasses(String value) {
+        var wordsSet = new HashSet<String>();
+        var start_index = -1;
+        for (var i = 0; i < value.length(); i++) {
+            var currChar = value.charAt(i);
+            if (Character.isUpperCase(currChar) && start_index == -1) {
+                start_index = i;
+            }
+
+            if ((!Character.isLetter(currChar) || i == value.length() - 1) && start_index != -1) {
+                wordsSet.add(value.substring(start_index, i));
+                start_index = -1;
+            }
+        }
+
+        return wordsSet;
     }
 
     private Reader loadTemplatesDsl() {

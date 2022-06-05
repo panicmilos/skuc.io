@@ -2,7 +2,7 @@ package skuc.io.skuciocore.persistence;
 
 import org.springframework.stereotype.Repository;
 
-import skuc.io.skuciocore.models.csm.template.RuleTemplate;
+import skuc.io.skuciocore.models.csm.templates.RuleTemplate;
 
 @Repository
 public class RuleTemplateRepository extends CrudRepository<RuleTemplate> {
