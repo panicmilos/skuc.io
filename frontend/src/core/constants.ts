@@ -15,5 +15,5 @@ export const EMAIL_REGEX = /^([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)
 export const SCRIPT_REGEX = /^(?!.*(\<script\>|\<\/script\>|\&lt\;script\&gt\;|\&lt\;\/script\&gt\;|javascript\:)).*/;
 export const PHONE_NUMBER_REGEX = /^(\+\d{1,3})?\-?\(?\d{2,3}\)?[-]?\d{3}[-]?\d{3,4}$/;
 
-export const CRON_REGEX = /(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})/;
+export const CRON_REGEX = /^((((\d+,)+\d+|(\d+(\/|-|#)\d+)|\d+L?|\*(\/\d+)?|L(-\d+)?|\?|[A-Z]{3}(-[A-Z]{3})?) ?){5,7})$/;
 export const JAVA_CLASS_REGEX = /[a-zA-Z_$][a-zA-Z\d_$]*/

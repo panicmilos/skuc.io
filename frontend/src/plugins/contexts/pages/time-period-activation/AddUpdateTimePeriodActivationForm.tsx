@@ -33,12 +33,9 @@ export const AddUpdateTimePeriodActivationForm: FC<Props> = ({ type, contextId, 
   const { setResult } = useContext(TimePeriodActivationsContext);
 
   const schema = Yup.object().shape({
-    cronStart: Yup.string()
-      .required(() => ({ cronStart: "Cron start must be provided." })) 
-      .matches(CRON_REGEX, () => ({cronStart: "Must be a valid cron statement."})),
-    cronEnd: Yup.string()
-      .required(() => ({ cronEnd: "Cron end must be provided." })) 
-      .matches(CRON_REGEX, () => ({cronEnd: "Must be a valid cron statement."}))
+    cron: Yup.string()
+      .required(() => ({ cronStart: "Cron must be provided." })) 
+      .matches(CRON_REGEX, () => ({cronStart: "Must be a valid cron statement."}))
   });
 
   const addTimePeriodActivationMutation = useMutation((newTimePeriodActivation: CreateTimePeriodActivationReqest) => timePeriodActivationService.add(newTimePeriodActivation), {
@@ -74,14 +71,13 @@ export const AddUpdateTimePeriodActivationForm: FC<Props> = ({ type, contextId, 
       <Form
           initialValue={ existingTimePeriodActivation || {} }
           schema={schema}
-          onSubmit={({ cronStart, cronEnd }) => {
+          onSubmit={({ cron }) => {
             !isEdit ?
-              addTimePeriodActivation({ cronStart, cronEnd }) :
-              updateTimePeriodActivation({ cronStart, cronEnd });
+              addTimePeriodActivation({ cronStart: cron, cronEnd: cron }) :
+              updateTimePeriodActivation({ cronStart: cron, cronEnd: cron });
           } }
         >
-          <FormTextInput label="CRON Start" name="cronStart" />
-          <FormTextInput label="CRON End" name="cronEnd" />
+          <FormTextInput label="CRON" name="cron" />
 
           <div className={classes.submitButton} >
             <Button type="submit">Submit</Button>

@@ -18,13 +18,13 @@ public class ContextDeactivated extends ContextEvent {
     super();
   }
 
-  public ContextDeactivated(String contextId, LocalDateTime from) {
-    super(UUID.randomUUID().toString(), contextId);
+  public ContextDeactivated(String contextId, String locationId, LocalDateTime from) {
+    super(UUID.randomUUID().toString(), contextId, locationId);
     this.from = from;
   }
 
-  public ContextDeactivated(String id, String contextId, LocalDateTime createdAt, LocalDateTime occuredAt) {
-    super(id, contextId, createdAt, occuredAt);
+  public ContextDeactivated(String id, String contextId, String locationId, LocalDateTime createdAt, LocalDateTime occuredAt) {
+    super(id, contextId, locationId, createdAt, occuredAt);
     this.from = occuredAt;
   }
 

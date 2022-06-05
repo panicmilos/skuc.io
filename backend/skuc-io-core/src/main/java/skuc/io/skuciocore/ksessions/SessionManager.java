@@ -93,10 +93,9 @@ public class SessionManager {
       var group = _groupService.getOrThrow(location.getGroupId());
       session.insert(group);
 
-      var contexts = _contextService.get();
+      var contexts = _contextService.getActiveContextsFor(group.getId(), location.getId());
       for (var context : contexts) {
         session.insert(context);
-        break;
       }
 
       session.setGlobal("contextService", _contextService);
@@ -121,6 +120,13 @@ public class SessionManager {
     }
 
     return _sessions.get(key);
+  }
+
+  public void insertToAllSessions(Object object) {
+    for(var session : _sessions.values()) {
+      session.insert(object);
+      session.fireAllRules();
+    }
   }
 
   private class AggregationThread extends Thread {

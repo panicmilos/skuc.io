@@ -3,6 +3,7 @@ package skuc.io;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import skuc.io.skuciocore.models.csm.Group;
+import skuc.io.skuciocore.models.csm.Location;
 import skuc.io.skuciocore.models.csm.configuration.Context;
 import skuc.io.skuciocore.models.csm.context.activation.EventActivator;
 import skuc.io.skuciocore.models.csm.context.activation.TimePeriodActivator;
@@ -26,10 +27,11 @@ rule "Activate Context By Name"
     $activateByName : ActivateContextByName()
     not Context(name == $activateByName.contextName)
     $group : Group()
+    $location: Location()
   then
     Context context = contextService.getByGroupAndName($group.getId(), $activateByName.getContextName());
 
-    contextActivatedService.create(new ContextActivated(context.getId(), LocalDateTime.now()));
+    contextActivatedService.create(new ContextActivated(context.getId(), $location.getId(), LocalDateTime.now()));
     insert(context);
 end;
 
@@ -45,10 +47,11 @@ rule "Activate Context By Id"
   when
     $activateById : ActivateContextById()
     not Context(id == $activateById.contextId)
+    $location: Location()
   then
     Context context = contextService.get($activateById.getContextId());
 
-    contextActivatedService.create(new ContextActivated(context.getId(), LocalDateTime.now()));
+    contextActivatedService.create(new ContextActivated(context.getId(), $location.getId(), LocalDateTime.now()));
     insert(context);
 end;
 

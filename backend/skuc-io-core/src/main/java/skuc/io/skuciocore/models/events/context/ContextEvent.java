@@ -11,12 +11,14 @@ public class ContextEvent extends BaseEvent {
     super();
   }
 
-  public ContextEvent(String id, String contextId, LocalDateTime createdAt, LocalDateTime occuredAt) {
+  public ContextEvent(String id, String contextId, String locationId, LocalDateTime createdAt, LocalDateTime occuredAt) {
     super(id, contextId, createdAt, occuredAt);
+    this.locationId = locationId;
   }
 
-  public ContextEvent(String id, String contextId) {
+  public ContextEvent(String id, String contextId, String locationId) {
     super(id, contextId, LocalDateTime.now(), LocalDateTime.now());
+    this.locationId = locationId;
   }
 
   public String getContextId() {

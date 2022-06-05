@@ -63,10 +63,6 @@ public class ValueAggregated extends DeviceEvent {
     this.isProcessed = isProcessed;
   }
 
-  public boolean isIsProcessed() {
-    return this.isProcessed;
-  }
-
   public Date getTimeStamp() {
     return this.timeStamp;
   }

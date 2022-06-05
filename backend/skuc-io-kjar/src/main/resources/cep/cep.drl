@@ -21,10 +21,12 @@ import accumulate skuc.io.accumulates.ComplexAverageAccumulate complexAverage
 import accumulate skuc.io.accumulates.ComplexCountAccumulate complexCount
 
 
+// 5 minute aggregation
+
 rule "Require 0005 Aggregation"
   timer (cron: 0/5 * * * * ?)
   when
-    $vo: ValueReceived($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    ValueReceived($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
     not AggregateParam(resolution == 5, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
   then
     System.out.println("Require 0005 Aggregation");
@@ -51,6 +53,8 @@ rule "Make 0005 Aggregation"
 
     delete($agrParam);
 end;
+
+// 15 minute aggregation
 
 rule "Require 0015 Aggregation"
   when
@@ -81,7 +85,192 @@ rule "Make 0015 Aggregation"
     )));
 
     for(Object aggregation0005 : $aggregation0005s) {
-      modify(((ValueAggregated)aggregation0005)) {setIsProcessed(true) };
+      modify(((ValueAggregated)aggregation0005)) { setIsProcessed(true) };
+    }
+
+    delete($agrParam);
+end;
+
+// 30 minute aggregation
+
+rule "Require 0030 Aggregation"
+  when
+    Value0015Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    $aggregation0015s : ArrayList() from collect(Value0015Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
+    eval($aggregation0015s.size() == 2)
+    not AggregateParam(resolution == 30, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
+  then
+    System.out.println("Require 0030 Aggregation");
+    insert(new AggregateParam($deviceId, $deviceType, $paramName, 30));
+end;
+
+rule "Make 0030 Aggregation"
+  when 
+    $agrParam: AggregateParam(resolution == 30, $deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    accumulate($aggregation0015 : Value0015Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(30s),
+      $min: complexMin($this),
+      $max: complexMax($this),
+      $sum: complexSum($this),
+      $average: complexAverage($this),
+      $count: complexCount($this),
+      $aggregation0015s: collectList($aggregation0015)
+    )
+  then
+
+    insert(new Value0030Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+      $min, $max, $sum, $average, $count
+    )));
+
+    for(Object aggregation0015 : $aggregation0015s) {
+      modify(((ValueAggregated)aggregation0015)) { setIsProcessed(true) };
+    }
+
+    delete($agrParam);
+end;
+
+// 60 minute aggregation
+
+rule "Require 0060 Aggregation"
+  when
+    Value0030Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    $aggregation0030s : ArrayList() from collect(Value0030Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
+    eval($aggregation0030s.size() == 2)
+    not AggregateParam(resolution == 60, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
+  then
+    System.out.println("Require 0060 Aggregation");
+    insert(new AggregateParam($deviceId, $deviceType, $paramName, 60));
+end;
+
+rule "Make 0060 Aggregation"
+  when 
+    $agrParam: AggregateParam(resolution == 60, $deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    accumulate($aggregation0030 : Value0030Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(60s),
+      $min: complexMin($this),
+      $max: complexMax($this),
+      $sum: complexSum($this),
+      $average: complexAverage($this),
+      $count: complexCount($this),
+      $aggregation0030s: collectList($aggregation0030)
+    )
+  then
+
+    insert(new Value0060Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+      $min, $max, $sum, $average, $count
+    )));
+
+    for(Object aggregation0030 : $aggregation0030s) {
+      modify(((ValueAggregated)aggregation0030)) { setIsProcessed(true) };
+    }
+
+    delete($agrParam);
+end;
+
+// 240 minute aggregation
+
+rule "Require 0240 Aggregation"
+  when
+    Value0060Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    $aggregation0060s : ArrayList() from collect(Value0060Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
+    eval($aggregation0060s.size() == 4)
+    not AggregateParam(resolution == 240, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
+  then
+    System.out.println("Require 0240 Aggregation");
+    insert(new AggregateParam($deviceId, $deviceType, $paramName, 240));
+end;
+
+rule "Make 0240 Aggregation"
+  when 
+    $agrParam: AggregateParam(resolution == 240, $deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    accumulate($aggregation0060 : Value0060Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(240s),
+      $min: complexMin($this),
+      $max: complexMax($this),
+      $sum: complexSum($this),
+      $average: complexAverage($this),
+      $count: complexCount($this),
+      $aggregation0060s: collectList($aggregation0060)
+    )
+  then
+
+    insert(new Value0240Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+      $min, $max, $sum, $average, $count
+    )));
+
+    for(Object aggregation0060 : $aggregation0060s) {
+      modify(((ValueAggregated)aggregation0060)) { setIsProcessed(true) };
+    }
+
+    delete($agrParam);
+end;
+
+// 480 minute aggregation
+
+rule "Require 0480 Aggregation"
+  when
+    Value0240Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    $aggregation0240s : ArrayList() from collect(Value0240Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
+    eval($aggregation0240s.size() == 2)
+    not AggregateParam(resolution == 480, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
+  then
+    System.out.println("Require 0480 Aggregation");
+    insert(new AggregateParam($deviceId, $deviceType, $paramName, 480));
+end;
+
+rule "Make 0480 Aggregation"
+  when 
+    $agrParam: AggregateParam(resolution == 480, $deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    accumulate($aggregation0240 : Value0240Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(240s),
+      $min: complexMin($this),
+      $max: complexMax($this),
+      $sum: complexSum($this),
+      $average: complexAverage($this),
+      $count: complexCount($this),
+      $aggregation0240s: collectList($aggregation0240)
+    )
+  then
+
+    insert(new Value0480Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+      $min, $max, $sum, $average, $count
+    )));
+
+    for(Object aggregation0240 : $aggregation0240s) {
+      modify(((ValueAggregated)aggregation0240)) { setIsProcessed(true) };
+    }
+
+    delete($agrParam);
+end;
+
+// 1440 minute aggregation
+
+rule "Require 1440 Aggregation"
+  when
+    Value0480Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    $aggregation0480s : ArrayList() from collect(Value0480Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
+    eval($aggregation0480s.size() == 3)
+    not AggregateParam(resolution == 1440, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
+  then
+    System.out.println("Require 1440 Aggregation");
+    insert(new AggregateParam($deviceId, $deviceType, $paramName, 1440));
+end;
+
+rule "Make 1440 Aggregation"
+  when 
+    $agrParam: AggregateParam(resolution == 1440, $deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
+    accumulate($aggregation0480 : Value0480Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(480s),
+      $min: complexMin($this),
+      $max: complexMax($this),
+      $sum: complexSum($this),
+      $average: complexAverage($this),
+      $count: complexCount($this),
+      $aggregation0480s: collectList($aggregation0480)
+    )
+  then
+
+    insert(new Value1440Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+      $min, $max, $sum, $average, $count
+    )));
+
+    for(Object aggregation0480 : $aggregation0480s) {
+      modify(((ValueAggregated)aggregation0480)) { setIsProcessed(true) };
     }
 
     delete($agrParam);
