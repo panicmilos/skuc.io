@@ -90,6 +90,6 @@ class RegistryHandler
   }
 
   public getTopics(): string[] {
-    return Object.keys(this.valueRegistry);
+    return [...Object.keys(this.valueRegistry), ...Object.keys(this.statusRegistry)];
   }
 }

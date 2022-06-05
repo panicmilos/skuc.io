@@ -6,6 +6,7 @@ import {
 export interface RandomSeqElement {
   probability: number;
   value: any;
+  type?: "status" | "value";
 }
 
 export class RandomSimulator implements ICanBeInitializedAndDisposed {
@@ -20,15 +21,19 @@ export class RandomSimulator implements ICanBeInitializedAndDisposed {
   ) {
     sequence.forEach((sElem) => {
       this.sequence.push(
-        ...Array.from({ length: sElem.probability }).fill(sElem.value)
+        ...Array.from({ length: sElem.probability }).fill(sElem)
       );
     });
   }
 
   init(): void {
     this.intervalId = setInterval(() => {
-      const value = this.sequence[Math.floor(Math.random() * this.sequence.length)];
-      this.gw.setValue(this.topic, value);
+      const elem = this.sequence[Math.floor(Math.random() * this.sequence.length)];
+      if(elem.type === "status") {
+        this.gw.setStatus(this.topic, elem.value);
+      } else {
+        this.gw.setValue(this.topic, elem.value);
+      }
     }, this.interval);
   }
 
@@ -40,6 +45,7 @@ export class RandomSimulator implements ICanBeInitializedAndDisposed {
 export interface SeqElement {
   timeout: number; // seconds
   value: any;
+  type?: "status" | "value";
 }
 
 export class SeqSimulator implements ICanBeInitializedAndDisposed {
@@ -53,7 +59,11 @@ export class SeqSimulator implements ICanBeInitializedAndDisposed {
 
   async init(): Promise<void> {
     for (const elem of this.sequence) {
-      this.gw.setValue(this.topic, elem.value);
+      if(elem.type === "status") {
+        this.gw.setStatus(this.topic, elem.value);
+      } else {
+        this.gw.setValue(this.topic, elem.value);
+      }
       await new Promise(r => setTimeout(r, elem.timeout * 1000));
     }
     !this.disposed && this.init();
