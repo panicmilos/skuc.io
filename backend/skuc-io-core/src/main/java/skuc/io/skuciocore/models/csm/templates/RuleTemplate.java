@@ -1,4 +1,4 @@
-package skuc.io.skuciocore.models.csm.template;
+package skuc.io.skuciocore.models.csm.templates;
 
 import java.util.List;
 

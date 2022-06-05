@@ -7,6 +7,7 @@
 [keyword]use activateContext=import skuc.io.skuciocore.models.events.kjar.ActivateContextById;import skuc.io.skuciocore.models.events.kjar.ActivateContextByName
 [keyword]use deactivateContext=import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;import skuc.io.skuciocore.models.events.kjar.DeactivateContextByName
 [keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
+[keyword]use all=import skuc.io.skuciocore.models.csm.*; import skuc.io.skuciocore.models.csm.configuration.*; import skuc.io.skuciocore.models.csm.*
 
 [when]{eventName:\[?\w*\]?} has occured=EventOccured(name == "{eventName}")
 [when]\[{eventName:\w+}\]=template_start{eventName}template_end
@@ -28,12 +29,18 @@
 [when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[expected_{paramName:\w*}\]=${definedParam} : String() from ${contextParam}.getStatus("{paramName}")
 
 [when]curr_{paramName:\w*}=ValueReceived(paramName == "{paramName}")
-[when]- manje od ${definedParam:\[?[\w_-]*\]?}=value < ${definedParam}
-[when]- manje ili jednako sa ${definedParam:\[?[\w_-]*\]?}=value <= ${definedParam}
-[when]- vece od ${definedParam:\[?[\w_-]*\]?}=value > ${definedParam}
-[when]- vece ili jednako sa ${definedParam:\[?[\w_-]*\]?}=value >= ${definedParam}
-[when]- jednako sa ${definedParam:\[?[\w_-]*\]?}=value == ${definedParam}
-[when]- razlicito od ${definedParam:\[?[\w_-]*\]?}=value != ${definedParam}
+[when]- manje od ${definedParam:[\w_-]*}=value < ${definedParam}
+[when]- manje od {definedParam:\[?[\w_-]*\]?}=value < {definedParam}
+[when]- manje ili jednako sa ${definedParam:[\w_-]*}=value <= ${definedParam}
+[when]- manje ili jednako sa {definedParam:\[?[\w_-]*\]?}=value <= {definedParam}
+[when]- vece od ${definedParam:[\w_-]*}=value > ${definedParam}
+[when]- vece od {definedParam:\[?[\w_-]*\]?}=value > {definedParam}
+[when]- vece ili jednako sa ${definedParam:[\w_-]*}=value >= ${definedParam}
+[when]- vece ili jednako sa {definedParam:\[?[\w_-]*\]?}=value >= {definedParam}
+[when]- jednako sa ${definedParam:[\w_-]*}=value == ${definedParam}
+[when]- jednako sa {definedParam:\[?[\w_-]*\]?}=value == {definedParam}
+[when]- razlicito od ${definedParam:[\w_-]*}=value != ${definedParam}
+[when]- razlicito od {definedParam:\[?[\w_-]*\]?}=value != {definedParam}
 
 [when]\[{definedParam:[\w_-]+}\]=template_start{definedParam}template_end
 
@@ -42,6 +49,7 @@
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
 [then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}
-[then]dispatch\({eventName:\w*}\)=insert(new EventOccured("{eventName}"))
-[then]activateContext\({contextName:\w*}\)=insert(new ActivateContextByName("{contextName}"))
-[then]deactivateContext\({contextName:\w*}\)=insert(new DeactivateContextByName("{contextName}"))
+[then]dispatch\({eventName:\[?\w*\]?}\)=insert(new EventOccured("{eventName}"))
+[then]activateContext\({contextName:\[?\w*\]?}\)=insert(new ActivateContextByName("{contextName}"))
+[then]deactivateContext\({contextName:\[?\w*\]?}\)=insert(new DeactivateContextByName("{contextName}"))
+[then]\[{eventName:\w+}\]=template_start{eventName}template_end
