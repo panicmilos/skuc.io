@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { FC, useContext, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useMutation, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { Button, ConfirmationModal, extractErrorMessage, Modal, NotificationService, Table, TableBody, TableHead, TableRow } from "../../imports";
 import { Template } from "../../models"
 import { useTemplatesService } from "../../services";
@@ -70,10 +71,13 @@ export const TemplatesTable: FC<Props> = ({ groupId, templates }) => {
 
   const onYes = () => deleteMutation.mutate();
 
+  const nav = useNavigate();
+
   const ActionsButtonGroup = ({ template }: any) =>
   <>
     <Button onClick={() => { setSelectedTemplate(template); setIsPreviewOpen(true); }}>Preview</Button>
     <Button onClick={() => { setSelectedTemplate(template); setIsDeleteOpen(true); }}>Delete</Button>
+    <Button onClick={() => { nav(`/groups/${groupId}/templates/${template?.id ?? ''}/instances`) }}>Instances</Button>
   </>
   
   const classes = useStyles();
@@ -91,7 +95,7 @@ export const TemplatesTable: FC<Props> = ({ groupId, templates }) => {
 
 
       <ConfirmationModal title="Delete templates" open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} onYes={onYes}>
-        <p>Are you sure you want to delete this templates?</p>
+        <p>Are you sure you want to delete this template?</p>
       </ConfirmationModal>
 
       <div className={classes.buttonAddTemplate}>

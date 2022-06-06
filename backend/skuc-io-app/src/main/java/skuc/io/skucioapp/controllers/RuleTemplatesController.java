@@ -32,6 +32,11 @@ public class RuleTemplatesController {
       return ResponseEntity.ok(_ruleTemplateService.getByGroup(groupId));
     }
 
+    @GetMapping("{groupId}/templates/{templateId}")
+    public ResponseEntity<RuleTemplate> getTemplate(@PathVariable String templateId) {
+      return ResponseEntity.ok(_ruleTemplateService.getOrThrow(templateId));
+    }
+
     @PostMapping("{groupId}/templates")
     public ResponseEntity<RuleTemplate> createTemplate(@PathVariable String groupId, @RequestBody CreateTemplateRequest createTemplateRequest) {
         var ruleTemplate = _ruleTemplateService.create(groupId, createTemplateRequest.getName(), createTemplateRequest.getParameters(),

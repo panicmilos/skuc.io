@@ -63,8 +63,8 @@ export const AddTemplateForm: FC<Props> = ({ groupId }) => {
       <FormTextInput label="Name" name="name" />
       <FormTextInput label="Parameters" name="parameters" />
 
-      <FormTextAreaInput label="When" name="when" />
-      <FormTextAreaInput label="Then" name="then" />
+      <FormTextAreaInput label="When" name="when" rows={10} />
+      <FormTextAreaInput label="Then" name="then" rows={10} />
 
       <div className={classes.submitButton} >
         <Button type="submit">Submit</Button>
