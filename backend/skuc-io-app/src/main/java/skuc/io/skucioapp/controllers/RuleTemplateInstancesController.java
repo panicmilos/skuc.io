@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import skuc.io.skucioapp.api_contracts.requests.TemplateInstances.CreateTemplateInstanceRequest;
+import skuc.io.skucioapp.utils.ScriptExecutor;
 import skuc.io.skuciocore.models.csm.templates.RuleTemplateInstance;
 import skuc.io.skuciocore.services.RuleTemplateInstanceService;
+import skuc.io.skuciocore.utils.ClassScannerUtils;
 
 @RestController
 @RequestMapping("groups")
@@ -44,6 +46,8 @@ public class RuleTemplateInstancesController {
     ruleTemplateInstance.setTemplateId(templateId);
 
     var createdRuleTemplate = _ruleTemplateInstanceService.create(ruleTemplateInstance);
+
+    recompileKjar();
       
     return ResponseEntity.ok(createdRuleTemplate);
   }
@@ -51,8 +55,16 @@ public class RuleTemplateInstancesController {
   @DeleteMapping("{groupId}/templates/{templateId}/instances/{instanceId}")
   public ResponseEntity<RuleTemplateInstance> deleteTemplateInstance(@PathVariable String instanceId) {
     var deletedRuleTemplateInstance = _ruleTemplateInstanceService.delete(instanceId);
+
+    recompileKjar();
       
     return ResponseEntity.ok(deletedRuleTemplateInstance);
+  }
+
+  private void recompileKjar() {
+    var command = ClassScannerUtils.getWorkingPath() + "\\recompileRules.bat";
+    System.out.println(command);
+    ScriptExecutor.Execute(ClassScannerUtils.getWorkingPath() + "\\recompileRules.bat");
   }
   
 }
