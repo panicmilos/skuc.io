@@ -24,14 +24,14 @@ public class NotificationService {
   }
 
   public void sendFrom(ValueReceived valueReceived) {
-    var device = _deviceService.get(valueReceived.getDeviceId());
+    var device = _deviceService.getByDevice(valueReceived.getDeviceId());
     var notification = new ValueReceivedNotification(valueReceived.getDeviceId(), valueReceived.getDeviceType(), valueReceived.getParamName(), valueReceived.getValue(), device.getGroupId());
 
     _bus.fire("ValueReceived", notification);
   }
 
   public void sendFrom(StatusReceived statusReceived) {
-    var device = _deviceService.get(statusReceived.getDeviceId());
+    var device = _deviceService.getByDevice(statusReceived.getDeviceId());
     var notification = new StatusReceivedNotification(statusReceived.getDeviceId(), statusReceived.getDeviceType(), statusReceived.getValue(), device.getGroupId());
 
     _bus.fire("StatusReceived", notification);
