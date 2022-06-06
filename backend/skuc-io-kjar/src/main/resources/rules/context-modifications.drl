@@ -9,6 +9,7 @@ global ContextService contextService;
 
 
 rule "Context Updated"
+  agenda-group "ContextModifications"
   when
     $contextUpdated : ContextUpdated()
     $context : Context(id == $contextUpdated.contextId)
@@ -17,6 +18,7 @@ rule "Context Updated"
 end;
 
 rule "Clear Context Updated"
+  agenda-group "ContextModifications"
   salience -100
   when
     $contextUpdated : ContextUpdated()
@@ -28,6 +30,7 @@ rule "Clear Context Updated"
 end;
 
 rule "Context Deleted"
+  agenda-group "ContextModifications"
   when
     $contextDeleted : ContextDeleted()
     $context : Context(id == $contextDeleted.contextId)
@@ -36,6 +39,7 @@ rule "Context Deleted"
 end;
 
 rule "Clear Context Deleted"
+  agenda-group "ContextModifications"
   salience -100
   when
     $contextDeleted : ContextDeleted()

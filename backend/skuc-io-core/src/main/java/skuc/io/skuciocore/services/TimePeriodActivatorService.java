@@ -44,4 +44,8 @@ public class TimePeriodActivatorService extends CrudService<TimePeriodActivator>
     return super.update(timePeriodActivator);
   }
 
+  public void deleteByContext(String contextId) {
+    _timePeriodActivatorRepository.deleteByContext(contextId);
+  }
+
 }

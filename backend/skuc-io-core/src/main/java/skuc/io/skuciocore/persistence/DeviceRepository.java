@@ -37,7 +37,7 @@ public class DeviceRepository extends CrudRepository<Device> {
   @Override
   public void update(Device device) {
     try (var session = getSession()) {
-      var existingDevice = session.load(concreteClass, device.getDeviceId());
+      var existingDevice = session.load(concreteClass, device.getId());
 
       existingDevice.setName(device.getName());
 

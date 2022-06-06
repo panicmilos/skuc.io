@@ -22,6 +22,7 @@ global ContextDeactivatedService contextDeactivatedService;
 
 
 rule "Deactivate Context By Name"
+  agenda-group "ContextDeactivations"
   when
     $deactivateByName : DeactivateContextByName()
     $context : Context(name == $deactivateByName.contextName)
@@ -32,6 +33,7 @@ rule "Deactivate Context By Name"
 end;
 
 rule "Clear Deactivate Context By Name"
+  agenda-group "ContextDeactivations"
   salience -100
   when
     $deactivateByName : DeactivateContextByName()
@@ -40,6 +42,7 @@ rule "Clear Deactivate Context By Name"
 end;
 
 rule "Deactivate Context By Id"
+  agenda-group "ContextDeactivations"
   when
     $deactivateById : DeactivateContextById()
     $context : Context(id == $deactivateById.contextId)
@@ -50,6 +53,7 @@ rule "Deactivate Context By Id"
 end;
 
 rule "Clear Deactivate Context By Id"
+  agenda-group "ContextDeactivations"
   salience -100
   when
     $deactivateById : DeactivateContextById()
@@ -58,6 +62,7 @@ rule "Clear Deactivate Context By Id"
 end;
 
 rule "Deactivate Context By Event Deactivator"
+  agenda-group "ContextDeactivations"
   when
     $eventOccured : EventOccured(processedByActivator == false)
     $group : Group()
@@ -70,6 +75,7 @@ rule "Deactivate Context By Event Deactivator"
 end;
 
 rule "Deactivate Context By Time Period Deactivator"
+  agenda-group "ContextDeactivations"
   timer (int: 0s 1s)
   enabled ($timePeriodDeactivator.matches())
 when

@@ -1,0 +1,61 @@
+paketic skuc.io;
+
+use dispatch;
+use most common imports;
+
+rule "Potential Robery Movement By Cam"
+  in group "RoberyRules"
+  when
+    def $context = getContextIfActive(AFH or Night)
+    has OutdoorCamDetectedPerson()
+  then
+    dispatch(InformUser);
+    dispatch(StartVideoRecording);
+    dispatch(PotentialRoberyMovement);
+end;
+
+rule "Potential Robery Movement By Movement Sensor"
+  in group "RoberyRules"
+  when
+    def $context = getContextIfActive(AFH or Night)
+    def $max_movement = C[$context][max_movement]
+    curr_movement
+      - vece od $max_movement
+  then
+    dispatch(InformUser);
+    dispatch(StartVideoRecording);
+    dispatch(PotentialRoberyMovement);
+end;
+
+rule "Potential Robery Movement By Sound"
+  in group "RoberyRules"
+  when
+    def $context = getContextIfActive(AFH or Night)
+    def $max_sound = C[$context][max_sound]
+    curr_sound
+      - vece od $max_sound
+  then
+    dispatch(InformUser);
+    dispatch(StartVideoRecording);
+    dispatch(PotentialRoberySound);
+end;
+
+rule "Potential Robery"
+  in group "RoberyRules"
+  when
+    PotentialRoberyMovement has occured
+    PotentialRoberySound has occured
+  then
+    dispatch(ActivateAlarmSystem);
+    dispatch(InformUserOfAlarm);
+end;
+
+rule "Potential Robery because of Door or Window"
+  in group "RoberyRules"
+  when
+    def $context = getContextIfActive(AFH)
+    DoorOrWindowsStatusChanged has occured
+  then
+    dispatch(ActivateAlarmSystem);
+    dispatch(InformUserOfAlarm);
+end;

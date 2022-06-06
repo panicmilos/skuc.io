@@ -1,0 +1,2 @@
+export const ADD_TEMPLATE = 'ADD_TEMPLATE';
+export const DELETE_TEMPLATE = 'DELETE_TEMPLATE';

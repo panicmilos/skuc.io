@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,12 +105,12 @@ public class EventsController {
     return ResponseEntity.ok(null);
   }
 
-  @PostMapping("test-inform")
-  public ResponseEntity<ValueReceived> createValue2222() throws ParseException {
+  @PostMapping("test-inform/{numer}")
+  public ResponseEntity<ValueReceived> createValue2222(@PathVariable Number numer) throws ParseException {
 
     var session = _sessionManager.getSession("5390ba11-857d-40c2-816a-9a2b716baa91");
     // session.insert(new ActivateContextByName("Night"));
-    session.insert(5);
+    session.insert(numer);
     session.fireAllRules();
 
 

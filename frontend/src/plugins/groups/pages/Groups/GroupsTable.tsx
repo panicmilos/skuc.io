@@ -73,6 +73,7 @@ export const GroupsTable: FC<Props> = ({ groups }) => {
       <Link to={{ pathname: `/groups/${group?.id}/users` }}><Button>Users</Button></Link>
       <Link to={{ pathname: `/groups/${group?.id}/locations` }}><Button>Locations</Button></Link>
       <Link to={{ pathname: `/groups/${group?.id}/contexts` }}><Button>Contexts</Button></Link>
+      <Link to={{ pathname: `/groups/${group?.id}/templates` }}><Button>Templates</Button></Link>
     </div>
 
   useEffect(() => {

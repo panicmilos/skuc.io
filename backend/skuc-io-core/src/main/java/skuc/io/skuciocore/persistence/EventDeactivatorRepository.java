@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import net.ravendb.client.documents.operations.DeleteByQueryOperation;
+import net.ravendb.client.documents.queries.IndexQuery;
 import skuc.io.skuciocore.models.csm.context.deactivation.EventDeactivator;
 
 @Repository
@@ -59,6 +61,12 @@ public class EventDeactivatorRepository extends CrudRepository<EventDeactivator>
       session.saveChanges();
     }
     
+  }
+
+  public void deleteByContext(String contextId) {
+    DocumentStoreHolder.getStore()
+      .operations()
+      .send(new DeleteByQueryOperation(new IndexQuery(String.format("from EventDeactivators where contextId = '%s'", contextId))));
   }
 
 }
