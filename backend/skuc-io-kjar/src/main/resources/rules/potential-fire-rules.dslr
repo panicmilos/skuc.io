@@ -9,11 +9,14 @@ rule "Test inform"
 >    b: Number()
   then
     informUser()
-      with "about" : "Milos Panic je car"
+      with "about" : "Milos %s je car broj %s"
+      with "@param1" : "Panic"
+      with "@param2" : "2"
     ===>
 end;
 
 rule "High temperature"
+  in group "PotentialFireRules"
   when
     def $any = getAnyContextIfActive()
     def $max_temp = C[$any][max_temp]
@@ -26,6 +29,7 @@ rule "High temperature"
 end;
 
 rule "High CO2"
+  in group "PotentialFireRules"
   when
     def $any = getAnyContextIfActive()
     def $max_CO2 = C[$any][max_CO2]
@@ -38,6 +42,7 @@ rule "High CO2"
 end;
 
 rule "Low humidity"
+  in group "PotentialFireRules"
   when
     def $any = getAnyContextIfActive()
     def $min_humid = C[$any][min_humid]
@@ -50,6 +55,7 @@ rule "Low humidity"
 end;
 
 rule "Potential fire"
+  in group "PotentialFireRules"
   when
     TemperatureTooHigh has occured
     CO2TooHigh has occured
@@ -60,6 +66,7 @@ rule "Potential fire"
 end;
 
 rule "Close windows"
+  in group "PotentialFireRules"
   when
     PotentialFire has occured
     are WindowsOpen()
@@ -69,6 +76,7 @@ rule "Close windows"
 end;
 
 rule "Turn off AC"
+  in group "PotentialFireRules"
   when
     PotentialFire has occured
     is ACOn()
@@ -78,6 +86,7 @@ rule "Turn off AC"
 end;
 
 rule "Activate sprinklers"
+  in group "PotentialFireRules"
   when
     PotentialFire has occured
   then
@@ -87,6 +96,7 @@ rule "Activate sprinklers"
 end;
 
 rule "Turn off electric devices"
+  in group "PotentialFireRules"
   when
     SprinklersActivated has occured
     is AnyElectricDeviceOn()

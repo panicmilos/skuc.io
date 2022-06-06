@@ -25,18 +25,38 @@ import skuc.io.skuciocore.models.events.kjar.ContextDeleted;
 import skuc.io.skuciocore.models.events.kjar.ContextUpdated;
 import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;
 import skuc.io.skuciocore.services.ContextService;
+import skuc.io.skuciocore.services.EventActivatorService;
+import skuc.io.skuciocore.services.EventDeactivatorService;
+import skuc.io.skuciocore.services.TimePeriodActivatorService;
+import skuc.io.skuciocore.services.TimePeriodDeactivatorService;
 
 @RestController
 @RequestMapping("groups")
 public class ContextsController {
   
   private final ContextService _contextService;
+  private final EventActivatorService _eventActivatorService;
+  private final EventDeactivatorService _eventDeactivatorService;
+  private final TimePeriodActivatorService _timePeriodActivatorService;
+  private final TimePeriodDeactivatorService _timePeriodDeactivatorService;
   private final SessionManager _manager;
   private final ModelMapper _mapper;
 
   @Autowired
-  public ContextsController(ContextService contextService, SessionManager manager, ModelMapper mapper) {
+  public ContextsController(
+    EventActivatorService eventActivatorService,
+    EventDeactivatorService eventDeactivatorService,
+    TimePeriodActivatorService timePeriodActivatorService,
+    TimePeriodDeactivatorService timePeriodDeactivatorService,
+    ContextService contextService,
+    SessionManager manager,
+    ModelMapper mapper
+  ) {
     _contextService = contextService;
+    _eventActivatorService = eventActivatorService;
+    _eventDeactivatorService = eventDeactivatorService;
+    _timePeriodActivatorService = timePeriodActivatorService;
+    _timePeriodDeactivatorService = timePeriodDeactivatorService;
     _manager = manager;
     _mapper = mapper;
   }
@@ -76,6 +96,10 @@ public class ContextsController {
   public ResponseEntity<Context> deleteContext(@PathVariable String contextId) {
     var deletedContext = _contextService.delete(contextId);
 
+    _eventActivatorService.deleteByContext(deletedContext.getId());
+    _eventDeactivatorService.deleteByContext(deletedContext.getId());
+    _timePeriodActivatorService.deleteByContext(deletedContext.getId());
+    _timePeriodDeactivatorService.deleteByContext(deletedContext.getId());
     _manager.insertToAllSessions(new ContextDeleted(deletedContext.getId()));
 
     return ResponseEntity.ok(deletedContext);

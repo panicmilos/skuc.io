@@ -8,6 +8,7 @@ import skuc.io.skuciocore.services.StateRegistryService;
 global StateRegistryService stateRegistryService;
 
 rule "Update Status State"
+  agenda-group "StateRegistry"
   lock-on-active
   when
     $reg : StateRegistry()

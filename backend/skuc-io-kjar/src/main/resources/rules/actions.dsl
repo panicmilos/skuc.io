@@ -8,6 +8,8 @@
 [keyword]use deactivateContext=import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;import skuc.io.skuciocore.models.events.kjar.DeactivateContextByName
 [keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
 
+[keyword]in group=agenda-group
+
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")
 
 [when]are {query:\w*}\(\)=are{query}()
@@ -35,7 +37,7 @@
 [when]- razlicito od ${definedParam:[\w_-]*}=value != ${definedParam}
 
 [then]informUser\(\)=Group group = (Group) kcontext.getKieRuntime().getObjects(new GroupObjectFilterer()).iterator().next(); \n EventOccured informUserEvent = new EventOccured("InformUser", new KeyValue<String, String>("groupId", group.getId()));
-[then]\s?with \"{param:[\w-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
+[then]\s?with \"{param:[@\w\d-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
 [then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}

@@ -42,7 +42,8 @@ public class NotificationService {
       return;
     }
 
-    var notification = new InformUserNotification(eventOccured.getParam("about"), eventOccured.getParam("groupId"));
+    var params = eventOccured.getParams().keySet().stream().filter(key -> key.startsWith("@param")).sorted().map(key -> eventOccured.getParam(key)).toArray();
+    var notification = new InformUserNotification(String.format(eventOccured.getParam("about"), params), eventOccured.getParam("groupId"));
 
     _bus.fire("InformUser", notification);
   }

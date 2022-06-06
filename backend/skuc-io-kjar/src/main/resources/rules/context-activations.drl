@@ -23,6 +23,7 @@ global ContextActivatedService contextActivatedService;
 
 
 rule "Activate Context By Name"
+  agenda-group "ContextActivations"
   when
     $activateByName : ActivateContextByName()
     not Context(name == $activateByName.contextName)
@@ -36,6 +37,7 @@ rule "Activate Context By Name"
 end;
 
 rule "Clear Context By Name"
+  agenda-group "ContextActivations"
   salience -100
   when
     $activateByName : ActivateContextByName()
@@ -44,6 +46,7 @@ rule "Clear Context By Name"
 end;
 
 rule "Activate Context By Id"
+  agenda-group "ContextActivations"
   when
     $activateById : ActivateContextById()
     not Context(id == $activateById.contextId)
@@ -56,6 +59,7 @@ rule "Activate Context By Id"
 end;
 
 rule "Clear Context By Id"
+  agenda-group "ContextActivations"
   salience -100
   when
     $activateById : ActivateContextById()
@@ -64,6 +68,7 @@ rule "Clear Context By Id"
 end;
 
 rule "Activate Context By Event Activator"
+  agenda-group "ContextActivations"
   when
     $eventOccured : EventOccured(processedByActivator == false)
     $group : Group()
@@ -76,6 +81,7 @@ rule "Activate Context By Event Activator"
 end;
 
 rule "Activate Context By Time Period Activator"
+  agenda-group "ContextActivations"
   timer (int: 0s 1s)
   enabled ($timePeriodActivator.matches())
 when

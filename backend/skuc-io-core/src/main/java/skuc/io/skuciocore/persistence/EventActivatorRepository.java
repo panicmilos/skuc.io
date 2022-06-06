@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import net.ravendb.client.documents.operations.DeleteByQueryOperation;
+import net.ravendb.client.documents.queries.IndexQuery;
 import skuc.io.skuciocore.models.csm.context.activation.EventActivator;
 
 @Repository
@@ -58,8 +60,12 @@ public class EventActivatorRepository extends CrudRepository<EventActivator> {
 
       session.saveChanges();
     }
+  }
 
-    
+  public void deleteByContext(String contextId) {
+    DocumentStoreHolder.getStore()
+      .operations()
+      .send(new DeleteByQueryOperation(new IndexQuery(String.format("from EventActivators where contextId = '%s'", contextId))));
   }
 
 }
