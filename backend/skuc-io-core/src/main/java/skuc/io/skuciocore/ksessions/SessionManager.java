@@ -100,13 +100,13 @@ public class SessionManager {
 
       session.setGlobal("contextService", _contextService);
 
-      session.setGlobal("eventActivatorService", _eventActivatorService);
-      session.setGlobal("timePeriodActivatorService", _timePeriodActivatorService);
-      session.setGlobal("contextActivatedService", _contextActivatedService);
+      // session.setGlobal("eventActivatorService", _eventActivatorService);
+      // session.setGlobal("timePeriodActivatorService", _timePeriodActivatorService);
+      // session.setGlobal("contextActivatedService", _contextActivatedService);
 
-      session.setGlobal("eventDeactivatorService", _eventDeactivatorService);
-      session.setGlobal("timePeriodDeactivatorService", _timePeriodDeactivatorService);
-      session.setGlobal("contextDeactivatedService", _contextDeactivatedService);
+      // session.setGlobal("eventDeactivatorService", _eventDeactivatorService);
+      // session.setGlobal("timePeriodDeactivatorService", _timePeriodDeactivatorService);
+      // session.setGlobal("contextDeactivatedService", _contextDeactivatedService);
 
       session.setGlobal("notificationService", _notificationService);
       

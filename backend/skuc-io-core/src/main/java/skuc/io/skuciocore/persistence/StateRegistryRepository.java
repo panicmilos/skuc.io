@@ -20,6 +20,7 @@ public class StateRegistryRepository extends CrudRepository<StateRegistry> {
         .firstOrDefault();
       if (stateRegistry == null) {
         var newStateRegistry = new StateRegistry();
+        newStateRegistry.setObjectId(objectId);
         this.store(newStateRegistry);
         return newStateRegistry;
       }

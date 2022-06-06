@@ -17,8 +17,11 @@ class Sender implements ICanSendToCloud {
     axios.post(`http://localhost:8080/events/values`, {
       value,
       deviceType,
+      paramName: deviceType,
       streamId: deviceId
     })
+    .then(() => {})
+    .catch(() => console.log("ERR"))
     console.log('VALUE', value, deviceType, deviceId);
   }
   sendStatus(data: any): void {
@@ -26,8 +29,11 @@ class Sender implements ICanSendToCloud {
     axios.post(`http://localhost:8080/events/statuses`, {
       value,
       deviceType,
+      paramName: deviceType,
       streamId: deviceId
     })
+    .then(() => {})
+    .catch(() => console.log("ERR"))
     console.log('STATUS', value, deviceType, deviceId);
   }
 }
@@ -110,8 +116,8 @@ const ac: SeqElement[] = [
 ];
 
 const windows: SeqElement[] = [
-  { timeout: 30, value: { value: "opened", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "closed", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
+  { timeout: 5, value: { value: "opened", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
+  { timeout: 5, value: { value: "closed", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
 ];
 
 const sprinkler: SeqElement[] = [
@@ -175,21 +181,21 @@ const bathroom: SeqElement[] = [
 ];
 
 const simulators: ICanBeInitializedAndDisposed[] = [
-  new RandomSimulator(gw, "co2", co2, 5_000),
-  new RandomSimulator(gw, "humidity", humidity, 5_000),
-  new SeqSimulator(gw, "temperature", temperature),
-  new SeqSimulator(gw, "ac", ac),
-  new SeqSimulator(gw, "windows", windows),
-  new SeqSimulator(gw, "sprinkler", sprinkler),
-  new SeqSimulator(gw, "heating", heating),
-  new SeqSimulator(gw, "boiler", boiler),
-  new SeqSimulator(gw, "lights", lights),
-  new SeqSimulator(gw, "washing", washing),
-  new SeqSimulator(gw, "camera", camera),
-  new SeqSimulator(gw, "movement", movement),
-  new SeqSimulator(gw, "sound", sound),
+  // new RandomSimulator(gw, "co2", co2, 5_000),
+  // new RandomSimulator(gw, "humidity", humidity, 5_000),
+  // new SeqSimulator(gw, "temperature", temperature),
+  // new SeqSimulator(gw, "ac", ac),
+  // new SeqSimulator(gw, "windows", windows),
+  // new SeqSimulator(gw, "sprinkler", sprinkler),
+  // new SeqSimulator(gw, "heating", heating),
+  // new SeqSimulator(gw, "boiler", boiler),
+  // new SeqSimulator(gw, "lights", lights),
+  // new SeqSimulator(gw, "washing", washing),
+  // new SeqSimulator(gw, "camera", camera),
+  // new SeqSimulator(gw, "movement", movement),
+  // new SeqSimulator(gw, "sound", sound),
   new SeqSimulator(gw, "pet", pet),
-  new SeqSimulator(gw, "bathroom", bathroom),
+  // new SeqSimulator(gw, "bathroom", bathroom),
 ];
 
 simulators.forEach((s) => s.init());

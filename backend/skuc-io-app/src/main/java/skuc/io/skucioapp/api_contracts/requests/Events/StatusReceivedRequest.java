@@ -4,14 +4,16 @@ public class StatusReceivedRequest {
   private String value;
   private String deviceType;
   private String streamId;
+  private String paramName;
 
   public StatusReceivedRequest() {
   }
 
-  public StatusReceivedRequest(String value, String deviceType, String streamId) {
+  public StatusReceivedRequest(String value, String deviceType, String streamId, String paramName) {
     this.value = value;
     this.deviceType = deviceType;
     this.streamId = streamId;
+    this.paramName = paramName;
   }
 
   public String getValue() {
@@ -38,4 +40,11 @@ public class StatusReceivedRequest {
     this.streamId = streamId;
   }
 
+  public void setParamName(String paramName) {
+    this.paramName = paramName;
+  }
+
+  public String getParamName() {
+    return this.paramName;
+  }
 }

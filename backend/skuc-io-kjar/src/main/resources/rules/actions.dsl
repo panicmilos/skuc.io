@@ -3,6 +3,7 @@
 [keyword]paketic {package:.*}=package {package}
 
 [keyword]use informUser=import skuc.io.skuciocore.models.csm.Group; import skuc.io.functions.GroupObjectFilterer; import skuc.io.skuciocore.models.utilityClasses.KeyValue;import skuc.io.skuciocore.services.NotificationService; global NotificationService notificationService
+[keyword]use changeStatus=import skuc.io.skuciocore.models.events.device.StatusReceived;import skuc.io.skuciocore.services.NotificationService
 [keyword]use dispatch=import skuc.io.skuciocore.models.events.kjar.EventOccured
 [keyword]use activateContext=import skuc.io.skuciocore.models.events.kjar.ActivateContextById;import skuc.io.skuciocore.models.events.kjar.ActivateContextByName
 [keyword]use deactivateContext=import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;import skuc.io.skuciocore.models.events.kjar.DeactivateContextByName
@@ -11,6 +12,7 @@
 [keyword]in group=agenda-group
 
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")
+[when]{eventName:\w*} has not occured=not EventOccured(name == "{eventName}")
 
 [when]are {query:\w*}\(\)=are{query}()
 [when]is {query:\w*}\(\)=is{query}()
@@ -39,6 +41,8 @@
 [then]informUser\(\)=Group group = (Group) kcontext.getKieRuntime().getObjects(new GroupObjectFilterer()).iterator().next(); \n EventOccured informUserEvent = new EventOccured("InformUser", new KeyValue<String, String>("groupId", group.getId()));
 [then]\s?with \"{param:[@\w\d-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
+
+[then]changeStatus\(\"{deviceType:[\w\d-_]*}\",\s?\"{value:[\w\d-_]*}\"\)=StatusReceived statusReceived = new StatusReceived("", "{deviceType}DeviceId", "{deviceType}", "{value}"); \n ((NotificationService) kcontext.getKieRuntime().getGlobal("notificationService")).sendFrom(statusReceived)
 
 [then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}
 [then]dispatch\({eventName:\w*}\)=insert(new EventOccured("{eventName}"))

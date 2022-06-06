@@ -1,37 +1,66 @@
 paketic skuc.io;
 
 use dispatch;
+use changeStatus;
 use most common imports;
 
 rule "Potential Pet Home Escape"
-  in group "PetRules"
   when
     ensureContextNotActive(PetWalk)
+    PetMissing has not occured
     def $context = getAnyContextIfActive()
     def $max_homeradius = C[$context][max_homeradius]
-    curr_homeradius
+    curr_pet
       - vece od $max_homeradius
   then
     dispatch(InformUser);
     dispatch(PotentialPetMissing);
 end;
 
+rule "Remove all PotentialPetMissing"
+  when
+>   EventOccured(name == "PetMissing" || name == "PotentialPetComeback" || name == "PetComeback")
+>   $ppm: EventOccured(name == "PotentialPetMissing")
+  then
+>   delete($ppm);
+end;
+
+rule "Change status for PotentialPetMissing"
+  when
+    PotentialPetMissing has occured
+  then
+    changeStatus("pet", "PotentialPetMissing");
+end;
+
 rule "Potential Pet Neighborhood Escape"
-  in group "PetRules"
   when
     ensureContextNotActive(PetWalk)
     PotentialPetMissing has occured
     def $context = getAnyContextIfActive()
     def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
-    curr_neighborhoodradius
+    curr_pet
       - vece od $max_neighborhoodradius
   then
     dispatch(InformUser);
     dispatch(PetMissing);
 end;
 
+rule "Remove all PetMissing"
+  when
+>   EventOccured(name == "PotentialPetComeback" || name == "PetComeback")
+>   $ppm: EventOccured(name == "PetMissing")
+  then
+>   delete($ppm);
+end;
+
+rule "Change status for PetMissing"
+  when
+    PetMissing has occured
+  then
+    changeStatus("pet", "PetMissing");
+end;
+
 rule "Pet Missing"
-  in group "PetRules"
   when
     def $context = getContextIfActive(AFH)
     PetMissing has occured
@@ -42,28 +71,56 @@ rule "Pet Missing"
 end;
 
 rule "Potential Pet Neighborhood Comeback"
-  in group "PetRules"
   when
     is PetMissing()
     def $context = getAnyContextIfActive()
     def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
-    curr_neighborhoodradius
+    curr_pet
       - manje od $max_neighborhoodradius
   then
     dispatch(InformUser);
     dispatch(PotentialPetComeback);
 end;
 
+rule "Change status for PotentialPetComeback"
+  when
+    PotentialPetComeback has occured
+  then
+    changeStatus("pet", "PotentialPetComeback");
+end;
+
+rule "Remove all PotentialPetComeback"
+  when
+>   EventOccured(name == "PetMissing" || name == "PotentialPetMissing" || name == "PetComeback")
+>   $ppm: EventOccured(name == "PotentialPetComeback")
+  then
+>   delete($ppm);
+end;
+
 rule "Potential Pet Home Comeback"
-  in group "PetRules"
   when
     PotentialPetComeback has occured
     def $context = getAnyContextIfActive()
     def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
-    curr_neighborhoodradius
+    curr_pet
       - manje od $max_neighborhoodradius
   then
     dispatch(InformUser);
     dispatch(PetComeback);
     dispatch(StopSendingRealTimeLocation);
+end;
+
+rule "Change status for PetComeback"
+  when
+    PetComeback has occured
+  then
+    changeStatus("pet", "PetComeback");
+end;
+
+rule "Remove all PetComeback"
+  when
+>   EventOccured(name == "PetMissing" || name == "PotentialPetMissing")
+>   $ppm: EventOccured(name == "PetComeback")
+  then
+>   delete($ppm);
 end;

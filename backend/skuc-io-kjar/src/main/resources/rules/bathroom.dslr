@@ -4,7 +4,6 @@ use dispatch;
 use most common imports;
 
 rule "Person Enters Koopatilo"
-  in group "BathroomRules"
   when
     def $context = getContextIfActive(AH)
     def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
@@ -18,7 +17,6 @@ rule "Person Enters Koopatilo"
 end;
 
 rule "Person Exits Koopatilo"
-  in group "BathroomRules"
   when
     def $context = getContextIfActive(AH)
     def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
@@ -32,7 +30,6 @@ rule "Person Exits Koopatilo"
 end;
 
 rule "Turn on Washing Machine for Cheap Customers"
-  in group "BathroomRules"
   when
     def $nightly = getContextIfActive(Nightly)
     def $eco = getContextIfActive(Eco)

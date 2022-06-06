@@ -33,6 +33,8 @@ public class SkucIoAppApplication {
 
 
 	public static void main(String[] args) {
+		System.setProperty("org.apache.commons.logging.Log",
+"org.apache.commons.logging.impl.NoOpLog");
 		SpringApplication.run(SkucIoAppApplication.class, args);
 	}
 

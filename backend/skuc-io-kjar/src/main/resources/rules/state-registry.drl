@@ -3,12 +3,19 @@ package skuc.io;
 import skuc.io.skuciocore.models.events.device.ValueReceived;
 import skuc.io.skuciocore.models.events.device.StatusReceived;
 import skuc.io.skuciocore.models.csm.StateRegistry;
+import skuc.io.skuciocore.models.csm.configuration.Context;
 import skuc.io.skuciocore.services.StateRegistryService;
 
 global StateRegistryService stateRegistryService;
 
+rule "Print context"
+  when 
+    $c: Context()
+  then
+    System.out.println($c.getName());
+end;
+
 rule "Update Status State"
-  agenda-group "StateRegistry"
   lock-on-active
   when
     $reg : StateRegistry()

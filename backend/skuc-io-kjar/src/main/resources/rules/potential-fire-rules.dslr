@@ -16,12 +16,11 @@ rule "Test inform"
 end;
 
 rule "High temperature"
-  in group "PotentialFireRules"
   when
     def $any = getAnyContextIfActive()
-    def $max_temp = C[$any][max_temp]
-    curr_temp
-      - vece od $max_temp
+    def $max_temperature = C[$any][max_temperature]
+    curr_temperature
+      - vece od $max_temperature
   then
     dispatch(TemperatureTooHigh);
     sisaj("High temperature");
@@ -29,12 +28,11 @@ rule "High temperature"
 end;
 
 rule "High CO2"
-  in group "PotentialFireRules"
   when
     def $any = getAnyContextIfActive()
-    def $max_CO2 = C[$any][max_CO2]
-    curr_CO2
-      - vece od $max_CO2
+    def $max_co2 = C[$any][max_co2]
+    curr_co2
+      - vece od $max_co2
   then
     dispatch(CO2TooHigh);
     sisaj("High CO2");
@@ -42,7 +40,6 @@ rule "High CO2"
 end;
 
 rule "Low humidity"
-  in group "PotentialFireRules"
   when
     def $any = getAnyContextIfActive()
     def $min_humid = C[$any][min_humid]
@@ -55,7 +52,6 @@ rule "Low humidity"
 end;
 
 rule "Potential fire"
-  in group "PotentialFireRules"
   when
     TemperatureTooHigh has occured
     CO2TooHigh has occured
@@ -66,7 +62,6 @@ rule "Potential fire"
 end;
 
 rule "Close windows"
-  in group "PotentialFireRules"
   when
     PotentialFire has occured
     are WindowsOpen()
@@ -76,7 +71,6 @@ rule "Close windows"
 end;
 
 rule "Turn off AC"
-  in group "PotentialFireRules"
   when
     PotentialFire has occured
     is ACOn()
@@ -86,7 +80,6 @@ rule "Turn off AC"
 end;
 
 rule "Activate sprinklers"
-  in group "PotentialFireRules"
   when
     PotentialFire has occured
   then
@@ -96,7 +89,6 @@ rule "Activate sprinklers"
 end;
 
 rule "Turn off electric devices"
-  in group "PotentialFireRules"
   when
     SprinklersActivated has occured
     is AnyElectricDeviceOn()
