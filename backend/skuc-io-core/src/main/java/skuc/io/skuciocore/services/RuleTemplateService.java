@@ -2,6 +2,7 @@ package skuc.io.skuciocore.services;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -146,6 +147,10 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
         var templatesDsl = classloader.getResourceAsStream("templates.dsl");
 
         return new InputStreamReader(templatesDsl);
+    }
+
+    public Collection<RuleTemplate> getByGroup(String groupId) {
+        return _ruleTemplateRepository.getByGroup(groupId);
     }
 
     @Override

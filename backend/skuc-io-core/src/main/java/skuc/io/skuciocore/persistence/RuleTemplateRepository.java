@@ -1,5 +1,7 @@
 package skuc.io.skuciocore.persistence;
 
+import java.util.Collection;
+
 import org.springframework.stereotype.Repository;
 
 import skuc.io.skuciocore.models.csm.templates.RuleTemplate;
@@ -9,6 +11,12 @@ public class RuleTemplateRepository extends CrudRepository<RuleTemplate> {
     
     public RuleTemplateRepository() {
         super(RuleTemplate.class);
+    }
+
+    public Collection<RuleTemplate> getByGroup(String groupId) {
+        try (var session = getSession()) {
+            return session.query(this.concreteClass).whereEquals("groupId", groupId).toList();
+        }
     }
 
     public RuleTemplate getByGroupAndName(String groupId, String name) {
