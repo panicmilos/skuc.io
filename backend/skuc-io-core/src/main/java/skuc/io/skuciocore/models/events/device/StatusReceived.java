@@ -18,6 +18,11 @@ public class StatusReceived extends DeviceEvent {
     super(id, deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType);
   }
 
+  public StatusReceived(String id, String deviceId, String deviceType, String value) {
+    super(id, deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType);
+    this.value = value;
+  }
+
   public String getDeviceId() {
     return this.getStreamId();
   }

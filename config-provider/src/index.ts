@@ -94,7 +94,7 @@ class ConfigService {
       },
       {
         id: '14',
-        frequency: 30,
+        frequency: 5,
         filter: `function finalFilter(topic) { return topic === 'windows' }`,
         type: 'status'
       },

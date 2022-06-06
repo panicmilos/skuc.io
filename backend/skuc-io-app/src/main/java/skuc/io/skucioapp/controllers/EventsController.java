@@ -63,10 +63,12 @@ public class EventsController {
     var valueReceived = _mapper.map(request, ValueReceived.class);
     valueReceived.setId(UUID.randomUUID().toString());
 
+    System.out.println(valueReceived.getParamName());
+
     var device = _deviceService.getByDevice(valueReceived.getDeviceId());
 
-    var aggregation_Session = _sessionManager.getAggregateSession();
-    aggregation_Session.insert(valueReceived);
+    // var aggregation_Session = _sessionManager.getAggregateSession();
+    // aggregation_Session.insert(valueReceived);
 
     var session = _sessionManager.getSession(device.getLocationId().toString());
     session.insert(valueReceived);
@@ -82,7 +84,7 @@ public class EventsController {
     var statusReceived = _mapper.map(request, StatusReceived.class);
     statusReceived.setId(UUID.randomUUID().toString());
 
-    var device = _deviceService.getOrThrow(statusReceived.getDeviceId());
+    var device = _deviceService.getByDevice(statusReceived.getDeviceId());
 
     var session = _sessionManager.getSession(device.getLocationId().toString());
     session.insert(statusReceived);

@@ -4,19 +4,17 @@ use dispatch;
 use most common imports;
 
 rule "Low temperature"
-  in group "TemperatureRegulationRules"
   when
     def $any = getAnyContextIfActive()
-    def $min_temp = C[$any][min_temp]
-    curr_temp
-      - manje od $min_temp
+    def $min_temperature = C[$any][min_temperature]
+    curr_temperature
+      - manje od $min_temperature
   then
     dispatch(TemperatureTooLow);
     dispatch(InformUser);
 end;
 
 rule "Open windows on Hot Summer Nights"
-  in group "TemperatureRegulationRules"
   when
     def $summer = getContextIfActive(Summer)
     def $night = getContextIfActive(Nightly)
@@ -26,7 +24,6 @@ rule "Open windows on Hot Summer Nights"
 end;
 
 rule "Turn on ac on Hot Summer Days"
-  in group "TemperatureRegulationRules"
   when
     def $summer = getContextIfActive(Summer)
     def $night = getContextIfActive(Daily)
@@ -36,7 +33,6 @@ rule "Turn on ac on Hot Summer Days"
 end;
 
 rule "Turn off ac on Cold Summer Days"
-  in group "TemperatureRegulationRules"
   when
     def $summer = getContextIfActive(Summer)
     def $night = getContextIfActive(Daily)
@@ -47,7 +43,6 @@ rule "Turn off ac on Cold Summer Days"
 end;
 
 rule "Open windows on Cold Summer Days"
-  in group "TemperatureRegulationRules"
   when
     def $summer = getContextIfActive(Summer)
     def $night = getContextIfActive(Daily)
@@ -58,7 +53,6 @@ rule "Open windows on Cold Summer Days"
 end;
 
 rule "Close windows when ac is on"
-  in group "TemperatureRegulationRules"
   when
     def $summer = getContextIfActive(Summer)
     is ACOn()
@@ -68,7 +62,6 @@ rule "Close windows when ac is on"
 end;
 
 rule "Turn off heating on Hot Winter days"
-  in group "TemperatureRegulationRules"
   when
     def $winter = getContextIfActive(Winter)
     TemperatureTooHigh has occured
@@ -77,7 +70,6 @@ rule "Turn off heating on Hot Winter days"
 end;
 
 rule "Turn on heating on Hot Winter days"
-  in group "TemperatureRegulationRules"
   when
     def $winter = getContextIfActive(Winter)
     TemperatureTooLow has occured
@@ -86,7 +78,6 @@ rule "Turn on heating on Hot Winter days"
 end;
 
 rule "Close windows on Cold Winter days"
-  in group "TemperatureRegulationRules"
   when
     def $winter = getContextIfActive(Winter)
     is HeatingOn()

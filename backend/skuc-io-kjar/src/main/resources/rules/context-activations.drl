@@ -1,92 +1,86 @@
-package skuc.io;
+// package skuc.io;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import skuc.io.skuciocore.models.csm.Group;
-import skuc.io.skuciocore.models.csm.Location;
-import skuc.io.skuciocore.models.csm.configuration.Context;
-import skuc.io.skuciocore.models.csm.context.activation.EventActivator;
-import skuc.io.skuciocore.models.csm.context.activation.TimePeriodActivator;
-import skuc.io.skuciocore.models.events.context.ContextActivated;
-import skuc.io.skuciocore.models.events.kjar.ActivateContextById;
-import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
-import skuc.io.skuciocore.models.events.kjar.EventOccured;
-import skuc.io.skuciocore.services.ContextService;
-import skuc.io.skuciocore.services.EventActivatorService;
-import skuc.io.skuciocore.services.TimePeriodActivatorService;
-import skuc.io.skuciocore.services.events.ContextActivatedService;
+// import java.time.LocalDateTime;
+// import java.util.ArrayList;
+// import skuc.io.skuciocore.models.csm.Group;
+// import skuc.io.skuciocore.models.csm.Location;
+// import skuc.io.skuciocore.models.csm.configuration.Context;
+// import skuc.io.skuciocore.models.csm.context.activation.EventActivator;
+// import skuc.io.skuciocore.models.csm.context.activation.TimePeriodActivator;
+// import skuc.io.skuciocore.models.events.context.ContextActivated;
+// import skuc.io.skuciocore.models.events.kjar.ActivateContextById;
+// import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
+// import skuc.io.skuciocore.models.events.kjar.EventOccured;
+// import skuc.io.skuciocore.services.ContextService;
+// import skuc.io.skuciocore.services.EventActivatorService;
+// import skuc.io.skuciocore.services.TimePeriodActivatorService;
+// import skuc.io.skuciocore.services.events.ContextActivatedService;
 
-global ContextService contextService;
-global EventActivatorService eventActivatorService;
-global TimePeriodActivatorService timePeriodActivatorService;
-global ContextActivatedService contextActivatedService;
+// global ContextService contextService;
+// global EventActivatorService eventActivatorService;
+// global TimePeriodActivatorService timePeriodActivatorService;
+// global ContextActivatedService contextActivatedService;
 
 
-rule "Activate Context By Name"
-  agenda-group "ContextActivations"
-  when
-    $activateByName : ActivateContextByName()
-    not Context(name == $activateByName.contextName)
-    $group : Group()
-    $location: Location()
-  then
-    Context context = contextService.getByGroupAndName($group.getId(), $activateByName.getContextName());
+// rule "Activate Context By Name"
+//   when
+//     $activateByName : ActivateContextByName()
+//     not Context(name == $activateByName.contextName)
+//     $group : Group()
+//     $location: Location()
+//   then
+//     Context context = contextService.getByGroupAndName($group.getId(), $activateByName.getContextName());
 
-    contextActivatedService.create(new ContextActivated(context.getId(), $location.getId(), LocalDateTime.now()));
-    insert(context);
-end;
+//     contextActivatedService.create(new ContextActivated(context.getId(), $location.getId(), LocalDateTime.now()));
+//     insert(context);
+// end;
 
-rule "Clear Context By Name"
-  agenda-group "ContextActivations"
-  salience -100
-  when
-    $activateByName : ActivateContextByName()
-  then
-    delete($activateByName);
-end;
+// rule "Clear Context By Name"
+//   salience -100
+//   when
+//     $activateByName : ActivateContextByName()
+//   then
+//     delete($activateByName);
+// end;
 
-rule "Activate Context By Id"
-  agenda-group "ContextActivations"
-  when
-    $activateById : ActivateContextById()
-    not Context(id == $activateById.contextId)
-    $location: Location()
-  then
-    Context context = contextService.get($activateById.getContextId());
+// rule "Activate Context By Id"
+//   when
+//     $activateById : ActivateContextById()
+//     not Context(id == $activateById.contextId)
+//     $location: Location()
+//   then
+//     Context context = contextService.get($activateById.getContextId());
 
-    contextActivatedService.create(new ContextActivated(context.getId(), $location.getId(), LocalDateTime.now()));
-    insert(context);
-end;
+//     contextActivatedService.create(new ContextActivated(context.getId(), $location.getId(), LocalDateTime.now()));
+//     insert(context);
+// end;
 
-rule "Clear Context By Id"
-  agenda-group "ContextActivations"
-  salience -100
-  when
-    $activateById : ActivateContextById()
-  then
-    delete($activateById);
-end;
+// rule "Clear Context By Id"
+//   salience -100
+//   when
+//     $activateById : ActivateContextById()
+//   then
+//     delete($activateById);
+// end;
 
-rule "Activate Context By Event Activator"
-  agenda-group "ContextActivations"
-  when
-    $eventOccured : EventOccured(processedByActivator == false)
-    $group : Group()
-    $eventActivator : EventActivator(eventType == $eventOccured.name) from eventActivatorService.getByGroup($group.id)
-  then
-    modify($eventOccured) {
-      setProcessedByActivator(true);
-    }
-    insert(new ActivateContextById($eventActivator.getContextId()));
-end;
+// rule "Activate Context By Event Activator"
+//   when
+//     $eventOccured : EventOccured(processedByActivator == false)
+//     $group : Group()
+//     $eventActivator : EventActivator(eventType == $eventOccured.name) from eventActivatorService.getByGroup($group.id)
+//   then
+//     modify($eventOccured) {
+//       setProcessedByActivator(true);
+//     }
+//     insert(new ActivateContextById($eventActivator.getContextId()));
+// end;
 
-rule "Activate Context By Time Period Activator"
-  agenda-group "ContextActivations"
-  timer (int: 0s 1s)
-  enabled ($timePeriodActivator.matches())
-when
-  $group : Group()
-  $timePeriodActivator : TimePeriodActivator() from timePeriodActivatorService.getByGroup($group.id)
-then
-  insert(new ActivateContextById($timePeriodActivator.getContextId()));
-end;
+// rule "Activate Context By Time Period Activator"
+//   timer (int: 0s 1s)
+//   enabled ($timePeriodActivator.matches())
+// when
+//   $group : Group()
+//   $timePeriodActivator : TimePeriodActivator() from timePeriodActivatorService.getByGroup($group.id)
+// then
+//   insert(new ActivateContextById($timePeriodActivator.getContextId()));
+// end;

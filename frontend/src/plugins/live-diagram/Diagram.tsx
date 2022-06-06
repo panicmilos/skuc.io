@@ -356,11 +356,19 @@ export const Diagram: FC<Props> = ({
     const chainElements = formChainFor([metadata], elements);
     onInit(chainElements);
     setChain(chainElements);
-    return { elements };
+    return { elements, chain: chainElements };
   };
 
   useEffect(() => {
-    init().catch(console.log);
+    init()
+      .then(({ chain }) => {
+        setChain(chain);
+      })
+      .catch(console.log);
+  }, []);
+
+  useEffect(() => {
+    if(!chain.length) return;
     const client = new EventsSocketIoClient(groupId);
     client.onEvent(e => {
       console.log(e);
@@ -372,10 +380,7 @@ export const Diagram: FC<Props> = ({
         handleData({ value, deviceType, type: 'status' });
       } 
     });
-    return () => {
-      client.close();
-    }
-  }, []);
+  }, [chain]);
 
   const handleData = (data: any) => {
     if(data)
