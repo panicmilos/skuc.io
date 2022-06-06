@@ -3,27 +3,28 @@
 import { FC, useEffect, useState } from "react";
 import { initElements } from "./diagramsHandler";
 import { ChainElement, ChainInfo, formChainFor } from "./chain";
+import { EventsSocketIoClient } from "./EventsSocketIoClient";
 
 const round = (n: number) => Math.round(n * 100) / 100;
 const halfChance = () => Math.random() >= 0.5;
 
 const createDataInterval = (handleData: (data: any) => any) => {
   return setInterval(() => {
-    handleData({ value: round(Math.random() * 100), deviceType: 'temperature', type: 'value' });
-    handleData({ value: round(Math.random() * 100), deviceType: 'humidity', type: 'value' });
-    handleData({ value: round(Math.random() * 100), deviceType: 'co2', type: 'value' });
-    handleData({ value: round(Math.random() * 100), deviceType: 'movement', type: 'value' });
-    handleData({ value: round(Math.random() * 100), deviceType: 'sound', type: 'value' });
-    handleData({ value: round(Math.random() * 100), deviceType: 'bathroom', type: 'value' });
-    handleData({ value: round(Math.random() * 100), deviceType: 'pet', type: 'value' });
+    // handleData({ value: round(Math.random() * 100), deviceType: 'temperature', type: 'value' });
+    // handleData({ value: round(Math.random() * 100), deviceType: 'humidity', type: 'value' });
+    // handleData({ value: round(Math.random() * 100), deviceType: 'co2', type: 'value' });
+    // handleData({ value: round(Math.random() * 100), deviceType: 'movement', type: 'value' });
+    // handleData({ value: round(Math.random() * 100), deviceType: 'sound', type: 'value' });
+    // handleData({ value: round(Math.random() * 100), deviceType: 'bathroom', type: 'value' });
+    // handleData({ value: round(Math.random() * 100), deviceType: 'pet', type: 'value' });
     
-    handleData({ value: halfChance() ? 'TemperatureTooHot' : 'TemperatureTooCold', deviceType: 'temperature', type: 'status' });
-    handleData({ value: halfChance() ? 'WindowsOpened' : 'WindowsClosed', deviceType: 'windows', type: 'status' });
-    handleData({ value: halfChance() ? 'SprinklersOn' : 'SprinklersOff', deviceType: 'sprinkler', type: 'status' });
-    handleData({ value: halfChance() ? 'BoilerOn' : 'BoilerOff', deviceType: 'boiler', type: 'status' });
-    handleData({ value: halfChance() ? 'LightsOn' : 'LightsOff', deviceType: 'lights', type: 'status' });
-    handleData({ value: halfChance() ? 'WashingOn' : 'WashingOff', deviceType: 'washing', type: 'status' });
-    handleData({ value: halfChance() ? 'HeatingOn' : 'HeatingOff', deviceType: 'heating', type: 'status' });
+    // handleData({ value: halfChance() ? 'TemperatureTooHot' : 'TemperatureTooCold', deviceType: 'temperature', type: 'status' });
+    // handleData({ value: halfChance() ? 'WindowsOpened' : 'WindowsClosed', deviceType: 'windows', type: 'status' });
+    // handleData({ value: halfChance() ? 'SprinklersOn' : 'SprinklersOff', deviceType: 'sprinkler', type: 'status' });
+    // handleData({ value: halfChance() ? 'BoilerOn' : 'BoilerOff', deviceType: 'boiler', type: 'status' });
+    // handleData({ value: halfChance() ? 'LightsOn' : 'LightsOff', deviceType: 'lights', type: 'status' });
+    // handleData({ value: halfChance() ? 'WashingOn' : 'WashingOff', deviceType: 'washing', type: 'status' });
+    // handleData({ value: halfChance() ? 'HeatingOn' : 'HeatingOff', deviceType: 'heating', type: 'status' });
   }, 3000);
 }
 
@@ -360,6 +361,20 @@ export const Diagram: FC<Props> = ({
 
   useEffect(() => {
     init().catch(console.log);
+    const client = new EventsSocketIoClient(groupId);
+    client.onEvent(e => {
+      console.log(e);
+      if(e.type === "ValueReceived") {
+        const { value, deviceType } = e;
+        handleData({ value, deviceType, type: 'value' });
+      } else if(e.type === "StatusReceived") {
+        const { value, deviceType } = e;
+        handleData({ value, deviceType, type: 'status' });
+      } 
+    });
+    return () => {
+      client.close();
+    }
   }, []);
 
   const handleData = (data: any) => {
