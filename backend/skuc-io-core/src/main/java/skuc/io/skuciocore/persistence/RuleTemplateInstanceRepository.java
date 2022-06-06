@@ -21,13 +21,19 @@ public class RuleTemplateInstanceRepository extends CrudRepository<RuleTemplateI
   }
 
   public RuleTemplateInstance getByTemplateAndLocationAndValues(String templateId, String locationId, ArrayList<Object> values) {
-    // TODO: FECOVATI SVE OVAKO A ONDA FOR PETLJOM PROVERITI VALUES
     try (var session = getSession()) {
-      return session.query(this.concreteClass)
+      var matches = session.query(this.concreteClass)
         .whereEquals("templateId", templateId)
         .whereEquals("locationId", locationId)
-        // .whereEquals("values", values)
-        .firstOrDefault();
+        .toList();
+
+      for (var match : matches) {
+        if (match.getValues().equals(values)) {
+          return match;
+        }
+      }
+
+      return null;
     }
   }
 
@@ -41,7 +47,4 @@ public class RuleTemplateInstanceRepository extends CrudRepository<RuleTemplateI
       session.saveChanges();
     }
   }
-
-
-
 }

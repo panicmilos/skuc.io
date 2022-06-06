@@ -9,8 +9,8 @@
 [keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
 [keyword]use all=import skuc.io.skuciocore.models.csm.*; import skuc.io.skuciocore.models.csm.configuration.*; import skuc.io.skuciocore.models.csm.*
 
-[when]{eventName:\[?\w*\]?} has occured=EventOccured(name == "{eventName}")
-[when]\[{eventName:\w+}\]=template_start{eventName}template_end
+[when]{eventName:\{?\w*\}?} has occured=EventOccured(name == "{eventName}")
+[when]\{{eventName:\w+}\}=template_start{eventName}template_end
 
 [when]are {query:\w*}\(\)=are{query}()
 [when]is {query:\w*}\(\)=is{query}()
@@ -30,26 +30,26 @@
 
 [when]curr_{paramName:\w*}=ValueReceived(paramName == "{paramName}")
 [when]- manje od ${definedParam:[\w_-]*}=value < ${definedParam}
-[when]- manje od {definedParam:\[?[\w_-]*\]?}=value < {definedParam}
+[when]- manje od {definedParam:\{?[\w_-]*\}?}=value < {definedParam}
 [when]- manje ili jednako sa ${definedParam:[\w_-]*}=value <= ${definedParam}
-[when]- manje ili jednako sa {definedParam:\[?[\w_-]*\]?}=value <= {definedParam}
+[when]- manje ili jednako sa {definedParam:\{?[\w_-]*\}?}=value <= {definedParam}
 [when]- vece od ${definedParam:[\w_-]*}=value > ${definedParam}
-[when]- vece od {definedParam:\[?[\w_-]*\]?}=value > {definedParam}
+[when]- vece od {definedParam:\{?[\w_-]*\}?}=value > {definedParam}
 [when]- vece ili jednako sa ${definedParam:[\w_-]*}=value >= ${definedParam}
-[when]- vece ili jednako sa {definedParam:\[?[\w_-]*\]?}=value >= {definedParam}
+[when]- vece ili jednako sa {definedParam:\{?[\w_-]*\}?}=value >= {definedParam}
 [when]- jednako sa ${definedParam:[\w_-]*}=value == ${definedParam}
-[when]- jednako sa {definedParam:\[?[\w_-]*\]?}=value == {definedParam}
+[when]- jednako sa {definedParam:\{?[\w_-]*\}?}=value == {definedParam}
 [when]- razlicito od ${definedParam:[\w_-]*}=value != ${definedParam}
-[when]- razlicito od {definedParam:\[?[\w_-]*\]?}=value != {definedParam}
+[when]- razlicito od {definedParam:\{?[\w_-]*\}?}=value != {definedParam}
 
-[when]\[{definedParam:[\w_-]+}\]=template_start{definedParam}template_end
+[when]\{{definedParam:[\w_-]+}\}=template_start{definedParam}template_end
 
 [then]informUser\(\)=Group group = (Group) kcontext.getKieRuntime().getObjects(new GroupObjectFilterer()).iterator().next(); \n EventOccured informUserEvent = new EventOccured("InformUser", new KeyValue<String, String>("groupId", group.getId()));
 [then]\s?with \"{param:[\w-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
-[then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}
-[then]dispatch\({eventName:\[?\w*\]?}\)=insert(new EventOccured("{eventName}"))
-[then]activateContext\({contextName:\[?\w*\]?}\)=insert(new ActivateContextByName("{contextName}"))
-[then]deactivateContext\({contextName:\[?\w*\]?}\)=insert(new DeactivateContextByName("{contextName}"))
-[then]\[{eventName:\w+}\]=template_start{eventName}template_end
+[then]sisaj{staDaSisam:\(\{?.*\}?\)}=System.out.println{staDaSisam}
+[then]dispatch\({eventName:\{?\w*\}?}\)=insert(new EventOccured("{eventName}"))
+[then]activateContext\({contextName:\{?\w*\}?}\)=insert(new ActivateContextByName("{contextName}"))
+[then]deactivateContext\({contextName:\{?\w*\}?}\)=insert(new DeactivateContextByName("{contextName}"))
+[then]\{{eventName:\w+}\}=template_start{eventName}template_end

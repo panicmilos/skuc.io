@@ -37,7 +37,7 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
 
     public RuleTemplate create(String groupId, String name, List<String> parameters, String when, String then) {
         var templatesDsl = loadTemplatesDsl();
-        var composedRule = composeRule(name, when, then);
+        var composedRule = composeRule(when, then);
 
         var parsedRule = parseRule(composedRule, templatesDsl);
         var imports = generateImports(parsedRule);
@@ -97,11 +97,11 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
         return sb.toString();
     }
 
-    private String composeRule(String name, String when, String then) {
+    private String composeRule(String when, String then) {
         var sb = new StringBuilder();
 
         sb = sb.append("paketic skuc.io;\n\n")
-               .append("rule \"" + name +  "\"\n")
+               .append("rule \"RuleNamePlaceholder\"\n")
                .append("when\n")
                .append(when + "\n")
                .append("then\n")
