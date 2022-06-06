@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import net.ravendb.client.documents.operations.DeleteByQueryOperation;
+import net.ravendb.client.documents.queries.IndexQuery;
 import skuc.io.skuciocore.models.csm.context.activation.TimePeriodActivator;
 
 @Repository
@@ -52,6 +54,12 @@ public class TimePeriodActivatorRepository extends CrudRepository<TimePeriodActi
       session.saveChanges();
     }
     
+  }
+
+  public void deleteByContext(String contextId) {
+    DocumentStoreHolder.getStore()
+      .operations()
+      .send(new DeleteByQueryOperation(new IndexQuery(String.format("from TimePeriodActivators where contextId = '%s'", contextId))));
   }
 
 }

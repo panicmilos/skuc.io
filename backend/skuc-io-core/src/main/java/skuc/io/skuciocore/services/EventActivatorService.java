@@ -56,4 +56,8 @@ public class EventActivatorService extends CrudService<EventActivator> {
     return super.update(eventActivator);
   }
 
+  public void deleteByContext(String contextId) {
+    _eventActivatorRepository.deleteByContext(contextId);
+  }
+
 }

@@ -129,6 +129,12 @@ public class SessionManager {
     }
   }
 
+  public void closeSession(String key) {
+    var session = _sessions.get(key);
+
+    session.dispose();
+  }
+
   private class AggregationThread extends Thread {
     private final KieSession _kieSession;
     public AggregationThread(String name, KieSession kieSession) {

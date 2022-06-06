@@ -4,6 +4,7 @@ use dispatch;
 use most common imports;
 
 rule "Potential Pet Home Escape"
+  in group "PetRules"
   when
     ensureContextNotActive(PetWalk)
     def $context = getAnyContextIfActive()
@@ -16,6 +17,7 @@ rule "Potential Pet Home Escape"
 end;
 
 rule "Potential Pet Neighborhood Escape"
+  in group "PetRules"
   when
     ensureContextNotActive(PetWalk)
     PotentialPetMissing has occured
@@ -29,6 +31,7 @@ rule "Potential Pet Neighborhood Escape"
 end;
 
 rule "Pet Missing"
+  in group "PetRules"
   when
     def $context = getContextIfActive(AFH)
     PetMissing has occured
@@ -39,6 +42,7 @@ rule "Pet Missing"
 end;
 
 rule "Potential Pet Neighborhood Comeback"
+  in group "PetRules"
   when
     is PetMissing()
     def $context = getAnyContextIfActive()
@@ -51,6 +55,7 @@ rule "Potential Pet Neighborhood Comeback"
 end;
 
 rule "Potential Pet Home Comeback"
+  in group "PetRules"
   when
     PotentialPetComeback has occured
     def $context = getAnyContextIfActive()
@@ -61,40 +66,4 @@ rule "Potential Pet Home Comeback"
     dispatch(InformUser);
     dispatch(PetComeback);
     dispatch(StopSendingRealTimeLocation);
-end;
-
-rule "Person Enters Koopatilo"
-  when
-    def $context = getContextIfActive(AH)
-    def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
-    curr_prisutnostkupatilo
-      - vece od $max_prisutnostkupatilo
-    is NotInKupatilo()
-  then
-    dispatch(TurnOffBoiler);
-    dispatch(TurnLightsOn);
-    dispatch(InKupatilo);
-end;
-
-rule "Person Exits Koopatilo"
-  when
-    def $context = getContextIfActive(AH)
-    def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
-    curr_prisutnostkupatilo
-      - manje od $max_prisutnostkupatilo
-    is InKupatilo()
-  then
-    dispatch(TurnOnBoiler);
-    dispatch(TurnLightsOff);
-    dispatch(NotInKupatilo);
-end;
-
-rule "Turn on Washing Machine for Cheap Customers"
-  when
-    def $nightly = getContextIfActive(Nightly)
-    def $eco = getContextIfActive(Eco)
-    is WashingMachineOff()
-  then
-    dispatch(TurnOnWashingMachine);
-    dispatch(WashingMachineOn);
 end;

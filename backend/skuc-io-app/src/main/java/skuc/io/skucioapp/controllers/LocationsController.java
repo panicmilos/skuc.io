@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import skuc.io.skucioapp.api_contracts.requests.Locations.CreateLocationRequest;
 import skuc.io.skucioapp.api_contracts.requests.Locations.UpdateLocationRequest;
+import skuc.io.skuciocore.ksessions.SessionManager;
 import skuc.io.skuciocore.models.csm.Location;
 import skuc.io.skuciocore.services.LocationService;
 
@@ -24,11 +25,13 @@ import skuc.io.skuciocore.services.LocationService;
 public class LocationsController {
  
   private final LocationService _locationService;
+  private final SessionManager _manager;
   private final ModelMapper _mapper;
 
   @Autowired
-  public LocationsController(LocationService locationService, ModelMapper mapper) {
+  public LocationsController(LocationService locationService, SessionManager manager, ModelMapper mapper) {
     _locationService = locationService;
+    _manager = manager;
     _mapper = mapper;
   }
 
@@ -61,6 +64,10 @@ public class LocationsController {
 
   @DeleteMapping("{groupId}/locations/{locationId}")
   public ResponseEntity<Location> deleteLocation(@PathVariable String locationId) {
-    return ResponseEntity.ok(_locationService.delete(locationId));
+    var deletedLocation = _locationService.delete(locationId);
+
+    _manager.closeSession(locationId);
+
+    return ResponseEntity.ok(deletedLocation);
   }
 }
