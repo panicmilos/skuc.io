@@ -1,13 +1,21 @@
 package skuc.io.skuciocore.services;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 
+import org.drools.template.DataProviderCompiler;
+import org.drools.template.objects.ArrayDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import skuc.io.skuciocore.exceptions.BadLogicException;
+import skuc.io.skuciocore.models.csm.templates.RuleTemplate;
 import skuc.io.skuciocore.models.csm.templates.RuleTemplateInstance;
 import skuc.io.skuciocore.persistence.RuleTemplateInstanceRepository;
+import skuc.io.skuciocore.utils.ClassScannerUtils;
 
 @Service
 public class RuleTemplateInstanceService extends CrudService<RuleTemplateInstance> {
@@ -47,7 +55,65 @@ public class RuleTemplateInstanceService extends CrudService<RuleTemplateInstanc
       throw new BadLogicException("Rule template with the same values for given location is already instantiated.");
     }
 
-    return super.create(ruleTemplateInstance);
+    var createdInstance = super.create(ruleTemplateInstance);
+    activate(createdInstance);
+
+    return createdInstance;
+  }
+
+  @Override
+  public RuleTemplateInstance delete(String ruleTemplateInstanceId) {
+    var ruleTemplateInstance = getOrThrow(ruleTemplateInstanceId);
+    removeDRL(ruleTemplateInstance);
+
+    return super.delete(ruleTemplateInstanceId);
+  }
+
+  public void activate(RuleTemplateInstance ruleTemplateInstance) {
+    var ruleTemplate = _ruleTemplateService.getOrThrow(ruleTemplateInstance.getTemplateId());
+    var template = transformTemplateToUniqueInstance(ruleTemplate, ruleTemplateInstance);
+
+    var stringVals = ruleTemplateInstance.getValues().stream().map(val -> val.toString()).toArray(String[]::new);
+    var dataProvider = new ArrayDataProvider(new String[][] {
+      stringVals
+    });
+
+    var templateStream = new ByteArrayInputStream(template.getBytes());
+    var converter = new DataProviderCompiler();
+    var drl = converter.compile(dataProvider, templateStream);
+
+    writeDRLToOutput(ruleTemplateInstance, drl);
+  }
+
+  private String transformTemplateToUniqueInstance(RuleTemplate ruleTemplate, RuleTemplateInstance ruleTemplateInstance) {
+    var template = ruleTemplate.getTemplate().replace("RuleNamePlaceholder", ruleTemplateInstance.getId());
+    template = template.replace("when", "when\nLocation(id == \"" + ruleTemplateInstance.getLocationId() + "\")\n");
+
+    return template;
+  }
+
+  private void writeDRLToOutput(RuleTemplateInstance ruleTemplateInstance, String drl) {
+    try {
+      var templateInstancePath = Paths.get(getTemplateInstancePath(ruleTemplateInstance.getLocationId(), ruleTemplateInstance.getId()));
+      Files.createDirectories(templateInstancePath.getParent());
+      Files.write(templateInstancePath, drl.getBytes());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void removeDRL(RuleTemplateInstance ruleTemplateInstance) {
+    try {
+      var templateInstancePath = Paths.get(getTemplateInstancePath(ruleTemplateInstance.getLocationId(), ruleTemplateInstance.getId()));
+      Files.delete(templateInstancePath);
+   } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private String getTemplateInstancePath(String locationId, String ruleTemplateInstanceId) {
+    var workingPath = ClassScannerUtils.getWorkingPath();
+    return workingPath + "/../skuc-io-kjar/src/main/resources" + "/template-instances/" + ruleTemplateInstanceId + ".drl";
   }
 
   @Override

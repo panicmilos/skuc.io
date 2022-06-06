@@ -14,4 +14,8 @@ public class ClassScannerUtils {
           .stream()
           .collect(Collectors.toMap(Class::getSimpleName, Class::getName));
     }
+
+    public static String getWorkingPath() {
+        return System.getProperty("user.dir");
+    }
 }
