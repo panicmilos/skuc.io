@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import skuc.io.skucioapp.api_contracts.requests.Groups.CreateGroupRequest;
 import skuc.io.skuciocore.models.csm.Group;
+import skuc.io.skuciocore.seeder.ContextSeeder;
 import skuc.io.skuciocore.services.GroupService;
 
 @RestController
@@ -23,10 +24,12 @@ import skuc.io.skuciocore.services.GroupService;
 public class GroupsController {
   
   private final GroupService _groupService;
+  private final ContextSeeder _contextSeeder;
   private final ModelMapper _mapper;
 
   @Autowired
-  public GroupsController(GroupService groupService, ModelMapper mapper) {
+  public GroupsController(GroupService groupService, ContextSeeder contextSeeder, ModelMapper mapper) {
+    _contextSeeder = contextSeeder;
     _groupService = groupService;
     _mapper = mapper;
   }
@@ -44,8 +47,11 @@ public class GroupsController {
   @PostMapping
   public ResponseEntity<Group> createGroup(@RequestBody CreateGroupRequest request) {
     var group = _mapper.map(request, Group.class);
+    var createdGroup = _groupService.create(group);
 
-    return ResponseEntity.ok(_groupService.create(group));
+    _contextSeeder.seed(createdGroup.getId());
+
+    return ResponseEntity.ok(createdGroup);
   }
 
   @PutMapping("/{id}")
