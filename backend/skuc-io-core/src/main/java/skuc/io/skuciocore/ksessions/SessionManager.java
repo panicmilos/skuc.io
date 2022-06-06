@@ -151,7 +151,7 @@ public class SessionManager {
 
   public KieSession getAggregateSession() {
     if (!_sessions.containsKey("aggregation_session")) {
-      var session = _kieContainer.getKieBase("CepKBase").newKieSession();
+      var session = _kieContainer.newKieSession("DefaultCepSession");
 
       new AggregationThread("AggregationThread", session).start();
       

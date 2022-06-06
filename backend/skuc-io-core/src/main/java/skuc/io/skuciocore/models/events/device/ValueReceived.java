@@ -42,6 +42,12 @@ public class ValueReceived extends DeviceEvent {
     super(id, deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType);
   }
 
+  public ValueReceived(String deviceId, String deviceType, String paramName, float value) {
+    super(UUID.randomUUID().toString(), deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType);
+    this.paramName = paramName;
+    this.value = value;
+  }
+
   public String getDeviceId() {
     return this.getStreamId();
   }
