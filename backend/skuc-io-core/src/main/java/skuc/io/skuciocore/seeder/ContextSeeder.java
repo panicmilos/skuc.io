@@ -91,7 +91,7 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 100));
         }};
         var dayConfiguration = new Configuration(dayThresholds, new HashMap<>());
-        createContext("Day", groupId, dayConfiguration);
+        createContext("Daily", groupId, dayConfiguration);
 
         var nightThresholds = new HashMap<String, ThresholdsConfig>() {{
             put("temperature", new ThresholdsConfig(15, 20));
