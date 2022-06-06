@@ -45,7 +45,7 @@
 [when]\{{definedParam:[\w_-]+}\}=template_start{definedParam}template_end
 
 [then]informUser\(\)=Group group = (Group) kcontext.getKieRuntime().getObjects(new GroupObjectFilterer()).iterator().next(); \n EventOccured informUserEvent = new EventOccured("InformUser", new KeyValue<String, String>("groupId", group.getId()));
-[then]\s?with \"{param:[\w-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
+[then]\s?with \"{param:[@\w\d-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
 [then]sisaj{staDaSisam:\(\{?.*\}?\)}=System.out.println{staDaSisam}
