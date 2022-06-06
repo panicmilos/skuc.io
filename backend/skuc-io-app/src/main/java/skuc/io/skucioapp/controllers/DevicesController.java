@@ -1,6 +1,7 @@
 package skuc.io.skucioapp.controllers;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class DevicesController {
   @PostMapping("{groupId}/locations/{locationId}/devices")
   public ResponseEntity<Device> createDevice(@PathVariable String groupId, @PathVariable String locationId, @RequestBody CreateDeviceRequest request) {
     var device = _mapper.map(request, Device.class);
+    device.setId(UUID.randomUUID().toString());
     device.setGroupId(groupId);
     device.setLocationId(locationId);
 

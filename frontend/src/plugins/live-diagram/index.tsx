@@ -2,6 +2,7 @@ import { FeaturePlugin } from "./imports";
 import LoginIcon from "@mui/icons-material/Login";
 import { Diagram } from "./Diagram";
 import { PaddingContainer } from "../sidebar";
+import { getGroupIdFromToken } from "../auth-context";
 
 export function getPluginDefinition(): FeaturePlugin {
   return {
@@ -18,7 +19,7 @@ export function getPluginDefinition(): FeaturePlugin {
       {
         component: (
           <PaddingContainer>
-            <Diagram diagramFilePath="/diagrams/diagram.drawio.xml" groupId="" />
+            <Diagram diagramFilePath="/diagrams/diagram.drawio.xml" groupId={getGroupIdFromToken()} />
           </PaddingContainer>
         ),
         path: "/diagrams",

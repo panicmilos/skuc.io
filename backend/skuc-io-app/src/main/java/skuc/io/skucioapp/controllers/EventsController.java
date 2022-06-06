@@ -63,7 +63,7 @@ public class EventsController {
     var valueReceived = _mapper.map(request, ValueReceived.class);
     valueReceived.setId(UUID.randomUUID().toString());
 
-    var device = _deviceService.getOrThrow(valueReceived.getDeviceId());
+    var device = _deviceService.getByDevice(valueReceived.getDeviceId());
 
     var aggregation_Session = _sessionManager.getAggregateSession();
     aggregation_Session.insert(valueReceived);

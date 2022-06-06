@@ -22,6 +22,10 @@ public class DeviceService extends CrudService<Device> {
     _deviceRepository = repository;
   }
 
+  public Device getByDevice(String deviceId) {
+    return this._deviceRepository.getByDevice(deviceId);
+  }
+
   public Collection<Device> getByLocation(String locationId) {
     return _deviceRepository.getByLocation(locationId);
   }

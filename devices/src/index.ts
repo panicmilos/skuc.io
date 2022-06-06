@@ -14,20 +14,20 @@ import {
 class Sender implements ICanSendToCloud {
   sendData(data: any): void {
     const { value, deviceType, deviceId } = data.value;
-    // axios.post(`http://localhost:8080/events/statuses`, {
-    //   value,
-    //   deviceType,
-    //   streamId: deviceId
-    // })
+    axios.post(`http://localhost:8080/events/values`, {
+      value,
+      deviceType,
+      streamId: deviceId
+    })
     console.log('VALUE', value, deviceType, deviceId);
   }
   sendStatus(data: any): void {
     const { value, deviceType, deviceId } = data.value;
-    // axios.post(`http://localhost:8080/events/statuses`, {
-    //   value,
-    //   deviceType,
-    //   streamId: deviceId
-    // })
+    axios.post(`http://localhost:8080/events/statuses`, {
+      value,
+      deviceType,
+      streamId: deviceId
+    })
     console.log('STATUS', value, deviceType, deviceId);
   }
 }
@@ -42,120 +42,136 @@ const gw = new EdgeGateway({
 
 gw.init();
 
+const temperatureDeviceId = "temperatureDeviceId";
+const co2DeviceId = "co2DeviceId";
+const humidityDeviceId = "humidityDeviceId";
+const acDeviceId = "acDeviceId";
+const windowsDeviceId = "windowsDeviceId";
+const sprinklerDeviceId = "sprinklerDeviceId";
+const heatingDeviceId = "heatingDeviceId";
+const boilerDeviceId = "boilerDeviceId";
+const lightsDeviceId = "lightsDeviceId";
+const washingDeviceId = "washingDeviceId";
+const cameraDeviceId = "cameraDeviceId";
+const movementDeviceId = "movementDeviceId";
+const soundDeviceId = "soundDeviceId";
+const petDeviceId = "petDeviceId";
+const bathroomDeviceId = "bathroomDeviceId";
+
 const temperature: SeqElement[] = [
-  { timeout: 3, value: { value: 18, deviceType: "temperature", deviceId: "temperatureid" } },
-  { timeout: 3, value: { value: 19, deviceType: "temperature", deviceId: "temperatureid" } },
-  { timeout: 3, value: { value: 18.5, deviceType: "temperature", deviceId: "temperatureid" } },
-  { timeout: 3, value: { value: 20, deviceType: "temperature", deviceId: "temperatureid" } },
-  { timeout: 3, value: { value: 22, deviceType: "temperature", deviceId: "temperatureid" } },
+  { timeout: 3, value: { value: 18, deviceType: "temperature", deviceId: temperatureDeviceId } },
+  { timeout: 3, value: { value: 19, deviceType: "temperature", deviceId: temperatureDeviceId } },
+  { timeout: 3, value: { value: 18.5, deviceType: "temperature", deviceId: temperatureDeviceId } },
+  { timeout: 3, value: { value: 20, deviceType: "temperature", deviceId: temperatureDeviceId } },
+  { timeout: 3, value: { value: 22, deviceType: "temperature", deviceId: temperatureDeviceId } },
 ];
 
 const co2: RandomSeqElement[] = [
   {
     probability: 5,
-    value: { value: 0.3, deviceType: "co2", deviceId: "co2id" },
+    value: { value: 0.3, deviceType: "co2", deviceId: co2DeviceId },
   },
   {
     probability: 2,
-    value: { value: 0.5, deviceType: "co2", deviceId: "co2id" },
+    value: { value: 0.5, deviceType: "co2", deviceId: co2DeviceId },
   },
   {
     probability: 1,
-    value: { value: 0.7, deviceType: "co2", deviceId: "co2id" },
+    value: { value: 0.7, deviceType: "co2", deviceId: co2DeviceId },
   },
 ];
 
 const humidity: RandomSeqElement[] = [
   {
     probability: 10,
-    value: { value: 0.4, deviceType: "humidity", deviceId: "humidityid" },
+    value: { value: 0.4, deviceType: "humidity", deviceId: humidityDeviceId },
   },
   {
     probability: 5,
-    value: { value: 0.5, deviceType: "humidity", deviceId: "humidityid" },
+    value: { value: 0.5, deviceType: "humidity", deviceId: humidityDeviceId },
   },
   {
     probability: 3,
-    value: { value: 0.6, deviceType: "humidity", deviceId: "humidityid" },
+    value: { value: 0.6, deviceType: "humidity", deviceId: humidityDeviceId },
   },
   {
     probability: 1,
-    value: { value: 0.7, deviceType: "humidity", deviceId: "humidityid" },
+    value: { value: 0.7, deviceType: "humidity", deviceId: humidityDeviceId },
   },
   {
     probability: 1,
-    value: { value: 0.2, deviceType: "humidity", deviceId: "humidityid" },
+    value: { value: 0.2, deviceType: "humidity", deviceId: humidityDeviceId },
   },
 ];
 
 const ac: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "ac", deviceId: "acid" }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "ac", deviceId: "acid" }, type: "status" },
+  { timeout: 30, value: { value: "on", deviceType: "ac", deviceId: acDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "off", deviceType: "ac", deviceId: acDeviceId }, type: "status" },
 ];
 
 const windows: SeqElement[] = [
-  { timeout: 30, value: { value: "opened", deviceType: "windows", deviceId: "windowsid" }, type: "status" },
-  { timeout: 30, value: { value: "closed", deviceType: "windows", deviceId: "windowsid" }, type: "status" },
+  { timeout: 30, value: { value: "opened", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "closed", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
 ];
 
 const sprinkler: SeqElement[] = [
-  { timeout: 999999, value: { value: "off", deviceType: "sprinkler", deviceId: "sprinklerid" }, type: "status" },
-  { timeout: 30, value: { value: "on", deviceType: "sprinkler", deviceId: "sprinklerid" }, type: "status" },
+  { timeout: 999999, value: { value: "off", deviceType: "sprinkler", deviceId: sprinklerDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "on", deviceType: "sprinkler", deviceId: sprinklerDeviceId }, type: "status" },
 ];
 
 const heating: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "heating", deviceId: "heatingid" }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "heating", deviceId: "heatingid" }, type: "status" },
+  { timeout: 30, value: { value: "on", deviceType: "heating", deviceId: heatingDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "off", deviceType: "heating", deviceId: heatingDeviceId }, type: "status" },
 ];
 
 const boiler: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "boiler", deviceId: "boilerid" }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "boiler", deviceId: "boilerid" }, type: "status" },
+  { timeout: 30, value: { value: "on", deviceType: "boiler", deviceId: boilerDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "off", deviceType: "boiler", deviceId: boilerDeviceId }, type: "status" },
 ];
 
 const lights: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "lights", deviceId: "lightsid" }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "lights", deviceId: "lightsid" }, type: "status" },
+  { timeout: 30, value: { value: "on", deviceType: "lights", deviceId: lightsDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "off", deviceType: "lights", deviceId: lightsDeviceId }, type: "status" },
 ];
 
 const washing: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "washing", deviceId: "washingid" }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "washing", deviceId: "washingid" }, type: "status" },
+  { timeout: 30, value: { value: "on", deviceType: "washing", deviceId: washingDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "off", deviceType: "washing", deviceId: washingDeviceId }, type: "status" },
 ];
 
 const camera: SeqElement[] = [
-  { timeout: 30, value: { value: "hasActivity", deviceType: "camera", deviceId: "cameraid" }, type: "status" },
-  { timeout: 30, value: { value: "noActivity", deviceType: "camera", deviceId: "cameraid" }, type: "status" },
+  { timeout: 30, value: { value: "hasActivity", deviceType: "camera", deviceId: cameraDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "noActivity", deviceType: "camera", deviceId: cameraDeviceId }, type: "status" },
 ];
 
 const movement: SeqElement[] = [
-  { timeout: 30, value: { value: 0, deviceType: "movement", deviceId: "movementid" } },
-  { timeout: 30, value: { value: 0.1, deviceType: "movement", deviceId: "movementid" } },
-  { timeout: 30, value: { value: 0.7, deviceType: "movement", deviceId: "movementid" } },
+  { timeout: 30, value: { value: 0, deviceType: "movement", deviceId: movementDeviceId } },
+  { timeout: 30, value: { value: 0.1, deviceType: "movement", deviceId: movementDeviceId } },
+  { timeout: 30, value: { value: 0.7, deviceType: "movement", deviceId: movementDeviceId } },
 ];
 
 const sound: SeqElement[] = [
-  { timeout: 30, value: { value: 0, deviceType: "sound", deviceId: "soundid" } },
-  { timeout: 30, value: { value: 0.1, deviceType: "sound", deviceId: "soundid" } },
-  { timeout: 30, value: { value: 0.7, deviceType: "sound", deviceId: "soundid" } },
+  { timeout: 30, value: { value: 0, deviceType: "sound", deviceId: soundDeviceId } },
+  { timeout: 30, value: { value: 0.1, deviceType: "sound", deviceId: soundDeviceId } },
+  { timeout: 30, value: { value: 0.7, deviceType: "sound", deviceId: soundDeviceId } },
 ];
 
 const pet: SeqElement[] = [
-  { timeout: 5, value: { value: 25, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 30, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 50, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 55, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 70, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 80, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 70, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 55, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 35, deviceType: "pet", deviceId: "petid" } },
-  { timeout: 5, value: { value: 25, deviceType: "pet", deviceId: "petid" } },
+  { timeout: 5, value: { value: 25, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 30, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 50, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 55, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 70, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 80, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 70, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 55, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 35, deviceType: "pet", deviceId: petDeviceId } },
+  { timeout: 5, value: { value: 25, deviceType: "pet", deviceId: petDeviceId } },
 ];
 
 const bathroom: SeqElement[] = [
-  { timeout: 30, value: { value: 0, deviceType: "bathroom", deviceId: "bathroomid" } },
-  { timeout: 30, value: { value: 1, deviceType: "bathroom", deviceId: "bathroomid" } },
+  { timeout: 30, value: { value: 0, deviceType: "bathroom", deviceId: bathroomDeviceId } },
+  { timeout: 30, value: { value: 1, deviceType: "bathroom", deviceId: bathroomDeviceId } },
 ];
 
 const simulators: ICanBeInitializedAndDisposed[] = [
