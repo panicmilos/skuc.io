@@ -11,7 +11,8 @@
 [keyword]use deactivateContext=import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;import skuc.io.skuciocore.models.events.kjar.DeactivateContextByName
 [keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
 
-[keyword]in group=agenda-group
+[when]in the last {time:\d+[ms]} {eventName:\w*} has occured=EventOccured(name == "{eventName}") over window:time({time})
+[when]in the last {time:\d+[ms]} {eventName:\w*} has not occured=not EventOccured(name == "{eventName}") over window:time({time})
 
 [when]def ${definedParam:[\w_-]*}\s?\=\s{eventName:\w*} has occured=${definedParam} : EventOccured(name == "{eventName}")
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")

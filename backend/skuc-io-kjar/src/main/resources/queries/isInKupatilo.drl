@@ -4,5 +4,5 @@ import skuc.io.skuciocore.models.csm.StateRegistry;
 
 query isInKupatilo()
   $reg : StateRegistry()
-  eval($reg.isState("test", "test"))
+  eval($reg.isState("bathroom", "yes"))
 end

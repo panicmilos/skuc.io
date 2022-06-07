@@ -1,15 +1,22 @@
 package skuc.io.skuciocore.models.events.kjar;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
+
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
 
 import skuc.io.skuciocore.models.events.BaseEvent;
 import skuc.io.skuciocore.models.utilityClasses.KeyValue;
 
+@Role(Role.Type.EVENT)
+@Timestamp("timeStamp")
 public class EventOccured extends BaseEvent {
   private String name;
   private HashMap<String, String> params = new HashMap<>();
   private boolean processedByActivator;
+  private Date timeStamp = new Date();
 
   public EventOccured() {
     super();
@@ -63,5 +70,19 @@ public class EventOccured extends BaseEvent {
   public void setParams(HashMap<String, String> params) {
     this.params = params;
   }
+
+
+  public boolean isProcessedByActivator() {
+    return this.processedByActivator;
+  }
+
+  public Date getTimeStamp() {
+    return this.timeStamp;
+  }
+
+  public void setTimeStamp(Date timeStamp) {
+    this.timeStamp = timeStamp;
+  }
+
 
 }

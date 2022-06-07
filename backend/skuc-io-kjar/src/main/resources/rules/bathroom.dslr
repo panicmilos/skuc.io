@@ -1,27 +1,68 @@
 paketic skuc.io;
 
 use dispatch;
+use changeStatus;
 use most common imports;
 
 rule "Person Enters Koopatilo"
   when
-    def $context = getContextIfActive(AH)
+    def $context = getAnyContextIfActive()
     def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
     def $curr_prisutnostkupatilo
       - vece od $max_prisutnostkupatilo
-    is NotInKupatilo()
+    isn't InKupatilo()
   then
     dispatch(TurnOffBoiler);
     dispatch(TurnLightsOn);
     dispatch(InKupatilo);
 end;
 
+rule "Change status TurnOffBoiler"
+  when
+    def $turnOffEvent = TurnOffBoiler has occured
+  then
+    changeStatus("boiler", "BoilerOff");
+end;
+
+rule "Remove TurnOffBoiler"
+  priority -100
+  when
+    def $turnOffEvent = TurnOffBoiler has occured
+  then
+    removeEvent($turnOffEvent);
+end;
+
+rule "Change status TurnLightsOn"
+  when
+    def $turnOnEvent = TurnLightsOn has occured
+  then
+    changeStatus("lights", "LightsOn");
+end;
+
+rule "Remove TurnLightsOn"
+  priority -100
+  when
+    def $turnOnEvent = TurnLightsOn has occured
+  then
+    removeEvent($turnOnEvent);
+end;
+
+rule "Change status InKupatilo"
+  when
+    def $inKupatiloEvent = InKupatilo has occured
+  then
+    removeEvent($inKupatiloEvent);
+    changeStatus("bathroom", "yes");
+end;
+
+
+
 rule "Person Exits Koopatilo"
   when
-    def $context = getContextIfActive(AH)
-    def $max_prisutnostkupatilo = C[$context][max_prisutnostkupatilo]
+    def $context = getAnyContextIfActive()
+    def $min_prisutnostkupatilo = C[$context][min_prisutnostkupatilo]
     def $curr_prisutnostkupatilo
-      - manje od $max_prisutnostkupatilo
+      - manje od $min_prisutnostkupatilo
     is InKupatilo()
   then
     dispatch(TurnOnBoiler);
@@ -29,12 +70,49 @@ rule "Person Exits Koopatilo"
     dispatch(NotInKupatilo);
 end;
 
-rule "Turn on Washing Machine for Cheap Customers"
+rule "Change status TurnOnBoiler"
   when
-    def $nightly = getContextIfActive(Nightly)
-    def $eco = getContextIfActive(Eco)
-    isn't WashingMachineOn()
+    def $turnOnEvent = TurnOnBoiler has occured
   then
-    dispatch(TurnOnWashingMachine);
-    dispatch(WashingMachineOn);
+    changeStatus("boiler", "BoilerOn");
 end;
+
+rule "Remove TurnOnBoiler"
+  priority -100
+  when
+    def $turnOnEvent = TurnOnBoiler has occured
+  then
+    removeEvent($turnOnEvent);
+end;
+
+rule "Change status TurnLightsOff"
+  when
+    def $turnOffEvent = TurnLightsOff has occured
+  then
+    changeStatus("lights", "LightsOff");
+end;
+
+rule "Remove TurnLightsOff"
+  priority -100
+  when
+    def $turnOffEvent = TurnLightsOff has occured
+  then
+    removeEvent($turnOffEvent);
+end;
+
+rule "Change status NotInKupatilo"
+  when
+    def $notInKupatiloEvent = NotInKupatilo has occured
+  then
+    removeEvent($notInKupatiloEvent);
+    changeStatus("bathroom", "no");
+end;
+
+rule "Remove Curr PrisutnostKupatilo"
+  priority -100
+  when
+    def $curr_prisutnostkupatilo
+  then
+    removeValue($curr_prisutnostkupatilo);
+end;
+

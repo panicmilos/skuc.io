@@ -131,18 +131,18 @@ const heating: SeqElement[] = [
 ];
 
 const boiler: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "boiler", deviceId: boilerDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "boiler", deviceId: boilerDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "BoilerOn", deviceType: "boiler", deviceId: boilerDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "BoilerOff", deviceType: "boiler", deviceId: boilerDeviceId }, type: "status" },
 ];
 
 const lights: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "lights", deviceId: lightsDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "lights", deviceId: lightsDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "LightsOn", deviceType: "lights", deviceId: lightsDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "LightsOff", deviceType: "lights", deviceId: lightsDeviceId }, type: "status" },
 ];
 
 const washing: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "washing", deviceId: washingDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "washing", deviceId: washingDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "WashingOn", deviceType: "washing", deviceId: washingDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "WashingOff", deviceType: "washing", deviceId: washingDeviceId }, type: "status" },
 ];
 
 const camera: SeqElement[] = [

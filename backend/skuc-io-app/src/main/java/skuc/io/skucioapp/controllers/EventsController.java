@@ -108,7 +108,7 @@ public class EventsController {
   @PostMapping("test-inform/{numer}")
   public ResponseEntity<ValueReceived> createValue2222(@PathVariable Number numer) throws ParseException {
 
-    var session = _sessionManager.getSession("5390ba11-857d-40c2-816a-9a2b716baa91");
+    var session = _sessionManager.getSession("6c31995f-1f79-48a4-a4a4-2e5af235e2de");
     // session.insert(new ActivateContextByName("Night"));
     session.insert(numer);
     session.fireAllRules();

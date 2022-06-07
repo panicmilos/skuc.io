@@ -29,6 +29,7 @@ public class ContextSeeder {
             put("movement", new ThresholdsConfig(2, 5));
             put("neighborhoodradius", new ThresholdsConfig(0, 50000));
             put("homeradius", new ThresholdsConfig(0, 5000));
+            put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
         var afhConfiguration = new Configuration(afhThresholds, new HashMap<>());
         createContext("AFH", groupId, afhConfiguration);
@@ -41,6 +42,7 @@ public class ContextSeeder {
             put("movement", new ThresholdsConfig(2, 40));
             put("neighborhoodradius", new ThresholdsConfig(0, 500));
             put("homeradius", new ThresholdsConfig(0, 50));
+            put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
         var ahConfiguration = new Configuration(ahThresholds, new HashMap<>());
         createContext("AH", groupId, ahConfiguration);
@@ -53,6 +55,7 @@ public class ContextSeeder {
             put("movement", new ThresholdsConfig(2, 40));
             put("neighborhoodradius", new ThresholdsConfig(0, 500));
             put("homeradius", new ThresholdsConfig(0, 50));
+            put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
         var ecoConfiguration = new Configuration(ecoThresholds, new HashMap<>());
         createContext("Eco", groupId, ecoConfiguration);
@@ -65,6 +68,7 @@ public class ContextSeeder {
             put("movement", new ThresholdsConfig(2, 40));
             put("neighborhoodradius", new ThresholdsConfig(0, 10));
             put("homeradius", new ThresholdsConfig(0, 20));
+            put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
         var winterConfiguration = new Configuration(winterThresholds, new HashMap<>());
         createContext("Winter", groupId, winterConfiguration);
@@ -77,6 +81,7 @@ public class ContextSeeder {
             put("movement", new ThresholdsConfig(2, 40));
             put("neighborhoodradius", new ThresholdsConfig(0, 50000));
             put("homeradius", new ThresholdsConfig(0, 100));
+            put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
         var summerConfiguration = new Configuration(summerThresholds, new HashMap<>());
         createContext("Summer", groupId, summerConfiguration);
@@ -89,6 +94,7 @@ public class ContextSeeder {
             put("movement", new ThresholdsConfig(2, 40));
             put("neighborhoodradius", new ThresholdsConfig(0, 50000));
             put("homeradius", new ThresholdsConfig(0, 100));
+            put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
         var dayConfiguration = new Configuration(dayThresholds, new HashMap<>());
         createContext("Daily", groupId, dayConfiguration);
@@ -101,6 +107,7 @@ public class ContextSeeder {
             put("movement", new ThresholdsConfig(2, 10));
             put("neighborhoodradius", new ThresholdsConfig(0, 0));
             put("homeradius", new ThresholdsConfig(0, 2));
+            put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
         var nightConfiguration = new Configuration(nightThresholds, new HashMap<>());
         createContext("Night", groupId, nightConfiguration);

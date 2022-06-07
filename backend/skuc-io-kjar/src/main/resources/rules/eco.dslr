@@ -1,0 +1,48 @@
+paketic skuc.io;
+
+use dispatch;
+use changeStatus;
+use most common imports;
+
+
+rule "Turn on Washing Machine for Cheap Customers"
+  when
+    def $nightly = getContextIfActive(Nightly)
+    def $eco = getContextIfActive(Eco)
+    isn't WashingMachineOn()
+    WashingMachineShouldNotBeTurnedOn has not occured
+  then
+    dispatch(TurnOnWashingMachine);
+    dispatch(WashingMachineShouldNotBeTurnedOn);
+end;
+
+rule "Change status TurnOnWashingMachine"
+  when
+    def $turnOnEvent = TurnOnWashingMachine has occured
+  then
+    changeStatus("washing", "WashingOn");
+end;
+
+rule "Turn Off Washing Machine"
+  when
+    is WashingMachineOn()
+    in the last 20s TurnOnWashingMachine has not occured
+  then
+    changeStatus("washing", "WashingOff");
+    dispatch(DeleteTurnOnWashingMachine);
+end;
+
+rule "Delete TurnOnWashingMachine"
+  when
+    def $event = TurnOnWashingMachine has occured
+  then
+    removeEvent($event);
+end;
+
+rule "Enable turn on Washing Machine again"
+  when
+    ensureContextNotActive(Eco)
+    def $preventEvent = WashingMachineShouldNotBeTurnedOn has occured
+  then
+    removeEvent($preventEvent);
+end;
