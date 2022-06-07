@@ -13,7 +13,9 @@
 
 [keyword]in group=agenda-group
 
+[when]def ${definedParam:[\w_-]*}\s?\=\s{eventName:\w*} has occured=${definedParam} : EventOccured(name == "{eventName}")
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")
+[when]def ${definedParam:[\w_-]*}\s?\=\s{eventName1:\w*} or {eventName2:\w*} have occured=${definedParam} : EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName1:\w*} or {eventName2:\w*} have occured=EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName:\w*} has not occured=not EventOccured(name == "{eventName}")
 
@@ -52,3 +54,4 @@
 [then]activateContext\({contextName:\w*}\)=insert(new ActivateContextByName("{contextName}"))
 [then]deactivateContext\({contextName:\w*}\)=insert(new DeactivateContextByName("{contextName}"))
 [then]removeValue\({paramName:$[\w_-]*}\)=delete({paramName})
+[then]removeEvent\({paramName:$[\w_-]*}\)=delete({paramName})

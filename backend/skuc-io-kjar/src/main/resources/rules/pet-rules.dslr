@@ -39,21 +39,20 @@ end;
 rule "Remove PotentialPetMissing"
   priority 100
   when
->   $deleteEvent: EventOccured(name == "DeletePotentialPetMissingByPetMissing" || name == "DeletePotentialPetMissingByPetComeback")
->   $ppm: EventOccured(name == "PotentialPetMissing")
+    def $deleteEvent = DeletePotentialPetMissingByPetMissing or DeletePotentialPetMissingByPetComeback have occured
+    def $petEvent = PotentialPetMissing has occured
   then
     sisaj("Remove all PotentialPetMissing");
->   delete($deleteEvent);
->   delete($ppm);
+    removeEvent($deleteEvent);
+    removeEvent($petEvent);
 end;
 
 rule "Remove PotentialPetMissing Cleanups"
   when
->   $deleteEvent: EventOccured(name == "DeletePotentialPetMissingByPetMissing" || name == "DeletePotentialPetMissingByPetComeback")
+    def $deleteEvent = DeletePotentialPetMissingByPetMissing or DeletePotentialPetMissingByPetComeback have occured
   then
->   delete($deleteEvent);
+    removeEvent($deleteEvent);
 end;
-
 
 rule "Change status for PotentialPetMissing"
   when
@@ -83,19 +82,19 @@ end;
 rule "Remove PetMissing"
   priority 100
   when
->   $deleteEvent: EventOccured(name == "DeletePetMissingByPotentialPetComeback")
->   $petEvent: EventOccured(name == "PetMissing")
+    def $deleteEvent = DeletePetMissingByPotentialPetComeback has occured
+    def $petEvent = PetMissing has occured
   then
     sisaj("Remove all PetMissing");
->   delete($deleteEvent);
->   delete($petEvent);
+    removeEvent($deleteEvent);
+    removeEvent($petEvent);
 end;
 
 rule "Remove PetMissing Cleanups"
   when
->   $deleteEvent: EventOccured(name == "DeletePetMissingByPotentialPetComeback")
+    def $deleteEvent = DeletePetMissingByPotentialPetComeback has occured
   then
->   delete($deleteEvent);
+    removeEvent($deleteEvent);
 end;
 
 rule "Change status for PetMissing"
@@ -134,19 +133,19 @@ end;
 rule "Remove PotentialPetComeback"
   priority 100
   when
->   $deleteEvent : EventOccured(name == "DeletePotentialPetComebackByPetComeback" || name == "DeletePotentialPetComebackByPetMissing")
->   $petEvent: EventOccured(name == "PotentialPetComeback")
+    def $deleteEvent = DeletePotentialPetComebackByPetComeback or DeletePotentialPetComebackByPetMissing have occured
+    def $petEvent = PotentialPetComeback has occured
   then
     sisaj("Remove all PotentialPetComeback");
->   delete($deleteEvent);
->   delete($petEvent);
+    removeEvent($deleteEvent);
+    removeEvent($petEvent);
 end;
 
 rule "Remove PotentialPetComeback Cleanups"
   when
->   $deleteEvent: EventOccured(name == "DeletePotentialPetComebackByPetComeback" || name == "DeletePotentialPetComebackByPetMissing")
+    def $deleteEvent = DeletePotentialPetComebackByPetComeback or DeletePotentialPetComebackByPetMissing have occured
   then
->   delete($deleteEvent);
+    removeEvent($deleteEvent);
 end;
 
 rule "Change status for PotentialPetComeback"
@@ -177,19 +176,19 @@ end;
 rule "Remove PetComeback"
   priority 100
   when
->   $deleteEvent: EventOccured(name == "DeletePetComebackByPotentialPetMissing")
->   $petEvent: EventOccured(name == "PetComeback")
+    def $deleteEvent = DeletePetComebackByPotentialPetMissing has occured
+    def $petEvent = PetComeback has occured
   then
   sisaj("Remove all PetComeback");
->   delete($deleteEvent);
->   delete($petEvent);
+    removeEvent($deleteEvent);
+    removeEvent($petEvent);
 end;
 
 rule "Remove PetComeback Cleanups"
   when
->   $deleteEvent: EventOccured(name == "DeletePetComebackByPotentialPetMissing")
+    def $deleteEvent = DeletePetComebackByPotentialPetMissing has occured
   then
->   delete($deleteEvent);
+    removeEvent($deleteEvent);
 end;
 
 rule "Change status for PetComeback"
