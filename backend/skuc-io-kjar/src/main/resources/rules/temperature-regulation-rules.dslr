@@ -1,51 +1,182 @@
 paketic skuc.io;
 
 use dispatch;
+use changeStatus;
 use most common imports;
 
 rule "Low temperature"
   when
+    TemperatureTooLow has not occured
     def $any = getAnyContextIfActive()
     def $min_temperature = C[$any][min_temperature]
     def $curr_temperature
       - manje od $min_temperature
   then
+    removeValue($curr_temperature);
+    dispatch(DeleteTemperatureBackToNormalByTemperatureTooLow);
     dispatch(TemperatureTooLow);
     dispatch(InformUser);
 end;
+
+rule "Change status TemperatureTooLow"
+  when
+    TemperatureTooLow has occured
+  then
+    changeStatus("temperature", "TemperatureTooLow");
+end;
+
+rule "Remove TemperatureTooLow"
+  priority 100
+  when
+    def $deleteEvent = DeleteTemperatureTooLowByTemperatureBackToNormal has occured
+    def $temperatureEvent = TemperatureTooLow has occured
+  then
+    removeEvent($deleteEvent);
+    removeEvent($temperatureEvent);
+end;
+
+rule "Remove TemperatureTooLow Cleanups"
+  when
+    def $deleteEvent = DeleteTemperatureTooLowByTemperatureBackToNormal has occured
+  then
+    removeEvent($deleteEvent);
+end;
+
+rule "Temperature Back To Normal"
+  when
+    TemperatureBackToNormal has not occured
+    def $any = getAnyContextIfActive()
+    def $min_temperature = C[$any][min_temperature]
+    def $max_temperature = C[$any][max_temperature]
+    def $curr_temperature
+      - vece ili jednako sa $min_temperature
+      - manje ili jednako sa $max_temperature
+  then
+    removeValue($curr_temperature);
+    dispatch(DeleteTemperatureTooLowByTemperatureBackToNormal);
+    dispatch(TemperatureBackToNormal);
+    dispatch(InformUser);
+end;
+
+rule "Change status TemperatureBackToNormal"
+  when
+    TemperatureBackToNormal has occured
+  then
+    changeStatus("temperature", "TemperatureBackToNormal");
+end;
+
+rule "Remove TemperatureBackToNormal"
+  priority 100
+  when
+    def $deleteEvent = DeleteTemperatureBackToNormalByTemperatureTooLow has occured
+    def $temperatureEvent = TemperatureBackToNormal has occured
+  then
+    removeEvent($deleteEvent);
+    removeEvent($temperatureEvent);
+end;
+
+rule "Remove TemperatureBackToNormal Cleanups"
+  when
+    def $deleteEvent = DeleteTemperatureBackToNormalByTemperatureTooLow has occured
+  then
+    removeEvent($deleteEvent);
+end;
+
+rule "Remove Curr Temperature"
+  priority -100
+  when
+    def $curr_temperature
+  then
+    removeValue($curr_temperature);
+end;
+
+
 
 rule "Open windows on Hot Summer Nights"
   when
     def $summer = getContextIfActive(Summer)
     def $night = getContextIfActive(Nightly)
     TemperatureTooHigh has occured
+    aren't WindowsOpen()
   then
     dispatch(OpenWindows);
 end;
 
+rule "Change status OpenWindows"
+  when
+    def $openEvent = OpenWindows has occured
+  then
+    changeStatus("windows", "WindowsOpened");
+end;
+
+rule "Remove OpenWindows"
+  priority -100
+  when
+    def $openEvent = OpenWindows has occured
+  then
+    removeEvent($openEvent);
+end;
+
+
+
 rule "Turn on ac on Hot Summer Days"
   when
     def $summer = getContextIfActive(Summer)
-    def $night = getContextIfActive(Daily)
+    def $daily = getContextIfActive(Daily)
     TemperatureTooHigh has occured
+    isn't ACOn()
   then
     dispatch(TurnOnAC);
 end;
 
+rule "Change status TurnOnAC"
+  when
+    def $onEvent = TurnOnAC has occured
+  then
+    changeStatus("ac", "ACOn");
+end;
+
+rule "Remove TurnOnAC"
+  priority -100
+  when
+    def $onEvent = TurnOnAC has occured
+  then
+    removeEvent($onEvent);
+end;
+
+
+
 rule "Turn off ac on Cold Summer Days"
   when
     def $summer = getContextIfActive(Summer)
-    def $night = getContextIfActive(Daily)
+    def $daily = getContextIfActive(Daily)
     TemperatureTooLow has occured
     is ACOn()
   then
     dispatch(TurnOffAC);
 end;
 
+rule "Change status TurnOffAC"
+  when
+    def $offEvent = TurnOffAC has occured
+  then
+    changeStatus("ac", "ACOff");
+end;
+
+rule "Remove TurnOffAC"
+  priority -100
+  when
+    def $offEvent = TurnOffAC has occured
+  then
+    removeEvent($offEvent);
+end;
+
+
+
 rule "Open windows on Cold Summer Days"
   when
     def $summer = getContextIfActive(Summer)
-    def $night = getContextIfActive(Daily)
+    def $daily = getContextIfActive(Daily)
     TemperatureTooLow has occured
     isn't ACOn()
   then
@@ -61,6 +192,23 @@ rule "Close windows when ac is on"
     dispatch(CloseWindows);
 end;
 
+rule "Change status CloseWindows"
+  when
+    def $closeEvent = CloseWindows has occured
+  then
+    changeStatus("windows", "WindowsClosed");
+end;
+
+rule "Remove CloseWindows"
+  priority -100
+  when
+    def $closeEvent = CloseWindows has occured
+  then
+    removeEvent($closeEvent);
+end;
+
+
+
 rule "Turn off heating on Hot Winter days"
   when
     def $winter = getContextIfActive(Winter)
@@ -69,6 +217,23 @@ rule "Turn off heating on Hot Winter days"
     dispatch(TurnOffHeating);
 end;
 
+rule "Change status TurnOffHeating"
+  when
+    def $turnOffEvent = TurnOffHeating has occured
+  then
+    changeStatus("heating", "HeatingOff");
+end;
+
+rule "Remove TurnOffHeating"
+  priority -100
+  when
+    def $turnOffEvent = TurnOffHeating has occured
+  then
+    removeEvent($turnOffEvent);
+end;
+
+
+
 rule "Turn on heating on Hot Winter days"
   when
     def $winter = getContextIfActive(Winter)
@@ -76,6 +241,23 @@ rule "Turn on heating on Hot Winter days"
   then
     dispatch(TurnOnHeating);
 end;
+
+rule "Change status TurnOnHeating"
+  when
+    def $turnOnEvent = TurnOnHeating has occured
+  then
+    changeStatus("heating", "HeatingOn");
+end;
+
+rule "Remove TurnOnHeating"
+  priority -100
+  when
+    def $turnOnEvent = TurnOnHeating has occured
+  then
+    removeEvent($turnOnEvent);
+end;
+
+
 
 rule "Close windows on Cold Winter days"
   when

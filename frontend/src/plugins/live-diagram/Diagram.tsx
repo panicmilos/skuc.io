@@ -111,7 +111,7 @@ export const Diagram: FC<Props> = ({
         ],
         // STATUSES
         // TEMPERATURE
-        "'${deviceType}' === 'temperature' && '${type}' === 'status' && '${value}' === 'TemperatureTooHot'": [
+        "'${deviceType}' === 'temperature' && '${type}' === 'status' && '${value}' === 'TemperatureTooHigh'": [
           {
             hide: {
               element: 'cold'
@@ -121,13 +121,23 @@ export const Diagram: FC<Props> = ({
             }
           }
         ],
-        "'${deviceType}' === 'temperature' && '${type}' === 'status' && '${value}' === 'TemperatureTooCold'": [
+        "'${deviceType}' === 'temperature' && '${type}' === 'status' && '${value}' === 'TemperatureTooLow'": [
           {
             show: {
               element: 'cold'
             },
             hide: {
               element: 'hot'
+            }
+          }
+        ],
+        "'${deviceType}' === 'temperature' && '${type}' === 'status' && '${value}' === 'TemperatureBackToNormal'": [
+          {
+            show: {
+              elements: []
+            },
+            hide: {
+              elements: ['cold', 'hot']
             }
           }
         ],

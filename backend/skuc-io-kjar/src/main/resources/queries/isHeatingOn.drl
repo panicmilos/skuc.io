@@ -3,5 +3,6 @@ package skuc.io;
 import skuc.io.skuciocore.models.events.kjar.EventOccured;
 
 query isHeatingOn()
-  eval(true==true)
+  $reg : StateRegistry()
+  eval($reg.isState("heating", "HeatingOn"))
 end

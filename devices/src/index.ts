@@ -111,13 +111,13 @@ const humidity: RandomSeqElement[] = [
 ];
 
 const ac: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "ac", deviceId: acDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "ac", deviceId: acDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "ACOn", deviceType: "ac", deviceId: acDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "ACOff", deviceType: "ac", deviceId: acDeviceId }, type: "status" },
 ];
 
 const windows: SeqElement[] = [
-  { timeout: 5, value: { value: "opened", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
-  { timeout: 5, value: { value: "closed", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
+  { timeout: 5, value: { value: "WindowsOpened", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
+  { timeout: 5, value: { value: "WindowsClosed", deviceType: "windows", deviceId: windowsDeviceId }, type: "status" },
 ];
 
 const sprinkler: SeqElement[] = [
@@ -185,7 +185,7 @@ const simulators: ICanBeInitializedAndDisposed[] = [
   // new RandomSimulator(gw, "humidity", humidity, 5_000),
   // new SeqSimulator(gw, "temperature", temperature),
   // new SeqSimulator(gw, "ac", ac),
-  // new SeqSimulator(gw, "windows", windows),
+  new SeqSimulator(gw, "windows", windows),
   // new SeqSimulator(gw, "sprinkler", sprinkler),
   // new SeqSimulator(gw, "heating", heating),
   // new SeqSimulator(gw, "boiler", boiler),
@@ -194,7 +194,7 @@ const simulators: ICanBeInitializedAndDisposed[] = [
   // new SeqSimulator(gw, "camera", camera),
   // new SeqSimulator(gw, "movement", movement),
   // new SeqSimulator(gw, "sound", sound),
-  new SeqSimulator(gw, "pet", pet),
+  // new SeqSimulator(gw, "pet", pet),
   // new SeqSimulator(gw, "bathroom", bathroom),
 ];
 

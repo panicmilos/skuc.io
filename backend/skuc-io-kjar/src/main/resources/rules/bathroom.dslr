@@ -33,7 +33,7 @@ rule "Turn on Washing Machine for Cheap Customers"
   when
     def $nightly = getContextIfActive(Nightly)
     def $eco = getContextIfActive(Eco)
-    is WashingMachineOff()
+    isn't WashingMachineOn()
   then
     dispatch(TurnOnWashingMachine);
     dispatch(WashingMachineOn);

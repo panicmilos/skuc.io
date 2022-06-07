@@ -47,7 +47,7 @@
 [then]\s?with \"{param:[@\w\d-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
-[then]changeStatus\(\"{deviceType:[\w\d-_]*}\",\s?\"{value:[\w\d-_]*}\"\)=StatusReceived statusReceived = new StatusReceived("", "{deviceType}DeviceId", "{deviceType}", "{value}"); \n ((NotificationService) kcontext.getKieRuntime().getGlobal("notificationService")).sendFrom(statusReceived)
+[then]changeStatus\(\"{deviceType:[\w\d-_]*}\",\s?\"{value:[\w\d-_]*}\"\)=StatusReceived statusReceived = new StatusReceived("", "{deviceType}DeviceId", "{deviceType}", "{value}");\n ((NotificationService) kcontext.getKieRuntime().getGlobal("notificationService")).sendFrom(statusReceived); \n insert(statusReceived)
 
 [then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}
 [then]dispatch\({eventName:\w*}\)=insert(new EventOccured("{eventName}"))

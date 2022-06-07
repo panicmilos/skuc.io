@@ -16,21 +16,14 @@ rule "Print context"
 end;
 
 rule "Update Status State"
-  lock-on-active
+  no-loop
+  salience -100
   when
-    $reg : StateRegistry()
     StatusReceived($deviceType: deviceType, $value: value)
+    $reg : StateRegistry()
   then
     modify($reg) {
       setState($deviceType, $value);
     }
     stateRegistryService.update($reg);
-end;
-
-// TODO: Remove example of query
-rule "Test Koopateelo"
-  when
-    isInKupatilo()
-  then
-    System.out.println("KOOPATEELO");
 end;
