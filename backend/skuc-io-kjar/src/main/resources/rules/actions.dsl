@@ -2,7 +2,10 @@
 
 [keyword]paketic {package:.*}=package {package}
 
+[keyword]priority=salience
+
 [keyword]use informUser=import skuc.io.skuciocore.models.csm.Group; import skuc.io.functions.GroupObjectFilterer; import skuc.io.skuciocore.models.utilityClasses.KeyValue;import skuc.io.skuciocore.services.NotificationService; global NotificationService notificationService
+[keyword]use changeStatus=import skuc.io.skuciocore.models.events.device.StatusReceived;import skuc.io.skuciocore.services.NotificationService
 [keyword]use dispatch=import skuc.io.skuciocore.models.events.kjar.EventOccured
 [keyword]use activateContext=import skuc.io.skuciocore.models.events.kjar.ActivateContextById;import skuc.io.skuciocore.models.events.kjar.ActivateContextByName
 [keyword]use deactivateContext=import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;import skuc.io.skuciocore.models.events.kjar.DeactivateContextByName
@@ -10,7 +13,11 @@
 
 [keyword]in group=agenda-group
 
+[when]def ${definedParam:[\w_-]*}\s?\=\s{eventName:\w*} has occured=${definedParam} : EventOccured(name == "{eventName}")
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")
+[when]def ${definedParam:[\w_-]*}\s?\=\s{eventName1:\w*} or {eventName2:\w*} have occured=${definedParam} : EventOccured(name == "{eventName1}" || name == "{eventName2}")
+[when]{eventName1:\w*} or {eventName2:\w*} have occured=EventOccured(name == "{eventName1}" || name == "{eventName2}")
+[when]{eventName:\w*} has not occured=not EventOccured(name == "{eventName}")
 
 [when]are {query:\w*}\(\)=are{query}()
 [when]is {query:\w*}\(\)=is{query}()
@@ -28,7 +35,7 @@
 [when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[min_{paramName:\w*}\]=${definedParam} : Float() from ${contextParam}.getMin("{paramName}")
 [when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[expected_{paramName:\w*}\]=${definedParam} : String() from ${contextParam}.getStatus("{paramName}")
 
-[when]curr_{paramName:\w*}=ValueReceived(paramName == "{paramName}")
+[when]def $curr_{paramName:\w*}=$curr_{paramName}: ValueReceived(paramName == "{paramName}")
 [when]- manje od ${definedParam:[\w_-]*}=value < ${definedParam}
 [when]- manje ili jednako sa ${definedParam:[\w_-]*}=value <= ${definedParam}
 [when]- vece od ${definedParam:[\w_-]*}=value > ${definedParam}
@@ -40,7 +47,11 @@
 [then]\s?with \"{param:[@\w\d-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
+[then]changeStatus\(\"{deviceType:[\w\d-_]*}\",\s?\"{value:[\w\d-_]*}\"\)=StatusReceived statusReceived = new StatusReceived("", "{deviceType}DeviceId", "{deviceType}", "{value}"); \n ((NotificationService) kcontext.getKieRuntime().getGlobal("notificationService")).sendFrom(statusReceived)
+
 [then]sisaj{staDaSisam:\(.*\)}=System.out.println{staDaSisam}
 [then]dispatch\({eventName:\w*}\)=insert(new EventOccured("{eventName}"))
 [then]activateContext\({contextName:\w*}\)=insert(new ActivateContextByName("{contextName}"))
 [then]deactivateContext\({contextName:\w*}\)=insert(new DeactivateContextByName("{contextName}"))
+[then]removeValue\({paramName:$[\w_-]*}\)=delete({paramName})
+[then]removeEvent\({paramName:$[\w_-]*}\)=delete({paramName})
