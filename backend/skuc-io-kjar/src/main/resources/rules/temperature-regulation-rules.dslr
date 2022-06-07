@@ -7,7 +7,7 @@ rule "Low temperature"
   when
     def $any = getAnyContextIfActive()
     def $min_temperature = C[$any][min_temperature]
-    curr_temperature
+    def $curr_temperature
       - manje od $min_temperature
   then
     dispatch(TemperatureTooLow);

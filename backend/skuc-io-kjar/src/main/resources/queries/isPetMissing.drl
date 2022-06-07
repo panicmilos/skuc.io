@@ -1,7 +1,0 @@
-package skuc.io;
-
-import skuc.io.skuciocore.models.events.kjar.EventOccured;
-
-query isPetMissing()
-  eval(true==true)
-end

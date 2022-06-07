@@ -9,7 +9,6 @@ public class DocumentStoreHolder {
     public static final IDocumentStore store = new DocumentStore("http://bjelicaluka.com:8888", "skucio_db");
 
     static {
-      
       store.initialize();
     }
   }

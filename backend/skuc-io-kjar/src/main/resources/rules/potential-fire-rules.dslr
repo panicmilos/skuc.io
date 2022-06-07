@@ -19,7 +19,7 @@ rule "High temperature"
   when
     def $any = getAnyContextIfActive()
     def $max_temperature = C[$any][max_temperature]
-    curr_temperature
+    def $curr_temperature
       - vece od $max_temperature
   then
     dispatch(TemperatureTooHigh);
@@ -31,7 +31,7 @@ rule "High CO2"
   when
     def $any = getAnyContextIfActive()
     def $max_co2 = C[$any][max_co2]
-    curr_co2
+    def $curr_co2
       - vece od $max_co2
   then
     dispatch(CO2TooHigh);
@@ -43,7 +43,7 @@ rule "Low humidity"
   when
     def $any = getAnyContextIfActive()
     def $min_humid = C[$any][min_humid]
-    curr_humid
+    def $curr_humid
       - manje od $min_humid
   then
     dispatch(HumidTooLow);

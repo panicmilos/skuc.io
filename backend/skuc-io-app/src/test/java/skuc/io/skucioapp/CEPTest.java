@@ -80,10 +80,6 @@ class CEPTest {
     _session.insert((new Value0480Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
   }
 
-  private void insertValue1440Aggregated(Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value1440Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
-  }
-
   private void insertAggregateParam(int resolution) {
     _session.insert(new AggregateParam(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, resolution));
   }

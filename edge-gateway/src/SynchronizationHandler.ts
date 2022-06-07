@@ -3,7 +3,7 @@ import { Configuration, ICanProvideValuesAndStatuses, ICanBeInitializedAndDispos
 export const FILTER_FUNCTION_NAME = 'finalFilter';
 
 export class SynchronizationHandler implements ICanBeInitializedAndDisposed {
-  private timer: NodeJS.Timer;
+  private timer: any;
 
   constructor(
     private config: Configuration,

@@ -271,7 +271,7 @@ export const Diagram: FC<Props> = ({
             }
           }
         ],
-        "'${deviceType}' === 'pet' && '${type}' === 'status' && '${value}' === 'PetComeback'": [
+        "'${deviceType}' === 'pet' && '${type}' === 'status' && ('${value}' === 'PetComeback' || '${value}' === 'PetAtHome') ": [
           {
             show: {
               element: 'dog1'

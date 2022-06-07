@@ -4,26 +4,56 @@ use dispatch;
 use changeStatus;
 use most common imports;
 
+rule "Pet At Home"
+  priority -90
+  when
+    ensureContextNotActive(PetWalk)
+    def $context = getAnyContextIfActive()
+    def $max_homeradius = C[$context][max_homeradius]
+    def $curr_pet
+      - manje ili jednako sa $max_homeradius
+  then
+    sisaj("Pet At Home");
+    removeValue($curr_pet);
+    changeStatus("pet", "PetAtHome");
+end;
+
 rule "Potential Pet Home Escape"
   when
     ensureContextNotActive(PetWalk)
+    PotentialPetMissing has not occured
+    PotentialPetComeback has not occured
     PetMissing has not occured
     def $context = getAnyContextIfActive()
     def $max_homeradius = C[$context][max_homeradius]
-    curr_pet
+    def $curr_pet
       - vece od $max_homeradius
   then
+    removeValue($curr_pet);
     dispatch(InformUser);
+    sisaj("PotentialPetMissing");
+    dispatch(DeletePetComebackByPotentialPetMissing);
     dispatch(PotentialPetMissing);
 end;
 
-rule "Remove all PotentialPetMissing"
+rule "Remove PotentialPetMissing"
+  priority 100
   when
->   EventOccured(name == "PetMissing" || name == "PotentialPetComeback" || name == "PetComeback")
+>   $deleteEvent: EventOccured(name == "DeletePotentialPetMissingByPetMissing" || name == "DeletePotentialPetMissingByPetComeback")
 >   $ppm: EventOccured(name == "PotentialPetMissing")
   then
+    sisaj("Remove all PotentialPetMissing");
+>   delete($deleteEvent);
 >   delete($ppm);
 end;
+
+rule "Remove PotentialPetMissing Cleanups"
+  when
+>   $deleteEvent: EventOccured(name == "DeletePotentialPetMissingByPetMissing" || name == "DeletePotentialPetMissingByPetComeback")
+  then
+>   delete($deleteEvent);
+end;
+
 
 rule "Change status for PotentialPetMissing"
   when
@@ -35,22 +65,37 @@ end;
 rule "Potential Pet Neighborhood Escape"
   when
     ensureContextNotActive(PetWalk)
-    PotentialPetMissing has occured
+    PotentialPetMissing or PotentialPetComeback have occured
+    PetMissing has not occured
     def $context = getAnyContextIfActive()
     def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
-    curr_pet
+    def $curr_pet
       - vece od $max_neighborhoodradius
   then
+    removeValue($curr_pet);
     dispatch(InformUser);
+    sisaj("PetMissing");
+    dispatch(DeletePotentialPetComebackByPetMissing);
+    dispatch(DeletePotentialPetMissingByPetMissing);
     dispatch(PetMissing);
 end;
 
-rule "Remove all PetMissing"
+rule "Remove PetMissing"
+  priority 100
   when
->   EventOccured(name == "PotentialPetComeback" || name == "PetComeback")
->   $ppm: EventOccured(name == "PetMissing")
+>   $deleteEvent: EventOccured(name == "DeletePetMissingByPotentialPetComeback")
+>   $petEvent: EventOccured(name == "PetMissing")
   then
->   delete($ppm);
+    sisaj("Remove all PetMissing");
+>   delete($deleteEvent);
+>   delete($petEvent);
+end;
+
+rule "Remove PetMissing Cleanups"
+  when
+>   $deleteEvent: EventOccured(name == "DeletePetMissingByPotentialPetComeback")
+  then
+>   delete($deleteEvent);
 end;
 
 rule "Change status for PetMissing"
@@ -64,22 +109,44 @@ rule "Pet Missing"
   when
     def $context = getContextIfActive(AFH)
     PetMissing has occured
+    StartSendingRealTimeLocation has not occured
   then
     dispatch(AlarmUser);
-    dispatch(PetMissing);
     dispatch(StartSendingRealTimeLocation);
 end;
 
 rule "Potential Pet Neighborhood Comeback"
   when
-    is PetMissing()
+    PetMissing has occured
+    PotentialPetComeback has not occured
     def $context = getAnyContextIfActive()
     def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
-    curr_pet
-      - manje od $max_neighborhoodradius
+    def $curr_pet
+      - manje ili jednako sa $max_neighborhoodradius
   then
+    removeValue($curr_pet);
     dispatch(InformUser);
+    sisaj("PotentialPetComeback");
+    dispatch(DeletePetMissingByPotentialPetComeback);
     dispatch(PotentialPetComeback);
+end;
+
+rule "Remove PotentialPetComeback"
+  priority 100
+  when
+>   $deleteEvent : EventOccured(name == "DeletePotentialPetComebackByPetComeback" || name == "DeletePotentialPetComebackByPetMissing")
+>   $petEvent: EventOccured(name == "PotentialPetComeback")
+  then
+    sisaj("Remove all PotentialPetComeback");
+>   delete($deleteEvent);
+>   delete($petEvent);
+end;
+
+rule "Remove PotentialPetComeback Cleanups"
+  when
+>   $deleteEvent: EventOccured(name == "DeletePotentialPetComebackByPetComeback" || name == "DeletePotentialPetComebackByPetMissing")
+  then
+>   delete($deleteEvent);
 end;
 
 rule "Change status for PotentialPetComeback"
@@ -89,25 +156,40 @@ rule "Change status for PotentialPetComeback"
     changeStatus("pet", "PotentialPetComeback");
 end;
 
-rule "Remove all PotentialPetComeback"
-  when
->   EventOccured(name == "PetMissing" || name == "PotentialPetMissing" || name == "PetComeback")
->   $ppm: EventOccured(name == "PotentialPetComeback")
-  then
->   delete($ppm);
-end;
-
 rule "Potential Pet Home Comeback"
   when
-    PotentialPetComeback has occured
+    PotentialPetMissing or PotentialPetComeback have occured
+    PetComeback has not occured
     def $context = getAnyContextIfActive()
-    def $max_neighborhoodradius = C[$context][max_neighborhoodradius]
-    curr_pet
-      - manje od $max_neighborhoodradius
+    def $max_homeradius = C[$context][max_homeradius]
+    def $curr_pet
+      - manje ili jednako sa $max_homeradius
   then
+    removeValue($curr_pet);
+    sisaj("PetComeback");
     dispatch(InformUser);
+    dispatch(DeletePotentialPetComebackByPetComeback);
+    dispatch(DeletePotentialPetMissingByPetComeback);
     dispatch(PetComeback);
     dispatch(StopSendingRealTimeLocation);
+end;
+
+rule "Remove PetComeback"
+  priority 100
+  when
+>   $deleteEvent: EventOccured(name == "DeletePetComebackByPotentialPetMissing")
+>   $petEvent: EventOccured(name == "PetComeback")
+  then
+  sisaj("Remove all PetComeback");
+>   delete($deleteEvent);
+>   delete($petEvent);
+end;
+
+rule "Remove PetComeback Cleanups"
+  when
+>   $deleteEvent: EventOccured(name == "DeletePetComebackByPotentialPetMissing")
+  then
+>   delete($deleteEvent);
 end;
 
 rule "Change status for PetComeback"
@@ -117,10 +199,10 @@ rule "Change status for PetComeback"
     changeStatus("pet", "PetComeback");
 end;
 
-rule "Remove all PetComeback"
+rule "Remove Curr Pet"
+  priority -100
   when
->   EventOccured(name == "PetMissing" || name == "PotentialPetMissing")
->   $ppm: EventOccured(name == "PetComeback")
+    def $curr_pet
   then
->   delete($ppm);
+    removeValue($curr_pet);
 end;

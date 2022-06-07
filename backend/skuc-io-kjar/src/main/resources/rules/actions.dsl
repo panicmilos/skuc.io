@@ -2,6 +2,8 @@
 
 [keyword]paketic {package:.*}=package {package}
 
+[keyword]priority=salience
+
 [keyword]use informUser=import skuc.io.skuciocore.models.csm.Group; import skuc.io.functions.GroupObjectFilterer; import skuc.io.skuciocore.models.utilityClasses.KeyValue;import skuc.io.skuciocore.services.NotificationService; global NotificationService notificationService
 [keyword]use changeStatus=import skuc.io.skuciocore.models.events.device.StatusReceived;import skuc.io.skuciocore.services.NotificationService
 [keyword]use dispatch=import skuc.io.skuciocore.models.events.kjar.EventOccured
@@ -12,6 +14,7 @@
 [keyword]in group=agenda-group
 
 [when]{eventName:\w*} has occured=EventOccured(name == "{eventName}")
+[when]{eventName1:\w*} or {eventName2:\w*} have occured=EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName:\w*} has not occured=not EventOccured(name == "{eventName}")
 
 [when]are {query:\w*}\(\)=are{query}()
@@ -30,7 +33,7 @@
 [when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[min_{paramName:\w*}\]=${definedParam} : Float() from ${contextParam}.getMin("{paramName}")
 [when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[expected_{paramName:\w*}\]=${definedParam} : String() from ${contextParam}.getStatus("{paramName}")
 
-[when]curr_{paramName:\w*}=ValueReceived(paramName == "{paramName}")
+[when]def $curr_{paramName:\w*}=$curr_{paramName}: ValueReceived(paramName == "{paramName}")
 [when]- manje od ${definedParam:[\w_-]*}=value < ${definedParam}
 [when]- manje ili jednako sa ${definedParam:[\w_-]*}=value <= ${definedParam}
 [when]- vece od ${definedParam:[\w_-]*}=value > ${definedParam}
@@ -48,3 +51,4 @@
 [then]dispatch\({eventName:\w*}\)=insert(new EventOccured("{eventName}"))
 [then]activateContext\({contextName:\w*}\)=insert(new ActivateContextByName("{contextName}"))
 [then]deactivateContext\({contextName:\w*}\)=insert(new DeactivateContextByName("{contextName}"))
+[then]removeValue\({paramName:$[\w_-]*}\)=delete({paramName})

@@ -17,7 +17,7 @@ rule "Potential Robery Movement By Movement Sensor"
   when
     def $context = getContextIfActive(AFH or Night)
     def $max_movement = C[$context][max_movement]
-    curr_movement
+    def $curr_movement
       - vece od $max_movement
   then
     dispatch(InformUser);
@@ -29,7 +29,7 @@ rule "Potential Robery Movement By Sound"
   when
     def $context = getContextIfActive(AFH or Night)
     def $max_sound = C[$context][max_sound]
-    curr_sound
+    def $curr_sound
       - vece od $max_sound
   then
     dispatch(InformUser);

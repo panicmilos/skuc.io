@@ -10,7 +10,7 @@ export interface RandomSeqElement {
 }
 
 export class RandomSimulator implements ICanBeInitializedAndDisposed {
-  private intervalId: NodeJS.Timer;
+  private intervalId: any;
   private sequence: any[] = [];
 
   constructor(
