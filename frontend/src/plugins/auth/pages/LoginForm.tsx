@@ -49,7 +49,7 @@ export const LoginForm: FC<Props> = () => {
 
   const [authService] = useState(new AuthService());
   const [notificationService] = useState(new NotificationService());
-  const { isAuthenticated, setUser, setAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user, setUser, setAuthenticated } = useContext(AuthContext);
   const nav = useNavigate();
 
   const configureInterceptors = () => {
@@ -62,7 +62,7 @@ export const LoginForm: FC<Props> = () => {
 
   useEffect(() => {
     if(isAuthenticated) {
-      nav("/groups");
+      nav("/profile");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);

@@ -10,17 +10,14 @@ import { ProfileForm } from "./ProfileForm";
 
 export const UserProfile: FC = () => {
 
-  // const { user } = useContext(AuthContext);
+  const { user: loggedUser } = useContext(AuthContext);
+  const [userService] = useUsersService(loggedUser?.groupId ?? '');
 
-  // TODO: REMOVE THIS
-  const [userService] = useUsersService('4d1297cb-9f32-46d6-84dc-4ebcd847c830');
   const [user, setUser] = useState<User|undefined>();
   useEffect(() => {
-    userService.fetch('4e36c06c-1807-4601-a3a9-320b06196738')
+    userService.fetch(loggedUser?.id ?? '')
     .then(setUser);
   }, []);
-
-  console.log(user);
 
   return (
     <>

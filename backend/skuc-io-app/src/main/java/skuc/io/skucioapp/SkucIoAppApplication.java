@@ -16,8 +16,13 @@ import com.corundumstudio.socketio.SocketIOServer;
 
 import skuc.io.skucioapp.sockets.SocketsModule;
 import skuc.io.skuciocore.bus.Bus;
+import skuc.io.skuciocore.models.csm.Group;
+import skuc.io.skuciocore.models.csm.User;
+import skuc.io.skuciocore.models.csm.enums.Role;
 import skuc.io.skuciocore.models.notifications.InformUserNotification;
 import skuc.io.skuciocore.models.notifications.Notification;
+import skuc.io.skuciocore.services.GroupService;
+import skuc.io.skuciocore.services.UserService;
 
 @SpringBootApplication(scanBasePackages = { "skuc.io.skucioapp", "skuc.io.skuciocore" })
 public class SkucIoAppApplication {
@@ -30,6 +35,12 @@ public class SkucIoAppApplication {
 
 	@Value("${rt-server.port}")
 	private Integer port;
+
+	@Autowired
+	private GroupService groupService;
+	
+	@Autowired
+	private UserService userService;
 
 
 	public static void main(String[] args) {
@@ -62,6 +73,13 @@ public class SkucIoAppApplication {
 	@Bean
 	CommandLineRunner runner(SocketIOServer socketIOServer, SocketsModule socketsModule) {
 		return args -> {
+
+			if (groupService.getByName("Administrators") == null) {
+				var createdGroup = groupService.create(new Group("Administrators"));
+
+				userService.create(new User(createdGroup.getId(), "administrator@skucio.com", "12345", "Milos Panic", "Sarajevksa 52", "0692506XYZ", Role.Admin));
+			}
+
 			socketIOServer.start();
 
 			bus.register("InformUser", (Object param) -> {
