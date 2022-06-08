@@ -43,15 +43,6 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
         var imports = generateImports(parsedRule);
         var template = composeTemplate(parameters, parsedRule, name, imports);
 
-        // var dataProvider = new ArrayDataProvider(new String[][] {
-        //     new String[] {"Peric"}
-        // });
-
-        // var targetStream = new ByteArrayInputStream(template.getBytes());
-
-        // var converter = new DataProviderCompiler();
-        // var drl = converter.compile(dataProvider, targetStream);
-
         var ruleTemplate = new RuleTemplate(groupId, name, parameters, template);
         return create(ruleTemplate);
     }
@@ -121,8 +112,6 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
                 sb.append("import " + _modelClasses.get(potentialClass) + ";\n");
             }
         }
-
-
 
         return sb.toString();
     }
