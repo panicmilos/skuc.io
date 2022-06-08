@@ -1,3 +1,4 @@
+import { authorizedFor } from "../auth-context";
 import { PaddingContainer, FeaturePlugin } from "./imports";
 import { Devices } from "./pages/devices/Devices";
 
@@ -12,7 +13,8 @@ export function getPluginDefinition(): FeaturePlugin {
         component: <PaddingContainer>
             <Devices/>
           </PaddingContainer>,
-        path: 'groups/:groupId/locations/:locationId/devices'
+        path: 'groups/:groupId/locations/:locationId/devices',
+        shouldShow: authorizedFor()
       }
     ]
   }

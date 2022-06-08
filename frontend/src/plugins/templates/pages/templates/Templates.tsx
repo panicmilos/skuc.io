@@ -1,7 +1,7 @@
-import { createContext, FC, useEffect, useState } from "react"
+import { createContext, FC, useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { Card, Result } from "../../imports"
+import { AuthContext, Card, Result } from "../../imports"
 import { useTemplatesService } from "../../services";
 import { TemplatesTable } from "./TemplatesTable";
 
@@ -18,7 +18,8 @@ export const TemplatesContext = createContext<TemplatesContextValue>({
 export const Templates: FC = () => {
 
   const params = useParams();
-  const groupId = params['groupId'] || '';
+  const { user } = useContext(AuthContext);
+  const groupId = params['groupId'] || user?.groupId || '';
 
   const [templatesService] = useTemplatesService(groupId);
 

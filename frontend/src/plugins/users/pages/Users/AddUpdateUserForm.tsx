@@ -1,6 +1,6 @@
 import { FC, useContext, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ALPHANUMERIC_REGEX, Button, EMAIL_REGEX, extractErrorMessage, Form, FormSelectOptionInput, FormTextInput, LOWER_CASE_REGEX, NotificationService, NUMERIC_REGEX, PHONE_NUMBER_REGEX, SPECIAL_CHARACTERS_REGEX } from "../../imports";
 import { CreateUserRequest, UpdateUserRequest, User } from "../../models"
 import { useUsersService } from "../../services";
@@ -8,6 +8,7 @@ import { UsersContext } from "./Users";
 import * as Yup from 'yup';
 import { ADD_USER, UPDATE_USER } from "./UsersActions";
 import { AxiosError } from "axios";
+import { useGroupsService } from "../../../groups/services";
 
 type Props = {
   groupId: string,
@@ -24,10 +25,13 @@ const useStyles = createUseStyles({
 export const AddUpdateUserForm: FC<Props> = ({ groupId, existingUser = undefined, isEdit = false }) => {
 
   const queryClient = useQueryClient();
+  const [groupService] = useGroupsService();
   const [userService] = useUsersService(groupId);
   const [notificationService] = useState(new NotificationService());
 
   const { setResult } = useContext(UsersContext);
+
+  const { data: group } = useQuery([groupId], () => groupService.fetch(groupId));
 
   const schema = Yup.object().shape({
     email: Yup.string()
@@ -96,10 +100,9 @@ export const AddUpdateUserForm: FC<Props> = ({ groupId, existingUser = undefined
           label='Role'
           name='role'
           hasDefaultOption={false}
-          options={[
-            { label: 'User', value: 'User' },
-            { label: 'Admin', value: 'Admin' }
-          ]}
+          options={
+            [group?.name === 'Administrators' ? { label: 'Admin', value: 'Admin' } : { label: 'User', value: 'User' }]
+          }
         />
 
         <div className={classes.submitButton} >

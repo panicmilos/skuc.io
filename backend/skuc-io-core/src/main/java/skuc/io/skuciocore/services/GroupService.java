@@ -18,6 +18,10 @@ public class GroupService extends CrudService<Group> {
     _groupRepository = repository;
   }
 
+  public Group getByName(String name) {
+    return _groupRepository.getByName(name);
+  }
+
   @Override
   public Group create(Group group) {
     var existingGroup = _groupRepository.getByName(group.getName());

@@ -2,7 +2,7 @@ import { FeaturePlugin } from "./imports";
 import LoginIcon from "@mui/icons-material/Login";
 import { Diagram } from "./Diagram";
 import { PaddingContainer } from "../sidebar";
-import { getGroupIdFromToken } from "../auth-context";
+import { authorizedFor, getGroupIdFromToken } from "../auth-context";
 
 export function getPluginDefinition(): FeaturePlugin {
   return {
@@ -13,6 +13,7 @@ export function getPluginDefinition(): FeaturePlugin {
         label: "Diagram",
         path: "/diagrams",
         icon: <LoginIcon />,
+        shouldShow: authorizedFor({ roles: ['User'] })
       },
     ],
     pages: [
@@ -23,6 +24,7 @@ export function getPluginDefinition(): FeaturePlugin {
           </PaddingContainer>
         ),
         path: "/diagrams",
+        shouldShow: authorizedFor({ roles: ['User'] })
       },
     ],
   };

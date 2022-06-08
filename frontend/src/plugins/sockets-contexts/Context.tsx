@@ -4,13 +4,13 @@ import { SocketIoClient } from "./clients/SocketIoClient";
 import { AuthContext, getGroupIdFromToken, NotificationService } from "./imports";
 
 export const SocketsContextProvider: FC = ({ children }) => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
 
   const [socketClient, setSocketClient] = useState<SocketIoClient|undefined>();
   const [notificationService] = useState(new NotificationService());
 
   useEffect(() => {
-    if(isAuthenticated) {
+    if(isAuthenticated && user?.role === 'User') {
       const groupId = getGroupIdFromToken();
 
       const infoSocketClient = new InfoSocketIoClient(groupId);
