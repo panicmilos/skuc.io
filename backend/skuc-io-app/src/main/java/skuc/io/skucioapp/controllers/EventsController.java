@@ -64,7 +64,9 @@ public class EventsController {
     valueReceived.setId(UUID.randomUUID().toString());
 
     var device = _deviceService.getByDevice(valueReceived.getDeviceId());
-
+    
+    _nofiticationService.sendFrom(valueReceived);
+    
     // var aggregation_Session = _sessionManager.getAggregateSession();
     // aggregation_Session.insert(valueReceived);
 
@@ -72,7 +74,6 @@ public class EventsController {
     session.insert(valueReceived);
     session.fireAllRules();
 
-    _nofiticationService.sendFrom(valueReceived);
 
     return ResponseEntity.ok(_service.create(valueReceived));
   }
@@ -84,11 +85,12 @@ public class EventsController {
 
     var device = _deviceService.getByDevice(statusReceived.getDeviceId());
 
+    _nofiticationService.sendFrom(statusReceived);
+    
     var session = _sessionManager.getSession(device.getLocationId().toString());
     session.insert(statusReceived);
     session.fireAllRules();
 
-    _nofiticationService.sendFrom(statusReceived);
 
     return ResponseEntity.ok(_statusService.create(statusReceived));
   }

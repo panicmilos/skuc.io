@@ -126,8 +126,8 @@ const sprinkler: SeqElement[] = [
 ];
 
 const heating: SeqElement[] = [
-  { timeout: 30, value: { value: "on", deviceType: "heating", deviceId: heatingDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "off", deviceType: "heating", deviceId: heatingDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "HeatingOn", deviceType: "heating", deviceId: heatingDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "HeatingOff", deviceType: "heating", deviceId: heatingDeviceId }, type: "status" },
 ];
 
 const boiler: SeqElement[] = [
@@ -146,8 +146,8 @@ const washing: SeqElement[] = [
 ];
 
 const camera: SeqElement[] = [
-  { timeout: 30, value: { value: "hasActivity", deviceType: "camera", deviceId: cameraDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "noActivity", deviceType: "camera", deviceId: cameraDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "CameraActivity", deviceType: "camera", deviceId: cameraDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "CameraNoActivity", deviceType: "camera", deviceId: cameraDeviceId }, type: "status" },
 ];
 
 const movement: SeqElement[] = [

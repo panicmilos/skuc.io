@@ -3,5 +3,6 @@ package skuc.io;
 import skuc.io.skuciocore.models.events.kjar.EventOccured;
 
 query isAnyElectricDeviceOn()
-  eval(true==true)
+  $reg : StateRegistry()
+  eval($reg.isState("washing", "WashingOn") || $reg.isState("ac", "ACOn") || $reg.isState("heating", "HeatingOn"))
 end

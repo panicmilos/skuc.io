@@ -1,41 +1,169 @@
 paketic skuc.io;
 
 use dispatch;
+use changeStatus;
+use informUser;
 use most common imports;
 
 rule "Potential Robery Movement By Cam"
   when
+    PotentialRoberyMovement has not occured
     def $context = getContextIfActive(AFH or Night)
-    has OutdoorCamDetectedPerson()
+    has CameraActivity()
+    
   then
-    dispatch(InformUser);
-    dispatch(StartVideoRecording);
-    dispatch(PotentialRoberyMovement);
+    dispatch(PrePotentialRoberyMovement);
 end;
 
-rule "Potential Robery Movement By Movement Sensor"
+
+
+rule "Pre Potential Robery Movement By Movement Sensor"
   when
     def $context = getContextIfActive(AFH or Night)
     def $max_movement = C[$context][max_movement]
     def $curr_movement
       - vece od $max_movement
   then
+    dispatch(PrePotentialRoberyMovement);
+end;
+
+rule "Clean Everything About PotentialRoberyMovement"
+  when
+    in the last 20s PrePotentialRoberyMovement has not occured
+  then
+    dispatch(CleanEverythingAboutPotentialRoberyMovement);
+end;
+
+rule "Potential Robery Movement By Movement Sensor"
+  when
+    PotentialRoberyMovement has not occured
+    PrePotentialRoberyMovement has occured
+  then
     dispatch(InformUser);
     dispatch(StartVideoRecording);
     dispatch(PotentialRoberyMovement);
 end;
 
-rule "Potential Robery Movement By Sound"
+rule "Clean PrePotentialRoberyMovement"
+  when
+    CleanEverythingAboutPotentialRoberyMovement has occured
+    def $preEvent = PrePotentialRoberyMovement has occured
+  then
+    removeEvent($preEvent);
+end;
+
+rule "Clean PotentialRoberyMovement"
+  when
+    CleanEverythingAboutPotentialRoberyMovement has occured
+    def $event = PotentialRoberyMovement has occured
+  then
+    removeEvent($event);
+end;
+
+rule "Clean CleanEverythingAboutPotentialRoberyMovement"
+  priority - 100
+  when
+    def $cleanEvent = CleanEverythingAboutPotentialRoberyMovement has occured
+  then
+    removeEvent($cleanEvent);
+end;
+
+rule "Remove Curr Movement"
+  priority -100
+  when
+    def $curr_movement
+  then
+    removeValue($curr_movement);
+end;
+
+
+
+rule "Pre Potential Robery Movement By Sound"
   when
     def $context = getContextIfActive(AFH or Night)
     def $max_sound = C[$context][max_sound]
     def $curr_sound
       - vece od $max_sound
   then
+    dispatch(PrePotentialRoberySound);
+end;
+
+rule "Clean Everything About PotentialRoberySound"
+  when
+    in the last 20s PrePotentialRoberySound has not occured
+  then
+    dispatch(CleanEverythingAboutPotentialRoberySound);
+end;
+
+rule "Potential Robery Movement By Sound"
+  when
+    PotentialRoberySound has not occured
+    PrePotentialRoberySound has occured
+  then
     dispatch(InformUser);
     dispatch(StartVideoRecording);
     dispatch(PotentialRoberySound);
 end;
+
+rule "Clean PrePotentialRoberySound"
+  when
+    CleanEverythingAboutPotentialRoberySound has occured
+    def $preEvent = PrePotentialRoberySound has occured
+  then
+    removeEvent($preEvent);
+end;
+
+rule "Clean PotentialRoberySound"
+  when
+    CleanEverythingAboutPotentialRoberySound has occured
+    def $event = PotentialRoberySound has occured
+  then
+    removeEvent($event);
+end;
+
+rule "Clean CleanEverythingAboutPotentialRoberySound"
+  priority - 100
+  when
+    def $cleanEvent = CleanEverythingAboutPotentialRoberySound has occured
+  then
+    removeEvent($cleanEvent);
+end;
+
+rule "Remove Curr Sound"
+  priority -100
+  when
+    def $curr_sound
+  then
+    removeValue($curr_sound);
+end;
+
+
+
+rule "Change status StartVideoRecording"
+  when
+    StartVideoRecording has occured
+    isn't CameraRecording()
+  then
+    changeStatus("camera", "CameraRecording");
+end;
+
+rule "Remove StartVideoRecording"
+  priority -100
+  when
+    def $startEvent = StartVideoRecording has occured
+  then
+    removeEvent($startEvent);
+end;
+
+rule "Stop camera"
+  when
+    in the last 30s PrePotentialRoberyMovement has not occured
+    in the last 30s PrePotentialRoberySound has not occured
+  then
+    changeStatus("camera", "CameraNoActivity");
+end;
+
+
 
 rule "Potential Robery"
   when
@@ -43,14 +171,30 @@ rule "Potential Robery"
     PotentialRoberySound has occured
   then
     dispatch(ActivateAlarmSystem);
-    dispatch(InformUserOfAlarm);
 end;
 
 rule "Potential Robery because of Door or Window"
   when
     def $context = getContextIfActive(AFH)
-    DoorOrWindowsStatusChanged has occured
+    aren't WindowsOpen()
+>   StatusReceived(deviceType == "windows", value == "WindowsOpened")
   then
     dispatch(ActivateAlarmSystem);
-    dispatch(InformUserOfAlarm);
+end;
+
+rule "Inform about ActivateAlarmSystem"
+  when
+    ActivateAlarmSystem has occured
+  then
+    informUser()
+      with "about": "There is potential robery in your object"
+    ===>
+end;
+
+rule "Remove ActivateAlarmSystem"
+  priority -100
+  when
+    def $activateEvent = ActivateAlarmSystem has occured
+  then
+    removeEvent($activateEvent);
 end;

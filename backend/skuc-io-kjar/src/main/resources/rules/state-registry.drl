@@ -19,9 +19,10 @@ rule "Update Status State"
   no-loop
   salience -100
   when
-    StatusReceived($deviceType: deviceType, $value: value)
+    $sr: StatusReceived($deviceType: deviceType, $value: value)
     $reg : StateRegistry()
   then
+    delete($sr)
     modify($reg) {
       setState($deviceType, $value);
     }

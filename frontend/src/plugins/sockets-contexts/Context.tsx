@@ -23,7 +23,7 @@ export const SocketsContextProvider: FC = ({ children }) => {
       return () => infoSocketClient?.close();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   return (
     <>
