@@ -20,9 +20,9 @@ public class SocketsController {
     _socketsModule = socketsModule;
   }
 
-  @PostMapping("{groupId}/{namespaceName}")
-  public ResponseEntity<Object> initializeNamespace(@PathVariable String groupId, @PathVariable String namespaceName) {
-    var namespace = groupId + "/" + namespaceName;
+  @PostMapping("{namespaceId}/{namespaceName}")
+  public ResponseEntity<Object> initializeNamespace(@PathVariable String namespaceId, @PathVariable String namespaceName) {
+    var namespace = namespaceId + "/" + namespaceName;
 
     _socketsModule.tryToRegisterNameSpace(namespace);
 

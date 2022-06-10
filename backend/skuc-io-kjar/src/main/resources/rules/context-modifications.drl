@@ -3,6 +3,7 @@ package skuc.io;
 import skuc.io.skuciocore.models.csm.configuration.Context;
 import skuc.io.skuciocore.models.events.kjar.ContextUpdated;
 import skuc.io.skuciocore.models.events.kjar.ContextDeleted;
+import skuc.io.skuciocore.models.events.kjar.ActiveContextsChanged;
 import skuc.io.skuciocore.services.ContextService;
 
 global ContextService contextService;
@@ -41,4 +42,5 @@ rule "Clear Context Deleted"
     $contextDeleted : ContextDeleted()
   then
     delete($contextDeleted);
+    insert(new ActiveContextsChanged());
 end;

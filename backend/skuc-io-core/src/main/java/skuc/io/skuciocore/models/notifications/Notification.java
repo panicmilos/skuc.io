@@ -2,14 +2,14 @@ package skuc.io.skuciocore.models.notifications;
 
 public abstract class Notification {
   private String type;
-  private String groupId;
+  private String namespaceId;
 
   public Notification() {
   }
 
-  public Notification(String type, String groupId) {
+  public Notification(String type, String namespaceId) {
     this.type = type;
-    this.groupId = groupId;
+    this.namespaceId = namespaceId;
   }
 
   public String getType() {
@@ -20,12 +20,12 @@ public abstract class Notification {
     this.type = type;
   }
 
-  public String getGroupId() {
-    return this.groupId;
+  public String getNamespaceId() {
+    return this.namespaceId;
   }
 
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
+  public void setNamespaceId(String namespaceId) {
+    this.namespaceId = namespaceId;
   }
 
 }

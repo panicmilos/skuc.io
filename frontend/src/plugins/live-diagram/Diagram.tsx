@@ -4,9 +4,12 @@ import { FC, useEffect, useState } from "react";
 import { initElements } from "./diagramsHandler";
 import { ChainElement, ChainInfo, formChainFor } from "./chain";
 import { EventsSocketIoClient } from "./EventsSocketIoClient";
+import axios from "axios";
+import { BACKEND_API } from "./imports";
+import { useParams } from "react-router-dom";
 
-const round = (n: number) => Math.round(n * 100) / 100;
-const halfChance = () => Math.random() >= 0.5;
+// const round = (n: number) => Math.round(n * 100) / 100;
+// const halfChance = () => Math.random() >= 0.5;
 
 const createDataInterval = (handleData: (data: any) => any) => {
   return setInterval(() => {
@@ -29,14 +32,12 @@ const createDataInterval = (handleData: (data: any) => any) => {
 }
 
 type Props = {
-  groupId: string;
   diagramFilePath: string;
   id?: string;
   onInit?: (chainElements: ChainElement[]) => any;
 };
 
 export const Diagram: FC<Props> = ({
-  groupId,
   diagramFilePath,
   id = "1",
   onInit = () => {},
@@ -119,6 +120,14 @@ export const Diagram: FC<Props> = ({
             show: {
               element: 'hot'
             }
+          },
+          {
+            hide: {
+              element: 'normal'
+            },
+            show: {
+              element: 'hot'
+            }
           }
         ],
         "'${deviceType}' === 'temperature' && '${type}' === 'status' && '${value}' === 'TemperatureTooLow'": [
@@ -129,15 +138,31 @@ export const Diagram: FC<Props> = ({
             hide: {
               element: 'hot'
             }
+          },
+          {
+            show: {
+              element: 'cold'
+            },
+            hide: {
+              element: 'normal'
+            }
           }
         ],
         "'${deviceType}' === 'temperature' && '${type}' === 'status' && '${value}' === 'TemperatureBackToNormal'": [
           {
             show: {
-              elements: []
+              element: 'normal'
             },
             hide: {
-              elements: ['cold', 'hot']
+              element: 'hot'
+            }
+          },
+          {
+            show: {
+              element: 'normal'
+            },
+            hide: {
+              element: 'cold'
             }
           }
         ],
@@ -347,6 +372,14 @@ export const Diagram: FC<Props> = ({
             },
           }
         ],
+        "'${deviceType}' === 'activeContexts' && '${type}' === 'status'": [
+          {
+            setText: {
+              element: 'activeContexts',
+              value: '${value}'
+            },
+          },
+        ],   
       }
     }
   };
@@ -377,9 +410,33 @@ export const Diagram: FC<Props> = ({
       .catch(console.log);
   }, []);
 
+  
+  const params = useParams();
+  const locationId = params.locationId || '';
+
   useEffect(() => {
     if(!chain.length) return;
-    const client = new EventsSocketIoClient(groupId);
+    const client = new EventsSocketIoClient(locationId);
+
+    client.onConnection(() => {
+
+      // TODO: Srediti ID
+      axios.get(`${BACKEND_API}/events/state?locationId=${locationId}`)
+        .then(resp => {
+          const registry  = (resp.data as any).registry ?? {};
+
+          Object.keys(registry).forEach(deviceType => {
+            if (deviceType.startsWith("value_")) {
+              const realDeviceType = deviceType.replace("value_", "");
+              handleData({ value: registry[deviceType], deviceType: realDeviceType, type: 'value' });
+            } else {
+              handleData({ value: registry[deviceType], deviceType, type: 'status' });
+            }
+          });
+
+        })
+    });
+
     client.onEvent(e => {
       console.log(e);
       if(e.type === "ValueReceived") {
@@ -390,7 +447,7 @@ export const Diagram: FC<Props> = ({
         handleData({ value, deviceType, type: 'status' });
       } 
     });
-  }, [chain]);
+  }, [chain, locationId]);
 
   const handleData = (data: any) => {
     if(data)
