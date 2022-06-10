@@ -9,7 +9,7 @@
 [keyword]use dispatch=import skuc.io.skuciocore.models.events.kjar.EventOccured
 [keyword]use activateContext=import skuc.io.skuciocore.models.events.kjar.ActivateContextById;import skuc.io.skuciocore.models.events.kjar.ActivateContextByName
 [keyword]use deactivateContext=import skuc.io.skuciocore.models.events.kjar.DeactivateContextById;import skuc.io.skuciocore.models.events.kjar.DeactivateContextByName
-[keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
+[keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList;import java.time.LocalDateTime
 
 [when]in the last {time:\d+[ms]} {eventName:\w*} has occured=EventOccured(name == "{eventName}") over window:time({time})
 [when]in the last {time:\d+[ms]} {eventName:\w*} has not occured=not EventOccured(name == "{eventName}") over window:time({time})
@@ -19,6 +19,7 @@
 [when]def ${definedParam:[\w_-]*}\s?\=\s{eventName1:\w*} or {eventName2:\w*} have occured=${definedParam} : EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName1:\w*} or {eventName2:\w*} have occured=EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName:\w*} has not occured=not EventOccured(name == "{eventName}")
+[when]{eventName:\w*} lasts more than {time:\d+}min=EventOccured(name == "{eventName}", createdAt.plusMinutes({time}).compareTo(LocalDateTime.now()) < 0)
 
 [when]are {query:\w*}\(\)=are{query}()
 [when]is {query:\w*}\(\)=is{query}()

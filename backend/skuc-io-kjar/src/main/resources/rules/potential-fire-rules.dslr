@@ -215,8 +215,10 @@ rule "Fire is Finished"
   when
     FireIsFinished has occured
     def $pfEvent = PotentialFire has occured
+    def $activateEvent = ActivateSprinklers has occured
   then
     removeEvent($pfEvent);
+    removeEvent($activateEvent);
     dispatch(DeactivateSprinklers);
 end;
 
@@ -266,14 +268,6 @@ rule "Change status ActivateSprinklers"
     changeStatus("sprinkler", "SprinklersOn");
 end;
 
-rule "Remove ActivateSprinklers"
-  priority -100
-  when
-    def $activateEvent = ActivateSprinklers has occured
-  then
-    removeEvent($activateEvent);
-end;
-
 rule "Change status DeactivateSprinklers"
   when
     DeactivateSprinklers has occured
@@ -298,4 +292,13 @@ rule "Turn off electric devices"
     dispatch(TurnOffAC);
     dispatch(TurnOffHeating);
     dispatch(TurnOffBoiler);
+end;
+
+
+
+rule "Notify fire station"
+  when
+    ActivateSprinklers lasts more than 1min
+  then
+    print("Fire station notified");
 end;

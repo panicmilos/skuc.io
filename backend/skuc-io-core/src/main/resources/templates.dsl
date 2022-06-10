@@ -17,6 +17,7 @@
 [when]def ${definedParam:[\w_-]*}\s?\=\s{eventName1:\{?\w*\}?} or {eventName2:\{?\w*\}?} have occured=${definedParam} : EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName1:\{?\w*\}?} or {eventName2:\{?\w*\}?} have occured=EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName:\{?\w*\}?} has not occured=not EventOccured(name == "{eventName}")
+[when]{eventName:\{?\w*\}?} lasts more than {time:\d+}min=EventOccured(name == "{eventName}", createdAt.compareTo(LocalDateTime.now().plusMinutes({time})) < 0)
 [when]\{{eventName:\w+}\}=template_start{eventName}template_end
 
 [when]are {query:\w*}\(\)=are{query}()
