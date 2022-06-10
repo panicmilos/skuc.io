@@ -121,8 +121,8 @@ const windows: SeqElement[] = [
 ];
 
 const sprinkler: SeqElement[] = [
-  { timeout: 999999, value: { value: "off", deviceType: "sprinkler", deviceId: sprinklerDeviceId }, type: "status" },
-  { timeout: 30, value: { value: "on", deviceType: "sprinkler", deviceId: sprinklerDeviceId }, type: "status" },
+  { timeout: 999999, value: { value: "SprinklersOff", deviceType: "sprinkler", deviceId: sprinklerDeviceId }, type: "status" },
+  { timeout: 30, value: { value: "SprinklersOn", deviceType: "sprinkler", deviceId: sprinklerDeviceId }, type: "status" },
 ];
 
 const heating: SeqElement[] = [

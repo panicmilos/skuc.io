@@ -1,0 +1,8 @@
+package skuc.io;
+
+import skuc.io.skuciocore.models.events.kjar.EventOccured;
+
+query areSprinklersActive()
+  $reg : StateRegistry()
+  eval($reg.isState("sprinkler", "SprinklersOn"))
+end

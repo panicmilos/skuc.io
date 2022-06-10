@@ -4,6 +4,13 @@ use dispatch;
 use changeStatus;
 use most common imports;
 
+rule "Manual Turn on Washing Machine"
+  when
+>   $sr: StatusReceived(deviceType == "washing", value == "ManualWashingOn")
+  then
+    removeEvent($sr);
+    dispatch(TurnOnWashingMachine);
+end;
 
 rule "Turn on Washing Machine for Cheap Customers"
   when
@@ -23,21 +30,38 @@ rule "Change status TurnOnWashingMachine"
     changeStatus("washing", "WashingOn");
 end;
 
+rule "Delete TurnOnWashingMachine"
+  when
+    def $deleteEvent = DeleteTurnOnWashingMachine has occured
+    def $event = TurnOnWashingMachine has occured
+  then
+    removeEvent($deleteEvent);
+    removeEvent($event);
+end;
+
 rule "Turn Off Washing Machine"
   when
     is WashingMachineOn()
     in the last 20s TurnOnWashingMachine has not occured
   then
-    changeStatus("washing", "WashingOff");
+    dispatch(TurnOffWashingMachine);
     dispatch(DeleteTurnOnWashingMachine);
 end;
 
-rule "Delete TurnOnWashingMachine"
+rule "Change status TurnOffWashingMachine"
   when
-    def $event = TurnOnWashingMachine has occured
+    def $turnOffEvent = TurnOffWashingMachine has occured
+  then
+    changeStatus("washing", "WashingOff");
+end;
+
+rule "Delete TurnOffWashingMachine"
+  when
+    def $event = TurnOffWashingMachine has occured
   then
     removeEvent($event);
 end;
+
 
 rule "Enable turn on Washing Machine again"
   when
