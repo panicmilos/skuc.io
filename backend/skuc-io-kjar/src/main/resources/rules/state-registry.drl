@@ -8,11 +8,17 @@ import skuc.io.skuciocore.services.StateRegistryService;
 
 global StateRegistryService stateRegistryService;
 
-rule "Print context"
-  when 
-    $c: Context()
+rule "Update Value State"
+  no-loop
+  salience 110
+  when
+    ValueReceived($deviceType: deviceType, $value: value)
+    $reg : StateRegistry()
   then
-    System.out.println($c.getName());
+    modify($reg) {
+      setState("value_" + $deviceType, $value + "");
+    }
+    stateRegistryService.update($reg);
 end;
 
 rule "Update Status State"

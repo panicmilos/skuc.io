@@ -8,8 +8,8 @@ public class StatusReceivedNotification extends Notification {
   public StatusReceivedNotification() {
   }
 
-  public StatusReceivedNotification(String deviceId, String deviceType, String value, String groupId) {
-    super("StatusReceived", groupId);
+  public StatusReceivedNotification(String deviceId, String deviceType, String value, String namespaceId) {
+    super("StatusReceived", namespaceId);
     this.deviceId = deviceId;
     this.deviceType = deviceType;
     this.value = value;

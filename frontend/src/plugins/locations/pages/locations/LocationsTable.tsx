@@ -74,6 +74,7 @@ export const LocationsTable: FC<Props> = ({ groupId, locations }) => {
     <Button onClick={() => {setSelectedLocation(location); setIsAddUpdateOpen(true); }}>Update</Button>
     <Button onClick={() => {setSelectedLocation(location); setDeleteOpen(true); }}>Delete</Button>
     <Link to={`/groups/${groupId}/locations/${location.id}/devices`}><Button>Devices</Button></Link>
+    <Link to={`/groups/${groupId}/locations/${location.id}/diagrams`}><Button>Diagram</Button></Link>
   </>
   
   const classes = useStyles();

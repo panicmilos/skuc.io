@@ -34,6 +34,7 @@ export class SocketIoClient {
   
       this.addEventListener('connect', () => {
         console.log(`Connected to ${this.namespace} namespace.`);
+        this.onConnectionHook();
       });
   
       this.addEventListener('disconnect', () => {
@@ -46,6 +47,8 @@ export class SocketIoClient {
   }
 
   onInitHook() {}
+
+  onConnectionHook() {}
 
   addEventListener(event: string, listener: (e: any) => void) {
     this.client.on(event, listener);

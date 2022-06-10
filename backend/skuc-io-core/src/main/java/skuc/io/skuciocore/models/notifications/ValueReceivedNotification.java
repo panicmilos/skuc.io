@@ -9,8 +9,8 @@ public class ValueReceivedNotification extends Notification {
   public ValueReceivedNotification() {
   }
 
-  public ValueReceivedNotification(String deviceId, String deviceType, String paramName, float value, String groupId) {
-    super("ValueReceived", groupId);
+  public ValueReceivedNotification(String deviceId, String deviceType, String paramName, float value, String namespaceId) {
+    super("ValueReceived", namespaceId);
     this.deviceId = deviceId;
     this.deviceType = deviceType;
     this.paramName = paramName;

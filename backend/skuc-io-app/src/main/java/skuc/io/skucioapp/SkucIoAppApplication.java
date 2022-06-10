@@ -85,21 +85,21 @@ public class SkucIoAppApplication {
 			bus.register("InformUser", (Object param) -> {
 				var informUserNotification = (InformUserNotification) param;
 
-				socketsModule.brodcast(informUserNotification.getGroupId() + "/infos", informUserNotification);
+				socketsModule.brodcast(informUserNotification.getNamespaceId() + "/infos", informUserNotification);
 				return null;
 			});
 
 			bus.register("ValueReceived", (Object param) -> {
 				var notification = (Notification) param;
 
-				socketsModule.brodcast(notification.getGroupId() + "/events", notification);
+				socketsModule.brodcast(notification.getNamespaceId() + "/events", notification);
 				return null;
 			});
 
 			bus.register("StatusReceived", (Object param) -> {
 				var notification = (Notification) param;
 
-				socketsModule.brodcast(notification.getGroupId() + "/events", notification);
+				socketsModule.brodcast(notification.getNamespaceId() + "/events", notification);
 				return null;
 			});
 			

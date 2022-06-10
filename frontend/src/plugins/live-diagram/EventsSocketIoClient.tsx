@@ -3,9 +3,10 @@ import { BACKEND_API, SOCKETS_API, SocketIoClient } from "./imports";
 export class EventsSocketIoClient extends SocketIoClient {
   private initialized: boolean;
   private statusHandler: (e: any) => void = () => {};
+  private connectionHandler: () => void = () => {};
 
-  constructor(groupId: string) {
-    super({ host: SOCKETS_API, namespace: `${groupId}/events`, path: '', serverHost: BACKEND_API });
+  constructor(locationId: string) {
+    super({ host: SOCKETS_API, namespace: `${locationId}/events`, path: '', serverHost: BACKEND_API });
     this.initialized = false;
   }
 
@@ -13,6 +14,14 @@ export class EventsSocketIoClient extends SocketIoClient {
     this.clearEventListeners('event');
     this.addEventListener('event', this.statusHandler);
     this.initialized = true;
+  }
+
+  onConnectionHook(): void {
+    this.connectionHandler && this.connectionHandler();
+  }
+
+  onConnection(connectionHandler: () => void) {
+    this.connectionHandler = connectionHandler;
   }
 
   onEvent(statusHandler: (e: any) => void) {

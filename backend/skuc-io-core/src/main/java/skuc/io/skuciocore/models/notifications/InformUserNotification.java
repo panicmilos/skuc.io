@@ -6,8 +6,8 @@ public class InformUserNotification extends Notification {
   public InformUserNotification() {
   }
 
-  public InformUserNotification(String message, String groupId) {
-    super("InformUser", groupId);
+  public InformUserNotification(String message, String namespaceId) {
+    super("InformUser", namespaceId);
     this.message = message;
   }
 
