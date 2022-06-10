@@ -2,6 +2,7 @@ paketic skuc.io;
 
 use dispatch;
 use changeStatus;
+use informUser;
 use most common imports;
 
 rule "Pet At Home"
@@ -13,7 +14,6 @@ rule "Pet At Home"
     def $curr_pet
       - manje ili jednako sa $max_homeradius
   then
-    sisaj("Pet At Home");
     removeValue($curr_pet);
     changeStatus("pet", "PetAtHome");
 end;
@@ -30,8 +30,6 @@ rule "Potential Pet Home Escape"
       - vece od $max_homeradius
   then
     removeValue($curr_pet);
-    dispatch(InformUser);
-    sisaj("PotentialPetMissing");
     dispatch(DeletePetComebackByPotentialPetMissing);
     dispatch(PotentialPetMissing);
 end;
@@ -42,7 +40,6 @@ rule "Remove PotentialPetMissing"
     def $deleteEvent = DeletePotentialPetMissingByPetMissing or DeletePotentialPetMissingByPetComeback have occured
     def $petEvent = PotentialPetMissing has occured
   then
-    sisaj("Remove all PotentialPetMissing");
     removeEvent($deleteEvent);
     removeEvent($petEvent);
 end;
@@ -72,11 +69,12 @@ rule "Potential Pet Neighborhood Escape"
       - vece od $max_neighborhoodradius
   then
     removeValue($curr_pet);
-    dispatch(InformUser);
-    sisaj("PetMissing");
     dispatch(DeletePotentialPetComebackByPetMissing);
     dispatch(DeletePotentialPetMissingByPetMissing);
     dispatch(PetMissing);
+    informUser()
+      with "about": "Cuko is missing."
+    ===>
 end;
 
 rule "Remove PetMissing"
@@ -85,7 +83,6 @@ rule "Remove PetMissing"
     def $deleteEvent = DeletePetMissingByPotentialPetComeback has occured
     def $petEvent = PetMissing has occured
   then
-    sisaj("Remove all PetMissing");
     removeEvent($deleteEvent);
     removeEvent($petEvent);
 end;
@@ -124,10 +121,11 @@ rule "Potential Pet Neighborhood Comeback"
       - manje ili jednako sa $max_neighborhoodradius
   then
     removeValue($curr_pet);
-    dispatch(InformUser);
-    sisaj("PotentialPetComeback");
     dispatch(DeletePetMissingByPotentialPetComeback);
     dispatch(PotentialPetComeback);
+    informUser()
+      with "about": "Cuko is back in neighborhood radius."
+    ===>
 end;
 
 rule "Remove PotentialPetComeback"
@@ -136,7 +134,6 @@ rule "Remove PotentialPetComeback"
     def $deleteEvent = DeletePotentialPetComebackByPetComeback or DeletePotentialPetComebackByPetMissing have occured
     def $petEvent = PotentialPetComeback has occured
   then
-    sisaj("Remove all PotentialPetComeback");
     removeEvent($deleteEvent);
     removeEvent($petEvent);
 end;
@@ -165,8 +162,6 @@ rule "Potential Pet Home Comeback"
       - manje ili jednako sa $max_homeradius
   then
     removeValue($curr_pet);
-    sisaj("PetComeback");
-    dispatch(InformUser);
     dispatch(DeletePotentialPetComebackByPetComeback);
     dispatch(DeletePotentialPetMissingByPetComeback);
     dispatch(PetComeback);
@@ -179,7 +174,6 @@ rule "Remove PetComeback"
     def $deleteEvent = DeletePetComebackByPotentialPetMissing has occured
     def $petEvent = PetComeback has occured
   then
-  sisaj("Remove all PetComeback");
     removeEvent($deleteEvent);
     removeEvent($petEvent);
 end;

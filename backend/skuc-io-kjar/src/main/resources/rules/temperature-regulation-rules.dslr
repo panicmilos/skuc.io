@@ -16,7 +16,6 @@ rule "Low temperature"
     dispatch(DeleteTemperatureBackToNormalByTemperatureTooLow);
     dispatch(DeleteTemperatureTooHighByTemperatureTooLow);
     dispatch(TemperatureTooLow);
-    dispatch(InformUser);
 end;
 
 rule "Change status TemperatureTooLow"
@@ -57,7 +56,6 @@ rule "Temperature Back To Normal"
     dispatch(DeleteTemperatureTooHighByTemperatureBackToNormal);
     dispatch(DeleteTemperatureTooLowByTemperatureBackToNormal);
     dispatch(TemperatureBackToNormal);
-    dispatch(InformUser);
 end;
 
 rule "Change status TemperatureBackToNormal"

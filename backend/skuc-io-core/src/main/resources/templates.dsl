@@ -57,7 +57,7 @@
 
 [then]changeStatus\(\"{deviceType:[\w\d-_]*}\",\s?\"{value:[\w\d-_]*}\"\)=StatusReceived statusReceived = new StatusReceived("", "{deviceType}DeviceId", "{deviceType}", "{value}");\n ((NotificationService) kcontext.getKieRuntime().getGlobal("notificationService")).sendFrom(statusReceived); \n insert(statusReceived)
 
-[then]sisaj{staDaSisam:\(\{?.*\}?\)}=System.out.println{staDaSisam}
+[then]print{printable:\(\{?.*\}?\)}=System.out.println{printable}
 [then]dispatch\({eventName:\{?\w*\}?}\)=insert(new EventOccured("{eventName}"))
 [then]activateContext\({contextName:\{?\w*\}?}\)=insert(new ActivateContextByName("{contextName}"))
 [then]deactivateContext\({contextName:\{?\w*\}?}\)=insert(new DeactivateContextByName("{contextName}"))

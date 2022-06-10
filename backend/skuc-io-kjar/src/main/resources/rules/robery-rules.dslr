@@ -39,7 +39,6 @@ rule "Potential Robery Movement By Movement Sensor"
     PotentialRoberyMovement has not occured
     PrePotentialRoberyMovement has occured
   then
-    dispatch(InformUser);
     dispatch(StartVideoRecording);
     dispatch(PotentialRoberyMovement);
 end;
@@ -100,7 +99,6 @@ rule "Potential Robery Movement By Sound"
     PotentialRoberySound has not occured
     PrePotentialRoberySound has occured
   then
-    dispatch(InformUser);
     dispatch(StartVideoRecording);
     dispatch(PotentialRoberySound);
 end;
@@ -187,7 +185,7 @@ rule "Inform about ActivateAlarmSystem"
     ActivateAlarmSystem has occured
   then
     informUser()
-      with "about": "There is potential robery in your object"
+      with "about": "There is potential robery in your object."
     ===>
 end;
 

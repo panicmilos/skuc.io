@@ -18,7 +18,7 @@ rule "High temperature"
     dispatch(DeleteTemperatureTooLowByTemperatureTooHigh);
     dispatch(DeleteTemperatureBackToNormalByTemperatureTooHigh);
     dispatch(TemperatureTooHigh);
-    dispatch(InformUser);
+    print("High temperature");
 end;
 
 rule "Change status TemperatureTooHigh"
@@ -58,8 +58,7 @@ rule "High CO2"
     removeValue($curr_co2);
     dispatch(DeleteCO2BackToNormalByCO2TooHigh);
     dispatch(CO2TooHigh);
-    sisaj("High CO2");
-    dispatch(InformUser);
+    print("High CO2");
 end;
 
 rule "Remove CO2TooHigh"
@@ -90,7 +89,6 @@ rule "CO2 Back To Normal"
     removeValue($curr_co2);
     dispatch(DeleteCO2TooHighByCO2BackToNormal);
     dispatch(CO2BackToNormal);
-    dispatch(InformUser);
 end;
 
 rule "Remove CO2BackToNormal"
@@ -123,8 +121,7 @@ rule "Low humidity"
     removeValue($curr_humidity);
     dispatch(DeleteHumidBackToNormalByHumidTooLow);
     dispatch(HumidTooLow);
-    sisaj("Low humidity");
-    dispatch(InformUser);
+    print("Low humidity");
 end;
 
 rule "Remove HumidTooLow"
@@ -155,7 +152,6 @@ rule "Humidity back to normal"
     removeValue($curr_humidity);
     dispatch(DeleteHumidTooLowByHumidBackToNormal);
     dispatch(HumidBackToNormal);
-    dispatch(InformUser);
 end;
 
 rule "Remove HumidBackToNormal"
@@ -184,8 +180,11 @@ rule "Potential fire"
     HumidTooLow has occured
     PotentialFire has not occured
   then
-    sisaj("Potential fire");
+    print("Potential fire");
     dispatch(PotentialFire);
+    informUser()
+      with "about": "There is a potential fire in your object."
+    ===>
 end;
 
 rule "Remove potential fire based on Temperature"
@@ -236,7 +235,7 @@ rule "Close windows"
     PotentialFire has occured
     are WindowsOpen()
   then
-    sisaj("Close windows");
+    print("Close windows");
     dispatch(CloseWindows);
 end;
 
@@ -245,7 +244,7 @@ rule "Turn off AC"
     PotentialFire has occured
     is ACOn()
   then
-    sisaj("AC turned off");
+    print("AC turned off");
     dispatch(TurnOffAC);
 end;
 
@@ -256,7 +255,7 @@ rule "Activate sprinklers"
     PotentialFire has occured
     aren't SprinklersActive()
   then
-    sisaj("Sprinklers activated");
+    print("Sprinklers activated");
     dispatch(ActivateSprinklers);
 end;
 
