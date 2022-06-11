@@ -1,6 +1,6 @@
 package skuc.io;
 
-import skuc.io.skuciocore.models.events.device.ValueReceived;
+import skuc.io.skuciocore.models.events.kjar.ValueReceivedCopy;
 import skuc.io.skuciocore.models.events.device.StatusReceived;
 import skuc.io.skuciocore.models.csm.StateRegistry;
 import skuc.io.skuciocore.models.csm.configuration.Context;
@@ -9,12 +9,12 @@ import skuc.io.skuciocore.services.StateRegistryService;
 global StateRegistryService stateRegistryService;
 
 rule "Update Value State"
-  no-loop
-  salience 110
+  salience -100
   when
-    ValueReceived($deviceType: deviceType, $value: value)
+    $vr : ValueReceivedCopy($deviceType: deviceType, $value: value)
     $reg : StateRegistry()
   then
+    delete($vr);
     modify($reg) {
       setState("value_" + $deviceType, $value + "");
     }
@@ -22,7 +22,6 @@ rule "Update Value State"
 end;
 
 rule "Update Status State"
-  no-loop
   salience -100
   when
     $sr: StatusReceived($deviceType: deviceType, $value: value)

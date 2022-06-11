@@ -25,6 +25,7 @@ rule "Change status TemperatureTooHigh"
   when
     TemperatureTooHigh has occured
   then
+    print("Change status TemperatureTooHigh");
     changeStatus("temperature", "TemperatureTooHigh");
 end;
 
@@ -34,6 +35,7 @@ rule "Remove TemperatureTooHigh"
     def $deleteEvent = DeleteTemperatureTooHighByTemperatureTooLow or DeleteTemperatureTooHighByTemperatureBackToNormal have occured
     def $temperatureEvent = TemperatureTooHigh has occured
   then
+      print("Remove TemperatureTooHigh");
     removeEvent($deleteEvent);
     removeEvent($temperatureEvent);
 end;
@@ -42,6 +44,7 @@ rule "Remove TemperatureTooHigh Cleanups"
   when
     def $deleteEvent = DeleteTemperatureTooHighByTemperatureTooLow or DeleteTemperatureTooHighByTemperatureBackToNormal have occured
   then
+    print("Remove TemperatureTooHigh Cleanups");
     removeEvent($deleteEvent);
 end;
 
@@ -67,6 +70,7 @@ rule "Remove CO2TooHigh"
     def $deleteEvent = DeleteCO2TooHighByCO2BackToNormal has occured
     def $co2Event = CO2TooHigh has occured
   then
+    print("Remove CO2TooHigh");
     removeEvent($deleteEvent);
     removeEvent($co2Event);
 end;
@@ -75,6 +79,7 @@ rule "Remove CO2TooHigh Cleanups"
   when
     def $deleteEvent = DeleteCO2TooHighByCO2BackToNormal has occured
   then
+    print("Remove CO2TooHigh Cleanups");
     removeEvent($deleteEvent);
 end;
 
@@ -86,6 +91,7 @@ rule "CO2 Back To Normal"
     def $curr_co2
       - manje ili jednako sa $max_co2
   then
+    print("CO2 Back To Normal");
     removeValue($curr_co2);
     dispatch(DeleteCO2TooHighByCO2BackToNormal);
     dispatch(CO2BackToNormal);
@@ -97,6 +103,7 @@ rule "Remove CO2BackToNormal"
     def $deleteEvent = DeleteCO2BackToNormalByCO2TooHigh has occured
     def $co2Event = CO2BackToNormal has occured
   then
+    print("Remove CO2BackToNormal");
     removeEvent($deleteEvent);
     removeEvent($co2Event);
 end;
@@ -105,7 +112,16 @@ rule "Remove CO2BackToNormal Cleanups"
   when
     def $deleteEvent = DeleteCO2BackToNormalByCO2TooHigh has occured
   then
+    print("Remove CO2BackToNormal Cleanups");
     removeEvent($deleteEvent);
+end;
+
+rule "Remove Curr Co2"
+  priority -100
+  when
+    def $curr_co2
+  then
+    removeValue($curr_co2);
 end;
 
 
@@ -130,6 +146,7 @@ rule "Remove HumidTooLow"
     def $deleteEvent = DeleteHumidTooLowByHumidBackToNormal has occured
     def $humidEvent = HumidTooLow has occured
   then
+    print("Remove HumidTooLow");
     removeEvent($deleteEvent);
     removeEvent($humidEvent);
 end;
@@ -138,6 +155,7 @@ rule "Remove HumidTooLow Cleanups"
   when
     def $deleteEvent = DeleteHumidTooLowByHumidBackToNormal has occured
   then
+    print("Remove HumidTooLow Cleanups");
     removeEvent($deleteEvent);
 end;
 
@@ -149,6 +167,7 @@ rule "Humidity back to normal"
     def $curr_humidity
       - vece ili jednako sa $min_humidity
   then
+    print("Humidity back to normal");
     removeValue($curr_humidity);
     dispatch(DeleteHumidTooLowByHumidBackToNormal);
     dispatch(HumidBackToNormal);
@@ -160,6 +179,7 @@ rule "Remove HumidBackToNormal"
     def $deleteEvent = DeleteHumidBackToNormalByHumidTooLow has occured
     def $humidEvent = HumidBackToNormal has occured
   then
+    print("Remove HumidBackToNormal");
     removeEvent($deleteEvent);
     removeEvent($humidEvent);
 end;
@@ -168,7 +188,16 @@ rule "Remove HumidBackToNormal Cleanups"
   when
     def $deleteEvent = DeleteHumidBackToNormalByHumidTooLow has occured
   then
+    print("Remove HumidBackToNormal Cleanups");
     removeEvent($deleteEvent);
+end;
+
+rule "Remove Curr Humidity"
+  priority -100
+  when
+    def $curr_humidity
+  then
+    removeValue($curr_humidity);
 end;
 
 
@@ -191,7 +220,9 @@ rule "Remove potential fire based on Temperature"
   when
     TemperatureTooLow or TemperatureBackToNormal have occured
     PotentialFire has occured
+    FireIsFinished has not occured
   then
+    print("Remove potential fire based on Temperature");
     dispatch(FireIsFinished);
 end;
 
@@ -199,7 +230,9 @@ rule "Remove potential fire based on CO2"
   when
     CO2BackToNormal has occured
     PotentialFire has occured
+    FireIsFinished has not occured
   then
+    print("Remove potential fire based on CO2");
     dispatch(FireIsFinished);
 end;
 
@@ -207,18 +240,36 @@ rule "Remove potential fire based on Humid"
   when
     HumidBackToNormal has occured
     PotentialFire has occured
+    FireIsFinished has not occured
   then
+    print("Remove potential fire based on Humid");
     dispatch(FireIsFinished);
 end;
 
-rule "Fire is Finished"
+rule "Fire is Finished And Remove Potential Fire"
   when
     FireIsFinished has occured
     def $pfEvent = PotentialFire has occured
-    def $activateEvent = ActivateSprinklers has occured
   then
+    print("Fire is Finished And Remove Potential Fire");
     removeEvent($pfEvent);
-    removeEvent($activateEvent);
+end;
+
+rule "Fire is Finished And Remove ActivateSprinklers"
+  when
+    FireIsFinished has occured
+    def $asEvent = ActivateSprinklers has occured
+  then
+    print("Fire is Finished And Remove ActivateSprinklers");
+    removeEvent($asEvent);
+end;
+
+rule "Fire is Finished And Deactivate Sprinklers"
+  when
+    FireIsFinished has occured
+    are SprinklersActive()
+  then
+    print("Fire is Finished And Deactivate Sprinklers");
     dispatch(DeactivateSprinklers);
 end;
 
@@ -227,6 +278,7 @@ rule "Remove FireIsFinished"
   when
     def $fireEvent = FireIsFinished has occured
   then
+    print("Remove FireIsFinished");
     removeEvent($fireEvent);
 end;
 
@@ -265,6 +317,7 @@ rule "Change status ActivateSprinklers"
   when
     ActivateSprinklers has occured
   then
+    print("Change status ActivateSprinklers");
     changeStatus("sprinkler", "SprinklersOn");
 end;
 
@@ -272,6 +325,7 @@ rule "Change status DeactivateSprinklers"
   when
     DeactivateSprinklers has occured
   then
+    print("Change status DeactivateSprinklers");
     changeStatus("sprinkler", "SprinklersOff");
 end;
 
@@ -280,6 +334,7 @@ rule "Remove DeactivateSprinklers"
   when
     def $deactivateEvent = DeactivateSprinklers has occured
   then
+    print("Remove DeactivateSprinklers");
     removeEvent($deactivateEvent);
 end;
 
@@ -288,6 +343,7 @@ rule "Turn off electric devices"
     ActivateSprinklers has occured
     is AnyElectricDeviceOn()
   then
+    print("Turn off electric devices");
     dispatch(TurnOffWashingMachine);
     dispatch(TurnOffAC);
     dispatch(TurnOffHeating);

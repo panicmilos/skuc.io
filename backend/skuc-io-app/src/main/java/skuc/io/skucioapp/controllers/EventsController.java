@@ -19,6 +19,7 @@ import skuc.io.skuciocore.models.csm.StateRegistry;
 import skuc.io.skuciocore.models.events.device.StatusReceived;
 import skuc.io.skuciocore.models.events.device.ValueReceived;
 import skuc.io.skuciocore.models.events.kjar.ActivateContextByName;
+import skuc.io.skuciocore.models.events.kjar.ValueReceivedCopy;
 import skuc.io.skuciocore.services.DeviceService;
 import skuc.io.skuciocore.services.NotificationService;
 import skuc.io.skuciocore.services.StateRegistryService;
@@ -76,6 +77,7 @@ public class EventsController {
 
     var session = _sessionManager.getSession(device.getLocationId().toString());
     session.insert(valueReceived);
+    session.insert(new ValueReceivedCopy(valueReceived));
     session.fireAllRules();
 
 

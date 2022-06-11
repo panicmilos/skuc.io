@@ -30,9 +30,14 @@ public class StateRegistryRepository extends CrudRepository<StateRegistry> {
 
   @Override
   public void update(StateRegistry stateRegistry) {
-    stateRegistry.setUpdatedAt(LocalDateTime.now());
-    this.delete(stateRegistry.getId());
-    this.store(stateRegistry);
+    try (var session = getSession()) {
+      var existingStateRegistry = session.load(concreteClass, stateRegistry.getId());
+
+      existingStateRegistry.setUpdatedAt(LocalDateTime.now());
+      existingStateRegistry.setRegistry(stateRegistry.getRegistry());
+
+      session.saveChanges();
+    }
   }
 
 }
