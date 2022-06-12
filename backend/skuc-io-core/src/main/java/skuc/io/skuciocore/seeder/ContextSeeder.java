@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import skuc.io.skuciocore.models.csm.configuration.Configuration;
 import skuc.io.skuciocore.models.csm.configuration.Context;
+import skuc.io.skuciocore.models.csm.configuration.StatusConfig;
 import skuc.io.skuciocore.models.csm.configuration.ThresholdsConfig;
 import skuc.io.skuciocore.services.ContextService;
 
@@ -31,7 +32,13 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 5000));
             put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
-        var afhConfiguration = new Configuration(afhThresholds, new HashMap<>());
+        var afhStatuses = new HashMap<String, StatusConfig>() {{
+            put("windows", new StatusConfig("WindowsClosed"));
+            put("boiler", new StatusConfig("BoilerOff"));
+            put("lights", new StatusConfig("LightsOff"));
+            put("washing", new StatusConfig("WashingOff"));
+        }};
+        var afhConfiguration = new Configuration(afhThresholds, afhStatuses);
         createContext("AFH", groupId, afhConfiguration);
 
         var ahThresholds = new HashMap<String, ThresholdsConfig>() {{
@@ -44,7 +51,10 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 50));
             put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
-        var ahConfiguration = new Configuration(ahThresholds, new HashMap<>());
+        var ahStatuses = new HashMap<String, StatusConfig>() {{
+            put("boiler", new StatusConfig("BoilerOn"));
+        }};
+        var ahConfiguration = new Configuration(ahThresholds, ahStatuses);
         createContext("AH", groupId, ahConfiguration);
 
         var ecoThresholds = new HashMap<String, ThresholdsConfig>() {{
@@ -57,7 +67,14 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 50));
             put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
-        var ecoConfiguration = new Configuration(ecoThresholds, new HashMap<>());
+        var ecoStatuses = new HashMap<String, StatusConfig>() {{
+            put("ac", new StatusConfig("ACOff"));
+            put("heating", new StatusConfig("HeatingOff"));
+            put("boiler", new StatusConfig("BoilerOff"));
+            put("lights", new StatusConfig("LightsOff"));
+            put("washing", new StatusConfig("WashingOff"));
+        }};
+        var ecoConfiguration = new Configuration(ecoThresholds, ecoStatuses);
         createContext("Eco", groupId, ecoConfiguration);
 
         var winterThresholds = new HashMap<String, ThresholdsConfig>() {{
@@ -70,7 +87,10 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 20));
             put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
-        var winterConfiguration = new Configuration(winterThresholds, new HashMap<>());
+        var winterStatuses = new HashMap<String, StatusConfig>() {{
+            put("heating", new StatusConfig("HeatingOn"));
+        }};
+        var winterConfiguration = new Configuration(winterThresholds, winterStatuses);
         createContext("Winter", groupId, winterConfiguration);
 
         var summerThresholds = new HashMap<String, ThresholdsConfig>() {{
@@ -83,7 +103,10 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 100));
             put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
-        var summerConfiguration = new Configuration(summerThresholds, new HashMap<>());
+        var summerStatuses = new HashMap<String, StatusConfig>() {{
+            put("ac", new StatusConfig("ACOn"));
+        }};
+        var summerConfiguration = new Configuration(summerThresholds, summerStatuses);
         createContext("Summer", groupId, summerConfiguration);
   
         var dayThresholds = new HashMap<String, ThresholdsConfig>() {{
@@ -96,7 +119,10 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 100));
             put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
-        var dayConfiguration = new Configuration(dayThresholds, new HashMap<>());
+        var dayStatuses = new HashMap<String, StatusConfig>() {{
+            put("lights", new StatusConfig("LightsOff"));
+        }};
+        var dayConfiguration = new Configuration(dayThresholds, dayStatuses);
         createContext("Daily", groupId, dayConfiguration);
 
         var nightThresholds = new HashMap<String, ThresholdsConfig>() {{
@@ -109,7 +135,13 @@ public class ContextSeeder {
             put("homeradius", new ThresholdsConfig(0, 2));
             put("prisutnostkupatilo", new ThresholdsConfig(0.3f, 0.7f));
         }};
-        var nightConfiguration = new Configuration(nightThresholds, new HashMap<>());
+        var nightStatuses = new HashMap<String, StatusConfig>() {{
+            put("ac", new StatusConfig("ACOff"));
+            put("boiler", new StatusConfig("BoilerOn"));
+            put("lights", new StatusConfig("LightsOff"));
+            put("washing", new StatusConfig("WashingOn"));
+        }};
+        var nightConfiguration = new Configuration(nightThresholds, nightStatuses);
         createContext("Night", groupId, nightConfiguration);
     }
 
