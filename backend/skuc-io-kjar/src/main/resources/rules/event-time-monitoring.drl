@@ -1,0 +1,30 @@
+package skuc.io;
+
+import java.time.LocalDateTime;
+import skuc.io.skuciocore.models.events.kjar.EventOccured;
+import skuc.io.skuciocore.models.events.kjar.EventStarted;
+import java.util.ArrayList;
+
+rule "Track event start time"
+    when
+        $eo: EventOccured()
+    then
+        EventStarted eventStarted = new EventStarted($eo.getId(), $eo.getName());
+        insert(eventStarted);
+end;
+
+rule "Refresh started events"
+    timer (int: 0s 10s)
+    when
+        $es: EventStarted()
+    then
+        modify($es) { setRefresh(-1 * $es.getRefresh()) };
+end;
+
+rule "Clean started events"
+    when
+        $es: EventStarted($eventId: eventId)
+        not EventOccured(id == $eventId)
+    then
+        delete($es);
+end;

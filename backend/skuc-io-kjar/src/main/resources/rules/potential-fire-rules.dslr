@@ -264,6 +264,16 @@ rule "Fire is Finished And Remove ActivateSprinklers"
     removeEvent($asEvent);
 end;
 
+rule "Fire is Finished And Remove FireStationNotified"
+  when
+    FireIsFinished has occured
+    def $fnsEvent = FireStationNotified has occured
+  then
+    print("Fire is Finished And Remove FireStationNotified");
+    removeEvent($fnsEvent);
+end;
+
+
 rule "Fire is Finished And Deactivate Sprinklers"
   when
     FireIsFinished has occured
@@ -355,6 +365,11 @@ end;
 rule "Notify fire station"
   when
     ActivateSprinklers lasts more than 1min
+    FireStationNotified has not occured
   then
+    informUser()
+      with "about": "Fire station is notified."
+    ===>
+    dispatch(FireStationNotified);
     print("Fire station notified");
 end;
