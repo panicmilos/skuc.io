@@ -1,24 +1,35 @@
 import moment from "moment";
 
-export function mapRecordsToChartData(records: any[]) {
-  const nameKey = "CreatedAt";
-  const keys = !!records && records.length ? Object.keys(records[0]).filter(key => key !== nameKey) : [];
+export function mapParamFiltersForRequest(paramFilters: any) {
+  return paramFilters?.map((paramFilter: any) => {
+    return {
+      ...paramFilter,
+      valueFilters: (paramFilter.filters && paramFilter.filters.split(", ").map((filter: any) => {
+        const tokens = filter.split(/\s+/)
+        return {
+          algorithm: tokens[0],
+          comparator: tokens[1],
+          value: parseFloat(tokens[2])
+        }
+      })) || []
+    };
+  })
+}
 
-  const data = (records && records.length) ? records.map(r => {
-    const record = {...r};
-    record[nameKey] = moment(record[nameKey]).format('DD.MM.YYYY. HH:mm');
-    keys.forEach(k => {
-      if (record[k] === null)
-        record[k] = 0;
-      else
-        record[k] = parseFloat(record[k]);
-    });
-    return {...record};
-  }) : [];
 
+export function mapParamFiltersForComponents(paramFilters: any) {
+  console.log(paramFilters);
+
+  return paramFilters.map((paramFilter: any) => ({
+    paramName: paramFilter.paramName,
+    algorithm: paramFilter.algorithm,
+    filters: paramFilter.valueFilters.map(({algorithm, comparator, value}: any) => `${algorithm} ${comparator} ${value}`).join(", ")
+  }));
+}
+
+export function mapPeriodForRequest({ from, to }: any) {
   return {
-    nameKey,
-    keys,
-    data
+    ...(from ? {from: moment(from).format() } : {}),
+    ...(to ? {to: moment(to).endOf('day').format() } : {}),
   }
 }
