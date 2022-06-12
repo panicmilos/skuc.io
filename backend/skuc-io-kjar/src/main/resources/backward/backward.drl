@@ -1,0 +1,64 @@
+package skuc.io;
+
+import java.util.ArrayList;
+import skuc.io.skuciocore.models.events.device.ValueAggregated;
+import skuc.io.skuciocore.models.events.device.Aggregate;
+import skuc.io.skuciocore.models.reports.ParamFilter;
+import skuc.io.skuciocore.models.reports.LocalDateTimePeriod;
+import skuc.io.skuciocore.models.reports.ReportFilters;
+import skuc.io.skuciocore.models.reports.MatchedAggregatedValue;
+import skuc.io.skuciocore.models.reports.ReportResultValue;
+import skuc.io.skuciocore.models.reports.ReportResultGroup;
+import skuc.io.skuciocore.models.reports.ReportResult;
+
+
+rule "Get report - insert ReportParams"
+  salience 100
+  when
+    $reportFilters: ReportFilters()
+  then
+    for(Object paramFilter : $reportFilters.getParamFilters()) {
+      insert((ParamFilter)paramFilter);
+    }
+end;
+
+
+rule "Get report - match ValueAggregated"
+  salience 90
+  when
+    $reportFilters: ReportFilters()
+    $paramFilter: ParamFilter()
+    $va: ValueAggregated(resolution == $reportFilters.resolution, createdAt isInPeriod $reportFilters.period, this satisfiesFilters $paramFilter)
+  then
+    insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
+end;
+
+rule "Get report - Collect Report Groups"
+  salience 80
+  when
+    $paramFilter: ParamFilter()
+    $mvas: ArrayList() from collect(MatchedAggregatedValue(paramName == $paramFilter.paramName, algorithm == $paramFilter.algorithm))
+  then
+    ArrayList<ReportResultValue> values = new ArrayList<ReportResultValue>();
+    for(Object mvaObject : $mvas) {
+      MatchedAggregatedValue mva = (MatchedAggregatedValue)mvaObject;
+      values.add(new ReportResultValue(mva.getValue(), mva.getCreatedAt()));
+    }
+
+    insert(new ReportResultGroup($paramFilter.getParamName(), $paramFilter.getAlgorithm(), values));
+
+end;
+
+rule "Get report - Collect Report"
+  salience 70
+  when
+    $groups: ArrayList() from collect(ReportResultGroup())
+  then
+    ArrayList<ReportResultGroup> groups = new ArrayList<ReportResultGroup>();
+    for(Object groupObject : $groups) {
+      ReportResultGroup group = (ReportResultGroup)groupObject;
+      groups.add(group);
+    }
+
+    insert(new ReportResult(groups));
+end;

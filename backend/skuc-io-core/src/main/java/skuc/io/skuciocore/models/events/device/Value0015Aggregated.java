@@ -11,7 +11,11 @@ import org.kie.api.definition.type.Timestamp;
 public class Value0015Aggregated extends ValueAggregated {
 
   public Value0015Aggregated(String deviceId, String deviceType, String paramName, Aggregate aggregate) {
-    super(UUID.randomUUID().toString(), deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType, paramName, 15, aggregate);
+    super(UUID.randomUUID().toString(), deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType, paramName, 15, 5, aggregate);
   }
 
+// TODO: REMOVe
+  public Value0015Aggregated(String parentId, String id, String deviceId, String deviceType, String paramName, Aggregate aggregate) {
+    super(parentId, id, deviceId, LocalDateTime.now(), LocalDateTime.now(), deviceType, paramName, 15, 5, aggregate);
+  }
 }

@@ -1,5 +1,10 @@
 <kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/kie/6.0.0/kmodule">
   
+  <configuration>
+    <property key="drools.evaluator.satisfiesFilters" value="skuc.io.operators.SatisfiesFiltersEvaluatorDefinition"/>
+    <property key="drools.evaluator.isInPeriod" value="skuc.io.operators.IsInPeriodEvaluatorDefinition"/>
+  </configuration>
+
   <kbase name="DefaultKBase" default="true" eventProcessingMode="stream" packages="rules, queries, template-instances">
     <ksession name="DefaultSession" type="stateful" default="true" />
   </kbase>
@@ -7,6 +12,10 @@
   <kbase name="CepKBase" eventProcessingMode="stream" packages="cep">
     <ksession name="TestCepSession" clockType="pseudo"/>
     <ksession name="DefaultCepSession" clockType="realtime"/>
+  </kbase>
+
+  <kbase name="BackwardKBase" packages="backward">
+    <ksession name="ReportSession" clockType="realtime"/>
   </kbase>
 
 </kmodule>

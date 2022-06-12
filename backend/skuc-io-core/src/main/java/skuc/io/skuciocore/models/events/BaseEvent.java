@@ -3,6 +3,8 @@ package skuc.io.skuciocore.models.events;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.kie.api.definition.type.Position;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -10,6 +12,7 @@ import skuc.io.skuciocore.utils.JsonDateDeserializer;
 import skuc.io.skuciocore.utils.JsonDateSerializer;
 
 public class BaseEvent {
+  @Position(0)
   private String id = UUID.randomUUID().toString();
   private String streamId = UUID.randomUUID().toString();
   private String type = this.getClass().getSimpleName();

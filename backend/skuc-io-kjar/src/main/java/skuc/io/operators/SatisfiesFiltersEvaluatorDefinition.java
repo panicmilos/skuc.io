@@ -1,0 +1,88 @@
+package skuc.io.operators;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.spi.Evaluator;
+
+public class SatisfiesFiltersEvaluatorDefinition implements EvaluatorDefinition {
+
+  protected static final String satisfiesFiltersOp = "satisfiesFilters";
+
+  public static Operator SATISFIES_FILTERS;
+  public static Operator NOT_SATISFIES_FILTERS;
+
+  private static String[] SUPPORTED_IDS;
+
+  private SatisfiesFiltersEvaluator evaluator;
+  private SatisfiesFiltersEvaluator negatedEvaluator;
+
+  static {
+    init();
+  }
+
+  static void init() {
+    if (SUPPORTED_IDS == null) {
+      SATISFIES_FILTERS = Operator.addOperatorToRegistry(satisfiesFiltersOp, false);
+      NOT_SATISFIES_FILTERS = Operator.addOperatorToRegistry(satisfiesFiltersOp, true);
+      SUPPORTED_IDS = new String[]{satisfiesFiltersOp};
+    }
+  }
+
+  @Override
+  public String[] getEvaluatorIds() {
+    return new String[]{satisfiesFiltersOp};
+  }
+
+  @Override
+  public boolean isNegatable() {
+    return true;
+  }
+
+  @Override
+  public Evaluator getEvaluator(ValueType type, Operator operator) {
+    return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), null);
+  }
+
+  @Override
+  public Evaluator getEvaluator(ValueType type, Operator operator, String parameterText) {
+    return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), parameterText);
+  }
+
+  @Override
+  public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText) {
+    return getEvaluator(type, operatorId, isNegated, parameterText, Target.BOTH, Target.BOTH);
+  }
+
+  @Override
+  public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText, Target leftTarget, Target rightTarget) {
+    return isNegated ? negatedEvaluator == null ? new SatisfiesFiltersEvaluator(type, isNegated) : negatedEvaluator : evaluator == null ? new SatisfiesFiltersEvaluator(type, isNegated) : evaluator;
+  }
+
+  @Override
+  public boolean supportsType(ValueType type) {
+    return true;
+  }
+
+  @Override
+  public Target getTarget() {
+    return Target.BOTH;
+  }
+
+  @Override
+  public void writeExternal(ObjectOutput out) throws IOException {
+    out.writeObject(evaluator);
+    out.writeObject(negatedEvaluator);
+  }
+
+  @Override
+  public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    evaluator = (SatisfiesFiltersEvaluator) in.readObject();
+    negatedEvaluator = (SatisfiesFiltersEvaluator) in.readObject();
+  }
+
+}

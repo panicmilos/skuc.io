@@ -58,4 +58,15 @@ public class Aggregate {
     this.count = count;
   }
 
+  public Object getValue(String algorithm) {
+    switch(algorithm) {
+      case "min": return min;
+      case "max": return max;
+      case "sum": return sum;
+      case "average": return average;
+      case "count": return count;
+    }
+
+    return 0;
+  }
 }
