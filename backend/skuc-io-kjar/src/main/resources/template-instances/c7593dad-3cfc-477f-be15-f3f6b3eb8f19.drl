@@ -1,0 +1,15 @@
+package skuc.io 
+import skuc.io.skuciocore.models.csm.Location;
+import skuc.io.skuciocore.models.csm.StateRegistry;
+
+rule "c7593dad-3cfc-477f-be15-f3f6b3eb8f19"
+when
+Location(id == "afb5ca08-4aee-490c-bb4e-d63fbd5a76b4")
+    $reg : StateRegistry(  )  
+    not( 
+    eval( $reg.isState("heating", "HeatingOn") )   ) 
+then
+System.out.println("Grejanje nije ukljuceno!");
+end
+
+

@@ -105,6 +105,7 @@ public class ContextSeeder {
         }};
         var summerStatuses = new HashMap<String, StatusConfig>() {{
             put("ac", new StatusConfig("ACOn"));
+            put("heating", new StatusConfig("HeatingOff"));
         }};
         var summerConfiguration = new Configuration(summerThresholds, summerStatuses);
         createContext("Summer", groupId, summerConfiguration);
