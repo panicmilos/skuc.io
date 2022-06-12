@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import skuc.io.skuciocore.exceptions.BadLogicException;
 import skuc.io.skuciocore.models.csm.templates.RuleTemplate;
+import skuc.io.skuciocore.persistence.RuleTemplateInstanceRepository;
 import skuc.io.skuciocore.persistence.RuleTemplateRepository;
 import skuc.io.skuciocore.utils.ClassScannerUtils;
 
@@ -23,14 +24,16 @@ import skuc.io.skuciocore.utils.ClassScannerUtils;
 @Service
 public class RuleTemplateService extends CrudService<RuleTemplate> {
     
-    private GroupService _groupService;
-    private RuleTemplateRepository _ruleTemplateRepository;
+    private final GroupService _groupService;
+    private final RuleTemplateInstanceRepository _ruleTemplateInstanceRepository;
+    private final RuleTemplateRepository _ruleTemplateRepository;
     private Map<String, String> _modelClasses;
 
     @Autowired
-    public RuleTemplateService(RuleTemplateRepository repository, GroupService groupService) {
+    public RuleTemplateService(RuleTemplateRepository repository, GroupService groupService, RuleTemplateInstanceRepository ruleTemplateInstanceRepository) {
         super(repository);
         _groupService = groupService;
+        _ruleTemplateInstanceRepository = ruleTemplateInstanceRepository;
         _ruleTemplateRepository = repository;
         _modelClasses =  ClassScannerUtils.findAllClasses("skuc.io.skuciocore.models");
     }
@@ -143,6 +146,17 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
 
     public Collection<RuleTemplate> getByGroup(String groupId) {
         return _ruleTemplateRepository.getByGroup(groupId);
+    }
+
+    @Override
+    public RuleTemplate delete(String ruleTemplateId) {
+        getOrThrow(ruleTemplateId);
+        var ruleTemplateInstances = _ruleTemplateInstanceRepository.getByTemplate(ruleTemplateId);
+        if (!ruleTemplateInstances.isEmpty()) {
+            throw new BadLogicException("Rule template cannot be deleted while it has active instances.");
+        }
+
+        return super.delete(ruleTemplateId);
     }
 
     @Override
