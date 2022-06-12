@@ -94,10 +94,10 @@ public class SatisfiesFiltersEvaluator extends BaseEvaluator {
 
   private boolean evaluateValueFilter(Aggregate aggregate, ValueFilter filter) {
     if (filter.getAlgorithm().equals("count")) {
-      return evaluateLongCompareValue((Long)aggregate.getValue("count"), filter.getComparator(), (Long)filter.getValue());
+      return evaluateLongCompareValue(Long.valueOf(aggregate.getValue("count").toString()), filter.getComparator(), Long.valueOf(filter.getValue().toString()));
     }
 
-    return evaluateDoubleCompareValue((Double)aggregate.getValue(filter.getAlgorithm()), filter.getComparator(), (Double)filter.getValue());
+    return evaluateDoubleCompareValue(Double.valueOf(aggregate.getValue(filter.getAlgorithm()).toString()), filter.getComparator(), Double.valueOf(filter.getValue().toString()));
   }
 
   private boolean evaluateLongCompareValue(Long value, String comparer, Long threshold) {

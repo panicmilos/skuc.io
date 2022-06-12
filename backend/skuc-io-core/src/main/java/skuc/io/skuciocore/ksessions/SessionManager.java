@@ -174,12 +174,16 @@ public class SessionManager {
     _session.insert((new Value0005Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
   }
 
-  private void insertValue0015Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0015Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+  private void insertValue0015Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count, int addMinutes) {
+    var agr = (new Value0015Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count)));
+    agr.setCreatedAt(LocalDateTime.now().plusMinutes(addMinutes));
+    _session.insert(agr);
   }
 
-  private void insertValue0030Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0030Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+  private void insertValue0030Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count, int addMinutes) {
+    var agr = new Value0030Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
+    agr.setCreatedAt(LocalDateTime.now().plusMinutes(addMinutes));
+    _session.insert(agr);
   }
 
   private void insertValue0060Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count) {
@@ -195,11 +199,11 @@ public class SessionManager {
       insertValue0005Aggregated(session, "5", "1", 10D, 22D, 44D, 11D, 4L);
       insertValue0005Aggregated(session, "5", "2", 2D, 33D, 100D, 20D, 5L);
       insertValue0005Aggregated(session, "5", "3", 1D, 1D, 1D, 1D, 1L);
-      insertValue0015Aggregated(session, "7", "4", 3D, 13D, 24D, 7D, 3L);
-      insertValue0015Aggregated(session, "8", "5", 6D, 11D, 25D, 6.25D, 4L);
-      insertValue0015Aggregated(session, "8", "6", 3D, 13D, 24D, 7D, 3L);
-      insertValue0030Aggregated(session, "9", "7", 7D, 56D, 96D, 16D, 6L);  
-      insertValue0030Aggregated(session, "9", "8", 11D, 13D, 24D, 12D, 2L);
+      insertValue0015Aggregated(session, "7", "4", 3D, 13D, 24D, 7D, 3L, -15);
+      insertValue0015Aggregated(session, "8", "5", 6D, 11D, 25D, 6.25D, 4L, -10);
+      insertValue0015Aggregated(session, "8", "6", 3D, 13D, 24D, 7D, 3L, -5);
+      insertValue0030Aggregated(session, "9", "7", 7D, 56D, 96D, 16D, 6L, -30);  
+      insertValue0030Aggregated(session, "9", "8", 11D, 13D, 24D, 12D, 2L, 0);
       insertValue0060Aggregated(session, "", "9", 1D, 14D, 22D, 5.25D, 4L);
 
       new AggregationThread("AggregationThread", session).start();
@@ -230,7 +234,7 @@ public class SessionManager {
     // }});
     var period = new LocalDateTimePeriod(LocalDateTime.now().minusMinutes(15), null);
 
-    reportSession.insert(new MaxPeriodReportFilters(period, new ArrayList<>() {{ add(param1);  }}));
+    // reportSession.insert(new MaxPeriodReportFilters(period, new ArrayList<>() {{ add(param1);  }}));
 
     return reportSession;
   }
