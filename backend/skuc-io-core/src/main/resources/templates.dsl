@@ -9,6 +9,9 @@
 [keyword]use most common imports=import skuc.io.skuciocore.models.csm.configuration.Context;import skuc.io.skuciocore.models.events.device.ValueReceived;import java.util.ArrayList
 [keyword]use all=import skuc.io.skuciocore.models.csm.*; import skuc.io.skuciocore.models.csm.configuration.*; import skuc.io.skuciocore.models.csm.*
 
+[when]{deviceName:\{?\w*\}?} has status {status:\{?\w*\}?}=$reg : StateRegistry(); \n eval($reg.isState("{deviceName}", "{status}"));
+[when]{deviceName:\{?\w*\}?} doesn't have status {status:\{?\w*\}?}=$reg : StateRegistry(); \n not eval($reg.isState("{deviceName}", "{status}"));
+
 [when]in the last {time:\d+[ms]} {eventName:\{?\w*\}?} has occured=EventOccured(name == "{eventName}") over window:time({time})
 [when]in the last {time:\d+[ms]} {eventName:\{?\w*\}?} has not occured=not EventOccured(name == "{eventName}") over window:time({time})
 
@@ -17,7 +20,7 @@
 [when]def ${definedParam:[\w_-]*}\s?\=\s{eventName1:\{?\w*\}?} or {eventName2:\{?\w*\}?} have occured=${definedParam} : EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName1:\{?\w*\}?} or {eventName2:\{?\w*\}?} have occured=EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName:\{?\w*\}?} has not occured=not EventOccured(name == "{eventName}")
-[when]{eventName:\{?\w*\}?} lasts more than {time:\d+}min=EventOccured(name == "{eventName}", createdAt.compareTo(LocalDateTime.now().plusMinutes({time})) < 0)
+[when]{eventName:\{?\w*\}?} lasts more than {time:\d+}min=EventStarted(eventName == "{eventName}", startTime.plusMinutes({time}).compareTo(LocalDateTime.now()) < 0)
 [when]\{{eventName:\w+}\}=template_start{eventName}template_end
 
 [when]are {query:\w*}\(\)=are{query}()

@@ -37,7 +37,10 @@ rule "Notify about context change"
     for(int i = 0; i < $contexts.size(); ++i) {
       value += ((Context)$contexts.get(i)).getName() + ", ";
     }
-    value = value.substring(0, value.length() - 2);
+
+    if ($contexts.size() > 0) {
+      value = value.substring(0, value.length() - 2);
+    }
     
     StatusReceived statusReceived = new StatusReceived("", "activeContextsDeviceId", "activeContexts", value);
     notificationService.sendFrom(statusReceived);
