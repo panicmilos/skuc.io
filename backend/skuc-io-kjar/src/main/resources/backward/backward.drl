@@ -54,10 +54,8 @@ rule "Max Period Report - ignore ValueAggregated"
     $va: ValueAggregated(createdAt isInPeriod $reportFilters.period, this satisfiesFilters $paramFilter)
     hasHappendUpwards($va.id, $va.resolution, $vaEnd.id, $vaEnd.parentId, $paramFilter;)
   then
-    System.out.println("Ubacuem Satistafujem? " + $va.getId() + "  " + $paramFilter.getAlgorithm());
+    System.out.println("IGNORED? " + $va.getId() + "  " + $paramFilter.getAlgorithm());
     insert(new IgnoreValue($va));
-
-    // insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $va.getResolution(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
 end;
 
 rule "Max Period Report - match ValueAggregated"
@@ -65,9 +63,10 @@ rule "Max Period Report - match ValueAggregated"
   when
     $reportFilters: MaxPeriodReportFilters()
     $paramFilter: ParamFilter()
-    $vaIgnore: IgnoreValue()
-    $va: ValueAggregated(this != $vaIgnore.valueAggregated, createdAt isInPeriod $reportFilters.period, this satisfiesFilters $paramFilter)
+    $va: ValueAggregated(createdAt isInPeriod $reportFilters.period, this satisfiesFilters $paramFilter)
+    not IgnoreValue(valueAggregated == $va)
   then
+    System.out.println("SATISFY? " + $va.getId() + "  " + $paramFilter.getAlgorithm());
     insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $va.getResolution(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
 end;
 

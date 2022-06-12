@@ -3,7 +3,7 @@ package skuc.io.skucioapp.controllers;
 import org.drools.core.ClassObjectFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,11 +28,11 @@ public class ReportsController {
     _sessionManager = sessionManager;
   }
 
-  @GetMapping("normal")
+  @PostMapping("normal")
   public ResponseEntity<ReportResult> getNormalReport(@RequestBody ReportFilters reportFilters) {
 
     var reportSession = _sessionManager.getReportSession();
-    // reportSession.insert(reportFilters);
+    reportSession.insert(reportFilters);
     reportSession.fireAllRules();
 
     reportSession.insert(new CollectReport());
@@ -44,11 +44,11 @@ public class ReportsController {
     return ResponseEntity.ok(reportResult);
   }
 
-  @GetMapping("at-some-time")
+  @PostMapping("at-some-time")
   public ResponseEntity<ReportResult> getAtsomeTimeReport(@RequestBody AtSomeTimeReportFilters reportFilters) {
 
     var reportSession = _sessionManager.getReportSession();
-    // reportSession.insert(reportFilters);
+    reportSession.insert(reportFilters);
     reportSession.fireAllRules();
 
     reportSession.insert(new CollectReport());
@@ -60,11 +60,11 @@ public class ReportsController {
     return ResponseEntity.ok(reportResult);
   }
 
-  @GetMapping("max-period")
+  @PostMapping("max-period")
   public ResponseEntity<ReportResult> getMaxPeriodReport(@RequestBody MaxPeriodReportFilters reportFilters) {
 
     var reportSession = _sessionManager.getReportSession();
-    // reportSession.insert(reportFilters);
+    reportSession.insert(reportFilters);
     reportSession.fireAllRules();
 
     reportSession.insert(new CollectReport());

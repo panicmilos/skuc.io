@@ -9,6 +9,7 @@ export { getPluginDefinition as getPluginLocations } from './locations'
 export { getPluginDefinition as getPluginDevices } from './devices'
 export { getPluginDefinition as getPluginContexts } from './contexts'
 export { getPluginDefinition as getPluginTemplates } from './templates'
+export { getPluginDefinition as getPluginReports } from './reports'
 // Contexts
 export { getPluginDefinition as getPluginAuthContext } from './auth-context'
 export { getPluginDefinition as getPluginReactQueryContext } from './react-query-context'
