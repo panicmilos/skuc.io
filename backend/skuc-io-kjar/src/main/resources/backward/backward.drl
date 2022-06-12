@@ -6,13 +6,95 @@ import skuc.io.skuciocore.models.events.device.Aggregate;
 import skuc.io.skuciocore.models.reports.ParamFilter;
 import skuc.io.skuciocore.models.reports.LocalDateTimePeriod;
 import skuc.io.skuciocore.models.reports.ReportFilters;
+import skuc.io.skuciocore.models.reports.AtSomeTimeReportFilters;
+import skuc.io.skuciocore.models.reports.MaxPeriodReportFilters;
 import skuc.io.skuciocore.models.reports.MatchedAggregatedValue;
 import skuc.io.skuciocore.models.reports.ReportResultValue;
 import skuc.io.skuciocore.models.reports.ReportResultGroup;
 import skuc.io.skuciocore.models.reports.ReportResult;
+import skuc.io.skuciocore.models.reports.CollectReport;
+import skuc.io.skuciocore.models.reports.IgnoreValue;
+
+query hasHappendUpwards(String $forbdenId, int $endResolution, String $id, String $parentId, ParamFilter filters)
+  ( ValueAggregated($id, $parentId; this satisfiesFilters filters, $id != $forbdenId, resolution > $endResolution) and isInChain($forbdenId, $id, $parentId;))
+  or
+  ( ValueAggregated($id, $parentId; this not satisfiesFilters filters, $id != $forbdenId, resolution > $endResolution ) and hasHappendUpwards($forbdenId, $endResolution, z, $id, filters; ) )
+end
+
+query isInChain(String $endId, String $id, String $parentId)
+  ( ValueAggregated($id, $parentId; id == $endId))
+  or
+  ( ValueAggregated($id, $parentId;) and isInChain($endId, z, $id; ) )
+end
 
 
-rule "Get report - insert ReportParams"
+query hasHappendDownsward(String $id, String $parentId, ParamFilter filters)
+  ( ValueAggregated($id, $parentId; this satisfiesFilters filters) )
+  or
+  ( ValueAggregated($id, $parentId; this not satisfiesFilters filters ) and hasHappendDownsward( z, $id, filters; ) )
+end
+
+
+rule "Max Period Report - insert ReportParams"
+  when
+    $reportFilters: MaxPeriodReportFilters()
+  then
+    System.out.println("Ubacuem ReportParams");
+    for(Object paramFilter : $reportFilters.getParamFilters()) {
+      insert((ParamFilter)paramFilter);
+    }
+end;
+
+rule "Max Period Report - ignore ValueAggregated"
+  salience 90
+  when
+    $reportFilters: MaxPeriodReportFilters()
+    $paramFilter: ParamFilter()
+    $vaEnd: ValueAggregated(createdAt isInPeriod $reportFilters.period, parentId == "")
+    $va: ValueAggregated(createdAt isInPeriod $reportFilters.period, this satisfiesFilters $paramFilter)
+    hasHappendUpwards($va.id, $va.resolution, $vaEnd.id, $vaEnd.parentId, $paramFilter;)
+  then
+    System.out.println("Ubacuem Satistafujem? " + $va.getId() + "  " + $paramFilter.getAlgorithm());
+    insert(new IgnoreValue($va));
+
+    // insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $va.getResolution(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
+end;
+
+rule "Max Period Report - match ValueAggregated"
+  salience 85
+  when
+    $reportFilters: MaxPeriodReportFilters()
+    $paramFilter: ParamFilter()
+    $vaIgnore: IgnoreValue()
+    $va: ValueAggregated(this != $vaIgnore.valueAggregated, createdAt isInPeriod $reportFilters.period, this satisfiesFilters $paramFilter)
+  then
+    insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $va.getResolution(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
+end;
+
+
+rule "Get At Some Time Report - insert ReportParams"
+  when
+    $reportFilters: AtSomeTimeReportFilters()
+  then
+    for(Object paramFilter : $reportFilters.getParamFilters()) {
+      insert((ParamFilter)paramFilter);
+    }
+end;
+
+rule "Get At Some Time Report - match ValueAggregated"
+  salience 90
+  when
+    $reportFilters: AtSomeTimeReportFilters()
+    $paramFilter: ParamFilter()
+    $va: ValueAggregated(resolution == $reportFilters.resolution, createdAt isInPeriod $reportFilters.period)
+    hasHappendDownsward($va.id, $va.parentId, $paramFilter;)
+  then
+    insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $reportFilters.getResolution(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
+end;
+
+
+
+rule "Get Normal Report - insert ReportParams"
   salience 100
   when
     $reportFilters: ReportFilters()
@@ -22,36 +104,39 @@ rule "Get report - insert ReportParams"
     }
 end;
 
-
-rule "Get report - match ValueAggregated"
+rule "Get Normal Report - match ValueAggregated"
   salience 90
   when
     $reportFilters: ReportFilters()
     $paramFilter: ParamFilter()
     $va: ValueAggregated(resolution == $reportFilters.resolution, createdAt isInPeriod $reportFilters.period, this satisfiesFilters $paramFilter)
   then
-    insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
+    insert(new MatchedAggregatedValue($paramFilter.getParamName(), $paramFilter.getAlgorithm(), $reportFilters.getResolution(), $va.getAggregate().getValue($paramFilter.getAlgorithm()), $va.getCreatedAt()));
 end;
 
-rule "Get report - Collect Report Groups"
+
+
+rule "Get Report - Collect Report Groups"
   salience 80
   when
+    CollectReport()
     $paramFilter: ParamFilter()
     $mvas: ArrayList() from collect(MatchedAggregatedValue(paramName == $paramFilter.paramName, algorithm == $paramFilter.algorithm))
   then
     ArrayList<ReportResultValue> values = new ArrayList<ReportResultValue>();
     for(Object mvaObject : $mvas) {
       MatchedAggregatedValue mva = (MatchedAggregatedValue)mvaObject;
-      values.add(new ReportResultValue(mva.getValue(), mva.getCreatedAt()));
+      values.add(new ReportResultValue(mva.getValue(), mva.getResolution(), mva.getCreatedAt()));
     }
 
     insert(new ReportResultGroup($paramFilter.getParamName(), $paramFilter.getAlgorithm(), values));
 
 end;
 
-rule "Get report - Collect Report"
+rule "Get Report - Collect Report"
   salience 70
   when
+    CollectReport()
     $groups: ArrayList() from collect(ReportResultGroup())
   then
     ArrayList<ReportResultGroup> groups = new ArrayList<ReportResultGroup>();

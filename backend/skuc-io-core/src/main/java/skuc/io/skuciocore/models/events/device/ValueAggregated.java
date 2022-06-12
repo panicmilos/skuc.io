@@ -10,7 +10,6 @@ public class ValueAggregated extends DeviceEvent {
   private String paramName;
   @Position(1)
   private String parentId;
-  @Position(2)
   private int resolution;
   private int previousResolution;
   private Aggregate aggregate;

@@ -1,8 +1,19 @@
 package skuc.io.skuciocore.models.notifications;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import skuc.io.skuciocore.utils.JsonDateDeserializer;
+import skuc.io.skuciocore.utils.JsonDateSerializer;
+
 public abstract class Notification {
   private String type;
   private String namespaceId;
+  @JsonSerialize(using = JsonDateSerializer.class)
+  @JsonDeserialize(using = JsonDateDeserializer.class)
+  private LocalDateTime createdAt = LocalDateTime.now();
 
   public Notification() {
   }
@@ -26,6 +37,14 @@ public abstract class Notification {
 
   public void setNamespaceId(String namespaceId) {
     this.namespaceId = namespaceId;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return this.createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
   }
 
 }

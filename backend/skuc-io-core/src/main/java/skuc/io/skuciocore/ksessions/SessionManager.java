@@ -30,7 +30,9 @@ import skuc.io.skuciocore.models.events.device.Value0005Aggregated;
 import skuc.io.skuciocore.models.events.device.Value0015Aggregated;
 import skuc.io.skuciocore.models.events.device.Value0030Aggregated;
 import skuc.io.skuciocore.models.events.device.Value0060Aggregated;
+import skuc.io.skuciocore.models.reports.AtSomeTimeReportFilters;
 import skuc.io.skuciocore.models.reports.LocalDateTimePeriod;
+import skuc.io.skuciocore.models.reports.MaxPeriodReportFilters;
 import skuc.io.skuciocore.models.reports.ParamFilter;
 import skuc.io.skuciocore.models.reports.ReportFilters;
 import skuc.io.skuciocore.models.reports.ValueFilter;
@@ -220,16 +222,15 @@ public class SessionManager {
     }
 
     var param1 = new ParamFilter("temp", "average", new ArrayList<ValueFilter>() {{
-      add(new ValueFilter("!=", "min", 11D));
-      add(new ValueFilter(">=", "min", 6D));
+      add(new ValueFilter(">=", "min", 9D));
     }});
-    var param2 = new ParamFilter("temp", "min", new ArrayList<ValueFilter>() {{
-      add(new ValueFilter("!=", "min", 11D));
-      add(new ValueFilter(">=", "min", 6D));
-    }});
-    var period = new LocalDateTimePeriod(LocalDateTime.now().minusMinutes(5), null);
+    // var param2 = new ParamFilter("temp", "min", new ArrayList<ValueFilter>() {{
+    //   add(new ValueFilter("!=", "min", 11D));
+    //   add(new ValueFilter(">=", "min", 6D));
+    // }});
+    var period = new LocalDateTimePeriod(LocalDateTime.now().minusMinutes(15), null);
 
-    reportSession.insert(new ReportFilters(5, period, new ArrayList<>() {{ add(param1); add(param2); }}));
+    reportSession.insert(new MaxPeriodReportFilters(period, new ArrayList<>() {{ add(param1);  }}));
 
     return reportSession;
   }

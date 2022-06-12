@@ -10,6 +10,7 @@ import skuc.io.skuciocore.utils.JsonDateSerializer;
 
 public class ReportResultValue {
   private Object value;
+  private int resolution;
   @JsonSerialize(using = JsonDateSerializer.class)
   @JsonDeserialize(using = JsonDateDeserializer.class)
   private LocalDateTime createdAt;
@@ -18,8 +19,9 @@ public class ReportResultValue {
     super();
   }
 
-  public ReportResultValue(Object value, LocalDateTime createdAt) {
+  public ReportResultValue(Object value, int resolution, LocalDateTime createdAt) {
     this.value = value;
+    this.resolution = resolution;
     this.createdAt = createdAt;
   }
 
@@ -29,6 +31,14 @@ public class ReportResultValue {
 
   public void setValue(Object value) {
     this.value = value;
+  }
+
+  public int getResolution() {
+    return this.resolution;
+  }
+
+  public void setResolution(int resolution) {
+    this.resolution = resolution;
   }
 
   public LocalDateTime getCreatedAt() {

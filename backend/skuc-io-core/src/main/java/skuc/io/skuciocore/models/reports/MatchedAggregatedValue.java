@@ -11,6 +11,7 @@ import skuc.io.skuciocore.utils.JsonDateSerializer;
 public class MatchedAggregatedValue {
   private String paramName;
   private String algorithm;
+  private int resolution;
   private Object value;
   @JsonSerialize(using = JsonDateSerializer.class)
   @JsonDeserialize(using = JsonDateDeserializer.class)
@@ -20,9 +21,11 @@ public class MatchedAggregatedValue {
     super();
   }
 
-  public MatchedAggregatedValue(String paramName, String algorithm, Object value, LocalDateTime createdAt) {
+  public MatchedAggregatedValue(String paramName, String algorithm, int resolution, Object value,
+      LocalDateTime createdAt) {
     this.paramName = paramName;
     this.algorithm = algorithm;
+    this.resolution = resolution;
     this.value = value;
     this.createdAt = createdAt;
   }
@@ -41,6 +44,14 @@ public class MatchedAggregatedValue {
 
   public void setAlgorithm(String algorithm) {
     this.algorithm = algorithm;
+  }
+
+  public int getResolution() {
+    return this.resolution;
+  }
+
+  public void setResolution(int resolution) {
+    this.resolution = resolution;
   }
 
   public Object getValue() {

@@ -67,15 +67,27 @@ public class SatisfiesFiltersEvaluator extends BaseEvaluator {
   }
   
   private boolean evaluate(ValueAggregated valueAggregated, ParamFilter paramFilter) {
+    System.out.println("ID: " + valueAggregated.getId() +  " PARENT ID: " + valueAggregated.getParentId()  + " ALGORITAM: " + paramFilter.getAlgorithm());
+    System.console().flush();
     if (!valueAggregated.getParamName().equals(paramFilter.getParamName())) {
       return false;
     }
-    
+
     for(ValueFilter valueFilter : paramFilter.getValueFilters()) {
       if (!evaluateValueFilter(valueAggregated.getAggregate(), valueFilter)) {
         return false;
       }
     }
+
+    System.out.println("=====================");
+    System.out.println("ID: " + valueAggregated.getId() +  " PARENT ID: " + valueAggregated.getParentId()  + " ALGORITAM: " + paramFilter.getAlgorithm());
+    System.out.println(" Value: " + valueAggregated.getAggregate().getValue(paramFilter.getAlgorithm()));
+    for(ValueFilter valueFilter : paramFilter.getValueFilters()) {
+      System.out.print("Comparator: " + valueFilter.getComparator());
+      System.out.println(" Value: " + valueFilter.getValue());
+    }
+    System.console().flush();
+
 
     return true;
   }
