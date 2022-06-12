@@ -1,13 +1,19 @@
-import { FC, useEffect, useState } from "react";
+import { AxiosError } from "axios";
+import { FC, useContext, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
-import { useLocationsService, Location, Form, FormSelectOptionInput, Container, Button, SelectOptionInput, FormDateInput, TextInput } from "../../imports";
-import moment from "moment";
+import { useMutation, useQueryClient } from "react-query";
 import { algorithms, reportTypes, resolutions } from "../../constants";
-import { mapParamFiltersForRequest, mapPeriodForRequest } from "../../utils";
+import { useLocationsService, Location, Form, Container, FormSelectOptionInput, SelectOptionInput, Button, TextInput, FormTextInput, NotificationService, extractErrorMessage } from "../../imports";
+import { CreatePredefinedReport, PredefinedReport, UpdatePredefinedReport } from "../../models";
+import { usePredefinedReportsServiceForModifying } from "../../services";
+import { mapParamFiltersForComponents, mapParamFiltersForRequest } from "../../utils";
+import { PredefinedReportsContext } from "./PredefinedReports";
+import { ADD_PREDEFINED_REPORT, UPDATE_PREDEFINED_REPORT } from "./PredefinedReportsActions";
 
 type Props = {
   groupId: string,
-  submit: (r: any) => void
+  existingPredefinedReport?: PredefinedReport,
+  isEdit: boolean
 }
 
 const useStyles = createUseStyles({
@@ -30,14 +36,24 @@ const useStyles = createUseStyles({
 });
 
 
+export const AddUpdatePredefinedReportsForm: FC<Props> = ({ groupId, existingPredefinedReport = undefined, isEdit = false }) => {
 
-export const ReportFiltersForm: FC<Props> = ({ groupId, submit }) => {
-
-  const [locationsService] = useLocationsService(groupId);
-
+  const [locationId, setLocationId] = useState('');
   const [locationOptions, setLocationOptions] = useState<any>([]);
   const [reportType, setReportType] = useState('');
   const [paramFilters, setParamFilters] = useState<any>([]);
+
+  const { setResult } = useContext(PredefinedReportsContext);
+
+  const queryClient = useQueryClient();
+  const [locationsService] = useLocationsService(groupId);
+  const [predefinedReportsService] = usePredefinedReportsServiceForModifying(groupId, locationId);
+  const [notificationService] = useState(new NotificationService());
+
+  useEffect(() => {
+    setLocationId(existingPredefinedReport?.locationId ?? '');
+    setParamFilters(mapParamFiltersForComponents(existingPredefinedReport?.paramFilters ?? []));
+  }, [existingPredefinedReport]);
 
   useEffect(() => {
     locationsService.fetchAll().then(locations => {
@@ -50,8 +66,7 @@ export const ReportFiltersForm: FC<Props> = ({ groupId, submit }) => {
     });
   }, []);
 
-  const classes = useStyles();
-
+  
   const addNewParamFilter = () => {
     setParamFilters([
       ...paramFilters,
@@ -74,30 +89,61 @@ export const ReportFiltersForm: FC<Props> = ({ groupId, submit }) => {
       ...paramFilters.filter((_: any, i: number) => i !== index)
     ]);
   }
+  
 
+  const addPredefinedReportMutation = useMutation((newPredefinedReport: CreatePredefinedReport) => predefinedReportsService.add(newPredefinedReport), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(predefinedReportsService.ID);
+      notificationService.success('You have successfully created new predefined report.');
+
+      setResult({ status: 'OK', action: ADD_PREDEFINED_REPORT });
+    },
+    onError: (error: AxiosError) => {
+      notificationService.error(extractErrorMessage(error.response?.data));
+    }
+  });
+  const addPredefinedReport = (newPredefinedReport: CreatePredefinedReport) => addPredefinedReportMutation.mutate(newPredefinedReport);
+
+  const updatePredefinedReportMutation = useMutation((updatePredefinedReport: UpdatePredefinedReport) => predefinedReportsService.update(existingPredefinedReport?.id ?? '', updatePredefinedReport), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(predefinedReportsService.ID);
+      notificationService.success('You have successfully updated new predefined report.');
+
+      setResult({ status: 'OK', action: UPDATE_PREDEFINED_REPORT });
+    },
+    onError: (error: AxiosError) => {
+      notificationService.error(extractErrorMessage(error.response?.data));
+    }
+  });
+  const updatePredefinedReport = (updatePredefinedReport: UpdatePredefinedReport) => updatePredefinedReportMutation.mutate(updatePredefinedReport);
+
+
+  const classes = useStyles();
 
   return (
     <>
       <Form
         schema={undefined}
+        initialValue={existingPredefinedReport || {}}
         onSubmit={values => {
-          const params = {
+          const predefinedReports = {
+            name: values.name,
             type: reportType,
-            locationId: values.locationId,
-            period: mapPeriodForRequest(values),
             paramFilters: mapParamFiltersForRequest(paramFilters),
-            ...(values.resolution ? { resolution: parseInt(values.resolution) } : {}),
+            resolution: values.resolution ? parseInt(values.resolution) : 0,
           }
 
-          submit(params);
+          isEdit ? updatePredefinedReport(predefinedReports) : addPredefinedReport(predefinedReports);
         }}
       >
         <Container>
 
-          <FormSelectOptionInput
+          <SelectOptionInput
             label='Location'
-            name='locationId'
+            value={locationId}
+            onChange={setLocationId}
             options={locationOptions}
+            disabled={isEdit}
           />
 
           <SelectOptionInput
@@ -105,6 +151,7 @@ export const ReportFiltersForm: FC<Props> = ({ groupId, submit }) => {
             value={reportType}
             onChange={setReportType}
             options={reportTypes}
+            disabled={isEdit}
           />
           
         </Container>
@@ -119,17 +166,8 @@ export const ReportFiltersForm: FC<Props> = ({ groupId, submit }) => {
         }
 
         <Container>
-          <FormDateInput
-            label='From'
-            name='from'
-          />
-
-          <FormDateInput
-            label='To'
-            name='to'
-          />
-        </Container>
-
+          <FormTextInput label="Name" name='name' />
+        </ Container>
 
         {
           paramFilters?.map((paramFilter: any, index: number) => {
