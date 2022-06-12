@@ -5,6 +5,7 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import { Reports } from './pages/Reports/Reports';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { PredefinedReports } from './pages/PredefinedReports/PredefinedReports';
+import { QuickReports } from './pages/QuickReports/QuickReports';
 
 export * from './exports';
 
@@ -21,6 +22,11 @@ export function getPluginDefinition(): FeaturePlugin {
       {
         label: 'Reports',
         path: 'reports',
+        icon: <AssessmentIcon/>
+      },
+      {
+        label: 'Quick Reports',
+        path: 'quick-reports',
         icon: <AssessmentIcon/>
       },
       {
@@ -41,6 +47,12 @@ export function getPluginDefinition(): FeaturePlugin {
             <Reports />
           </PaddingContainer>,
         path: 'reports'
+      },
+      {
+        component: <PaddingContainer>
+            <QuickReports />
+          </PaddingContainer>,
+        path: 'quick-reports'
       },
       {
         component: <PaddingContainer>

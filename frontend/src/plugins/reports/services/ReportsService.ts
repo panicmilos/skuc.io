@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BACKEND_API } from "../imports";
-import { ReportResult } from "../models";
+import { PredefinedReportResult, ReportResult } from "../models";
 
 export const REPORTS_SERVICE_ID = 'ReportsService';
 
@@ -34,5 +34,9 @@ export class ReportsService {
 
   public async maxPeriod(params: any): Promise<ReportResult> {
     return (await axios.post(`${this.baseUrl}/max-period`, params)).data;
+  }
+
+  public async predefined(): Promise<PredefinedReportResult[]> {
+    return (await axios.post(`${this.baseUrl}/predefined`)).data;
   }
 }

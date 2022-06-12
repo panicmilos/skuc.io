@@ -19,10 +19,10 @@ public class PredefinedReportsRepository extends CrudRepository<PredefinedReport
     }
   }
 
-  public PredefinedReport getByLocationAndName(String locationId, String name) {
+  public PredefinedReport getByGroupAndName(String groupId, String name) {
     try (var session = getSession()) {
       return session.query(this.concreteClass)
-        .whereEquals("locationId", locationId)
+        .whereEquals("groupId", groupId)
         .whereEquals("name", name)
         .firstOrDefault();
     }
