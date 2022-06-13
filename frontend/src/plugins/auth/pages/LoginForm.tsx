@@ -105,7 +105,7 @@ export const LoginForm: FC<Props> = () => {
               authService
                 .login(values.email, values.password)
                 .then(handleAuthResponse)
-                .catch((error: AxiosError) => notificationService.error(extractErrorMessage(error.response?.data)));
+                .catch((error: AxiosError) => notificationService.error('Given email and password does not match any account.'));
             }}
           >
             <Container>

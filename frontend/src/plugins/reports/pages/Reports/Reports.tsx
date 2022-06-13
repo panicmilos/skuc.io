@@ -11,14 +11,14 @@ export const Reports: FC = () => {
 
   const groupId = getGroupIdFromToken();
 
-  const queryClient = useQueryClient();
-  const [reportsService] = useReportsService();
-
   const [report, setReport] = useState<ReportResult|undefined>();
   const [reportParams, setReportParams] = useState<any>();
   const [shouldFetch, setShouldFetch] = useState(false);
 
-  useQuery([shouldFetch], () => {
+  const queryClient = useQueryClient();
+  const [reportsService] = useReportsService(groupId, reportParams?.locationId ?? '');
+
+  useQuery([shouldFetch, reportsService], () => {
     if (reportParams.type === 'Normal') return reportsService.normal(reportParams);
     if (reportParams.type === 'AtSomePointInTheTime') return reportsService.atSomeTime(reportParams);
     if (reportParams.type === 'MaxPeriod') return reportsService.maxPeriod(reportParams);

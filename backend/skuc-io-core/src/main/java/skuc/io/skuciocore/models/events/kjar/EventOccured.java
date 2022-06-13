@@ -22,7 +22,7 @@ public class EventOccured extends BaseEvent {
     super();
   }
 
-  public EventOccured(String name, KeyValue<String, String> ...pairs) {
+  public EventOccured(String name, KeyValue<String, String>... pairs) {
     super();
     this.name = name;
 
@@ -40,7 +40,6 @@ public class EventOccured extends BaseEvent {
   public String getParam(String key) {
     return params.get(key);
   }
-
 
   public EventOccured(String id, String deviceId, LocalDateTime createdAt, LocalDateTime occuredAt, String name) {
     super(id, deviceId, createdAt, occuredAt);
@@ -71,11 +70,6 @@ public class EventOccured extends BaseEvent {
     this.params = params;
   }
 
-
-  public boolean isProcessedByActivator() {
-    return this.processedByActivator;
-  }
-
   public Date getTimeStamp() {
     return this.timeStamp;
   }
@@ -83,6 +77,5 @@ public class EventOccured extends BaseEvent {
   public void setTimeStamp(Date timeStamp) {
     this.timeStamp = timeStamp;
   }
-
 
 }

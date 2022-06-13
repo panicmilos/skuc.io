@@ -80,15 +80,18 @@ rule "Make 0015 Aggregation"
     )
   then
 
-    insert(new Value0015Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+    Value0015Aggregated aggregation0015 = new Value0015Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
       $min, $max, $sum, $average, $count
-    )));
+    ));
+
+    insert(aggregation0015);
 
     for(Object aggregation0005 : $aggregation0005s) {
-      modify(((ValueAggregated)aggregation0005)) { setIsProcessed(true) };
+      modify(((ValueAggregated)aggregation0005)) { setIsProcessed(true), setParentId(aggregation0015.getId()) };
     }
 
     delete($agrParam);
+
 end;
 
 // 30 minute aggregation
@@ -117,12 +120,14 @@ rule "Make 0030 Aggregation"
     )
   then
 
-    insert(new Value0030Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+    Value0030Aggregated aggregation0030 = new Value0030Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
       $min, $max, $sum, $average, $count
-    )));
+    ));
+
+    insert(aggregation0030);
 
     for(Object aggregation0015 : $aggregation0015s) {
-      modify(((ValueAggregated)aggregation0015)) { setIsProcessed(true) };
+      modify(((ValueAggregated)aggregation0015)) { setIsProcessed(true), setParentId(aggregation0030.getId()) };
     }
 
     delete($agrParam);
@@ -154,12 +159,14 @@ rule "Make 0060 Aggregation"
     )
   then
 
-    insert(new Value0060Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+    Value0060Aggregated aggregation0060 = new Value0060Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
       $min, $max, $sum, $average, $count
-    )));
+    ));
+
+    insert(aggregation0060);
 
     for(Object aggregation0030 : $aggregation0030s) {
-      modify(((ValueAggregated)aggregation0030)) { setIsProcessed(true) };
+      modify(((ValueAggregated)aggregation0030)) { setIsProcessed(true), setParentId(aggregation0060.getId()) };
     }
 
     delete($agrParam);
@@ -191,12 +198,14 @@ rule "Make 0240 Aggregation"
     )
   then
 
-    insert(new Value0240Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+    Value0240Aggregated aggregation0240 = new Value0240Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
       $min, $max, $sum, $average, $count
-    )));
+    ));
+
+    insert(aggregation0240);
 
     for(Object aggregation0060 : $aggregation0060s) {
-      modify(((ValueAggregated)aggregation0060)) { setIsProcessed(true) };
+      modify(((ValueAggregated)aggregation0060)) { setIsProcessed(true), setParentId(aggregation0240.getId()) };
     }
 
     delete($agrParam);
@@ -218,7 +227,7 @@ end;
 rule "Make 0480 Aggregation"
   when 
     $agrParam: AggregateParam(resolution == 480, $deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
-    accumulate($aggregation0240 : Value0240Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(240s),
+    accumulate($aggregation0240 : Value0240Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(480s),
       $min: complexMin($this),
       $max: complexMax($this),
       $sum: complexSum($this),
@@ -228,12 +237,14 @@ rule "Make 0480 Aggregation"
     )
   then
 
-    insert(new Value0480Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+    Value0480Aggregated aggregation0480 = new Value0480Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
       $min, $max, $sum, $average, $count
-    )));
+    ));
+
+    insert(aggregation0480);
 
     for(Object aggregation0240 : $aggregation0240s) {
-      modify(((ValueAggregated)aggregation0240)) { setIsProcessed(true) };
+      modify(((ValueAggregated)aggregation0240)) { setIsProcessed(true), setParentId(aggregation0480.getId()) };
     }
 
     delete($agrParam);
@@ -255,7 +266,7 @@ end;
 rule "Make 1440 Aggregation"
   when 
     $agrParam: AggregateParam(resolution == 1440, $deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
-    accumulate($aggregation0480 : Value0480Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(480s),
+    accumulate($aggregation0480 : Value0480Aggregated($this: this, isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName) over window:time(1440s),
       $min: complexMin($this),
       $max: complexMax($this),
       $sum: complexSum($this),
@@ -265,12 +276,14 @@ rule "Make 1440 Aggregation"
     )
   then
 
-    insert(new Value1440Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
+    Value1440Aggregated aggregation1440 = new Value1440Aggregated($agrParam.getDeviceId(), $agrParam.getDeviceType(), $agrParam.getParamName(), new Aggregate(
       $min, $max, $sum, $average, $count
-    )));
+    ));
+
+    insert(aggregation1440);
 
     for(Object aggregation0480 : $aggregation0480s) {
-      modify(((ValueAggregated)aggregation0480)) { setIsProcessed(true) };
+      modify(((ValueAggregated)aggregation0480)) { setIsProcessed(true), setParentId(aggregation1440.getId()) };
     }
 
     delete($agrParam);

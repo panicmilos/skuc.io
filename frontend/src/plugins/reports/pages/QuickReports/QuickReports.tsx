@@ -1,13 +1,15 @@
 import { FC } from "react";
 import { useQuery } from "react-query";
 import { MultiLineReport } from "../../components";
-import { Card } from "../../imports";
+import { Card, getGroupIdFromToken } from "../../imports";
 import { useReportsService } from "../../services";
 import { mapReportToChartData } from "../../utils";
 
 export const QuickReports: FC = () => {
 
-  const [reportsSevice] = useReportsService();
+  const groupId = getGroupIdFromToken();
+
+  const [reportsSevice] = useReportsService(groupId, '');
 
   const { data: reports } = useQuery([reportsSevice], () => reportsSevice.predefined());
 
