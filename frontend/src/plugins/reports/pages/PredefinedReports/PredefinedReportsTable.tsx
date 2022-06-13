@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { FC, useContext, useEffect, useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useMutation, useQueryClient } from "react-query";
+import { reportTypesLabels } from "../../constants";
 import { Button, ConfirmationModal, createEntitiesMap, extractErrorMessage, Modal, NotificationService, Table, TableBody, TableHead, TableRow, useLocationsService } from "../../imports";
 import { PredefinedReport } from "../../models";
 import { usePredefinedReportsServiceForModifying } from "../../services";
@@ -106,8 +107,8 @@ export const PredefinedReportsTable: FC<Props> = ({ groupId, predefinedReports }
               cells={[
                 predefinedReport.name,
                 locationOptions[predefinedReport.locationId]?.name ?? '',
-                predefinedReport.type,
-                predefinedReport.resolution + '',
+                (reportTypesLabels as any)[predefinedReport.type] || '',
+                predefinedReport.type === 'MaxPeriod' ? 'All' : predefinedReport.resolution + '',
                 <ActionsButtonGroup predefinedReport={predefinedReport}/>
             ]}/>
             )

@@ -30,9 +30,9 @@ public class PredefinedReportsService extends CrudService<PredefinedReport> {
   public PredefinedReport create(PredefinedReport predefinedReport) {
     _locationService.getOrThrow(predefinedReport.getLocationId());
 
-    var predefinedReportdeviceWithSameName = _predefinedReportsRepository.getByLocationAndName(predefinedReport.getLocationId(), predefinedReport.getName());
+    var predefinedReportdeviceWithSameName = _predefinedReportsRepository.getByGroupAndName(predefinedReport.getGroupId(), predefinedReport.getName());
     if (predefinedReportdeviceWithSameName != null) {
-      throw new BadLogicException("Predefined report with the same name already exists at the location.");
+      throw new BadLogicException("Predefined report with the same name already exists in the group.");
     }
 
     return super.create(predefinedReport);
@@ -42,9 +42,9 @@ public class PredefinedReportsService extends CrudService<PredefinedReport> {
   public PredefinedReport update(PredefinedReport predefinedReport) {
     var existingPredefinedReport = getOrThrow(predefinedReport.getId());
 
-    var predefinedReportdeviceWithSameName = _predefinedReportsRepository.getByLocationAndName(predefinedReport.getLocationId(), predefinedReport.getName());
+    var predefinedReportdeviceWithSameName = _predefinedReportsRepository.getByGroupAndName(predefinedReport.getGroupId(), predefinedReport.getName());
     if (predefinedReportdeviceWithSameName != null && !predefinedReportdeviceWithSameName.getId().equals(existingPredefinedReport.getId())) {
-      throw new BadLogicException("Predefined report with the same name already exists at the location.");
+      throw new BadLogicException("Predefined report with the same name already exists in the group.");
     }
 
     return super.update(predefinedReport);

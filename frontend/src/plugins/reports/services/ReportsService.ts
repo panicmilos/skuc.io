@@ -1,17 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BACKEND_API } from "../imports";
-import { ReportResult } from "../models";
+import { PredefinedReportResult, ReportResult } from "../models";
 
 export const REPORTS_SERVICE_ID = 'ReportsService';
 
-export const useReportsService = () => {
+export const useReportsService = (groupId: string, locationId: string) => {
 
-  const [reportsService, setReportsService] = useState(new ReportsService());
+  const [reportsService, setReportsService] = useState(new ReportsService(groupId, locationId));
 
   useEffect(() => {
-    setReportsService(new ReportsService());
-  }, []);
+    setReportsService(new ReportsService(groupId, locationId));
+  }, [groupId, locationId]);
 
   return [reportsService];
 }
@@ -20,8 +20,8 @@ export class ReportsService {
   id: string = REPORTS_SERVICE_ID;
   baseUrl: string;
 
-  constructor() {
-    this.baseUrl = `${BACKEND_API}/reports`;
+  constructor(groupId: string, locationId: string = '') {
+    this.baseUrl = `${BACKEND_API}/groups/${groupId}/locations/${locationId ? locationId + '/' : ''}reports`;
   }
 
   public async normal(params: any): Promise<ReportResult> {
@@ -34,5 +34,9 @@ export class ReportsService {
 
   public async maxPeriod(params: any): Promise<ReportResult> {
     return (await axios.post(`${this.baseUrl}/max-period`, params)).data;
+  }
+
+  public async predefined(): Promise<PredefinedReportResult[]> {
+    return (await axios.post(`${this.baseUrl}/predefined`)).data;
   }
 }

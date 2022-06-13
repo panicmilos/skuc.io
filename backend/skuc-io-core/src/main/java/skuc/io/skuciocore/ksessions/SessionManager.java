@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.CanWriteFileFilter;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -24,24 +23,15 @@ import skuc.io.skuciocore.services.TimePeriodActivatorService;
 import skuc.io.skuciocore.services.TimePeriodDeactivatorService;
 import skuc.io.skuciocore.services.events.ContextActivatedService;
 import skuc.io.skuciocore.services.events.ContextDeactivatedService;
-import skuc.io.skuciocore.models.events.device.Aggregate;
-// TODO: REMOVE THIS
-import skuc.io.skuciocore.models.events.device.Value0005Aggregated;
-import skuc.io.skuciocore.models.events.device.Value0015Aggregated;
-import skuc.io.skuciocore.models.events.device.Value0030Aggregated;
-import skuc.io.skuciocore.models.events.device.Value0060Aggregated;
-import skuc.io.skuciocore.models.reports.AtSomeTimeReportFilters;
-import skuc.io.skuciocore.models.reports.LocalDateTimePeriod;
-import skuc.io.skuciocore.models.reports.MaxPeriodReportFilters;
-import skuc.io.skuciocore.models.reports.ParamFilter;
-import skuc.io.skuciocore.models.reports.ReportFilters;
-import skuc.io.skuciocore.models.reports.ValueFilter;
 
 
 @Component
 public class SessionManager {
   
   private static HashMap<String, KieSession> _sessions = new HashMap<>();
+  private static HashMap<String, KieSession> _aggregationSessions = new HashMap<>();
+  private final HashMap<String, List<Object>> _aggrefationFacts = new HashMap<>();
+
   private final KieContainer _kieContainer;
 
   private final GroupService _groupService;
@@ -59,7 +49,6 @@ public class SessionManager {
   private final NotificationService _notificationService;
   private final StateRegistryService _stateRegistryService;
   
-  private final List<Object> facts = new ArrayList<>();
 
   @Autowired
   public SessionManager(
@@ -131,7 +120,6 @@ public class SessionManager {
       session.setGlobal("stateRegistryService", _stateRegistryService);
 
       var stateRegistry = _stateRegistryService.getStateRegistryFor(key);
-      stateRegistry.setState("test", "test");
       session.insert(stateRegistry);
 
       _sessions.put(key, session);
@@ -167,56 +155,37 @@ public class SessionManager {
     }
   }
 
-  private final String DEVICE_ID = "953164df-0432-43e7-b735-a204dfcda3ed";
-  private final String DEVICE_TYPE = "Temperature Sensor";
-  private final String PARAM_NAME = "temp";
-  private void insertValue0005Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0005Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
-  }
-
-  private void insertValue0015Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count, int addMinutes) {
-    var agr = (new Value0015Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count)));
-    agr.setCreatedAt(LocalDateTime.now().plusMinutes(addMinutes));
-    _session.insert(agr);
-  }
-
-  private void insertValue0030Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count, int addMinutes) {
-    var agr = new Value0030Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
-    agr.setCreatedAt(LocalDateTime.now().plusMinutes(addMinutes));
-    _session.insert(agr);
-  }
-
-  private void insertValue0060Aggregated(KieSession _session, String parentId, String id, Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0060Aggregated(parentId, id, DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
-  }
-
-
-  public KieSession getAggregateSession() {
-    if (!_sessions.containsKey("aggregation_session")) {
+  public KieSession getAggregateSession(String key) {
+    if (!_aggregationSessions.containsKey(key)) {
       var session = _kieContainer.newKieSession("DefaultCepSession");
 
-      insertValue0005Aggregated(session, "4", "0", 9D, 22D, 44D, 12D, 4L);
-      insertValue0005Aggregated(session, "5", "1", 10D, 22D, 44D, 11D, 4L);
-      insertValue0005Aggregated(session, "5", "2", 2D, 33D, 100D, 20D, 5L);
-      insertValue0005Aggregated(session, "5", "3", 1D, 1D, 1D, 1D, 1L);
-      insertValue0015Aggregated(session, "7", "4", 3D, 13D, 24D, 7D, 3L, -15);
-      insertValue0015Aggregated(session, "8", "5", 6D, 11D, 25D, 6.25D, 4L, -10);
-      insertValue0015Aggregated(session, "8", "6", 3D, 13D, 24D, 7D, 3L, -5);
-      insertValue0030Aggregated(session, "9", "7", 7D, 56D, 96D, 16D, 6L, -30);  
-      insertValue0030Aggregated(session, "9", "8", 11D, 13D, 24D, 12D, 2L, 0);
-      insertValue0060Aggregated(session, "", "9", 1D, 14D, 22D, 5.25D, 4L);
+      AggregationSessionSeeder.insertValue0005Aggregated(session, "4", "0", 9D, 22D, 44D, 12D, 4L);
+      AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "1", 10D, 22D, 44D, 11D, 4L);
+      AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "2", 2D, 33D, 100D, 20D, 5L);
+      AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "3", 1D, 1D, 1D, 1D, 1L);
+      AggregationSessionSeeder.insertValue0015Aggregated(session, "7", "4", 3D, 13D, 24D, 7D, 3L, -15);
+      AggregationSessionSeeder.insertValue0015Aggregated(session, "8", "5", 6D, 11D, 25D, 6.25D, 4L, -10);
+      AggregationSessionSeeder.insertValue0015Aggregated(session, "8", "6", 3D, 13D, 24D, 7D, 3L, -5);
+      AggregationSessionSeeder.insertValue0030Aggregated(session, "9", "7", 7D, 56D, 96D, 16D, 6L, -30);  
+      AggregationSessionSeeder.insertValue0030Aggregated(session, "9", "8", 11D, 13D, 24D, 12D, 2L, 0);
+      AggregationSessionSeeder.insertValue0060Aggregated(session, "", "9", 1D, 14D, 22D, 5.25D, 4L);
 
-      new AggregationThread("AggregationThread", session).start();
+      new AggregationThread("AggregationThread_for" + key, session).start();
       
-      _sessions.put("aggregation_session", session);
+      _aggregationSessions.put(key, session);
     }
 
-    return _sessions.get("aggregation_session");
+    return _aggregationSessions.get(key);
   }
 
-  public KieSession getReportSession() {
-    var aggregationSession = getAggregateSession();
+  public KieSession getReportSession(String key) {
+    var aggregationSession = getAggregateSession(key);
 
+    if (_aggrefationFacts.get(key) == null) {
+      _aggrefationFacts.put(key, new ArrayList<Object>());
+    }
+
+    var facts = _aggrefationFacts.get(key);
     var aggregatedObjects = aggregationSession.getObjects();
     facts.addAll(aggregatedObjects);
 
@@ -225,18 +194,6 @@ public class SessionManager {
       reportSession.insert(object);
     }
 
-    var param1 = new ParamFilter("temp", "average", new ArrayList<ValueFilter>() {{
-      add(new ValueFilter(">=", "min", 9D));
-    }});
-    // var param2 = new ParamFilter("temp", "min", new ArrayList<ValueFilter>() {{
-    //   add(new ValueFilter("!=", "min", 11D));
-    //   add(new ValueFilter(">=", "min", 6D));
-    // }});
-    var period = new LocalDateTimePeriod(LocalDateTime.now().minusMinutes(15), null);
-
-    // reportSession.insert(new MaxPeriodReportFilters(period, new ArrayList<>() {{ add(param1);  }}));
-
     return reportSession;
   }
-
 }

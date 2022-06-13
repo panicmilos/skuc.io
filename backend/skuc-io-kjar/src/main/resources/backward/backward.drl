@@ -98,6 +98,7 @@ rule "Get Normal Report - insert ReportParams"
   when
     $reportFilters: ReportFilters()
   then
+    System.out.println("Get Normal Report - insert ReportParams");
     for(Object paramFilter : $reportFilters.getParamFilters()) {
       insert((ParamFilter)paramFilter);
     }

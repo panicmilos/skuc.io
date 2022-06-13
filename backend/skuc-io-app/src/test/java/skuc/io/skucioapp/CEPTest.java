@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClassObjectFilter;
@@ -32,7 +33,6 @@ import skuc.io.skuciocore.models.events.kjar.AggregateParam;
 @SpringBootTest
 class CEPTest {
   
-
   private final String DEVICE_ID = "953164df-0432-43e7-b735-a204dfcda3ed";
   private final String DEVICE_TYPE = "Temperature Sensor";
   private final String PARAM_NAME = "temp";
@@ -52,32 +52,51 @@ class CEPTest {
     clock.advanceTime(forTime, TimeUnit.SECONDS);
   }
 
+  private Date getCurrentPseudoTime() {
+    SessionPseudoClock clock = _session.getSessionClock();
+    return new Date(clock.getCurrentTime());
+  }
+
   private void insertValueReceived(float value) {
-    _session.insert(new ValueReceived(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, value));
+    var vr = new ValueReceived(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, value);
+    vr.setTimeStamp(getCurrentPseudoTime());
+    _session.insert(vr);
   }
 
   private void insertValue0005Aggregated(Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0005Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+    var va0005 = new Value0005Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
+    va0005.setTimeStamp(getCurrentPseudoTime());
+    _session.insert(va0005);
   }
 
   private void insertValue0015Aggregated(Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0015Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+    var va0015 = new Value0015Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
+    va0015.setTimeStamp(getCurrentPseudoTime());
+    _session.insert(va0015);
   }
 
   private void insertValue0030Aggregated(Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0030Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+    var va0030 = new Value0030Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
+    va0030.setTimeStamp(getCurrentPseudoTime());
+    _session.insert(va0030);
   }
 
   private void insertValue0060Aggregated(Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0060Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+    var va0060 = new Value0060Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
+    va0060.setTimeStamp(getCurrentPseudoTime());
+    _session.insert(va0060);
   }
 
   private void insertValue0240Aggregated(Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0240Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+    var va0240 = new Value0240Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
+    va0240.setTimeStamp(getCurrentPseudoTime());
+    _session.insert(va0240);
   }
 
   private void insertValue0480Aggregated(Double min, Double max, Double sum, Double average, Long count) {
-    _session.insert((new Value0480Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count))));
+    var va0480 = new Value0480Aggregated(DEVICE_ID, DEVICE_TYPE, PARAM_NAME, new Aggregate(min, max, sum, average, count));
+    va0480.setTimeStamp(getCurrentPseudoTime());
+    _session.insert(va0480);
   }
 
   private void insertAggregateParam(int resolution) {
@@ -98,6 +117,15 @@ class CEPTest {
     assertEquals(sum, valueAggregated.getAggregate().getSum());
     assertEquals(average, valueAggregated.getAggregate().getAverage());
     assertEquals(count, valueAggregated.getAggregate().getCount());
+  }
+
+  private void assertParentIsSet(Class<?> childrenClass, Class<?> parentClass) {
+    var children = getFactsFromKieSession(childrenClass);
+    var parent = getFactsFromKieSession(parentClass).get(0);
+
+    for(var child : children) {
+      assertEquals(((ValueAggregated)parent).getId(), ((ValueAggregated)child).getParentId());
+    }
   }
 
   @Test
@@ -143,6 +171,7 @@ class CEPTest {
     assertEquals(1, aggregate0015.size());
 
     assertValueAggregated(aggregate0015.get(0), 1D, 33D, 145D, 14.5D, 10L);
+    assertParentIsSet(Value0005Aggregated.class, Value0015Aggregated.class);
   }
 
   @Test
@@ -161,6 +190,7 @@ class CEPTest {
     assertEquals(1, aggregate0030.size());
 
     assertValueAggregated(aggregate0030.get(0), 3D, 13D, 49D, 7D, 7L);
+    assertParentIsSet(Value0015Aggregated.class, Value0030Aggregated.class);
   }
 
   @Test
@@ -179,6 +209,7 @@ class CEPTest {
     assertEquals(1, aggregate0060.size());
 
     assertValueAggregated(aggregate0060.get(0), 7D, 56D, 120D, 15D, 8L);
+    assertParentIsSet(Value0030Aggregated.class, Value0060Aggregated.class);
   }
 
   @Test
@@ -203,6 +234,7 @@ class CEPTest {
     assertEquals(1, aggregate0240.size());
 
     assertValueAggregated(aggregate0240.get(0), 1D, 33D, 131D, 131D/12L, 12L);
+    assertParentIsSet(Value0060Aggregated.class, Value0240Aggregated.class);
   }
 
   @Test
@@ -221,6 +253,7 @@ class CEPTest {
     assertEquals(1, aggregate0480.size());
 
     assertValueAggregated(aggregate0480.get(0), 1D, 18D, 30D, 5D, 6L);
+    assertParentIsSet(Value0240Aggregated.class, Value0480Aggregated.class);
   }
 
   @Test
@@ -243,5 +276,6 @@ class CEPTest {
     assertEquals(1, aggregate1440.size());
 
     assertValueAggregated(aggregate1440.get(0), 7D, 30D, 110D, 11D, 10L);
+    assertParentIsSet(Value0480Aggregated.class, Value1440Aggregated.class);
   }
 }

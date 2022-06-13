@@ -1,3 +1,9 @@
+export const reportTypesLabels = {
+  'Normal': 'Normal',
+  'AtSomePointInTheTime': 'At some point in the time',
+  'MaxPeriod': 'Max period'
+}
+
 export const reportTypes = [
   { label: 'Normal', value: 'Normal' },
   { label: 'At some point in the time', value: 'AtSomePointInTheTime' },

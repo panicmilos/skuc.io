@@ -74,4 +74,25 @@ public class PredefinedReport extends BaseCsm {
     this.locationId = locationId;
   }
 
+  public Object getFilter() {
+    switch(type) {
+      case "Normal": return getNormalReportFilter();
+      case "AtSomePointInTheTime": return getAtSomeTimeReportFilters();
+      case "MaxPeriod": return getMaxPeriodReportFilters(); 
+    }
+
+    return null;
+  }
+
+  private ReportFilters getNormalReportFilter() {
+    return new ReportFilters(resolution, new LocalDateTimePeriod(null, null), paramFilters);
+  }
+
+  private AtSomeTimeReportFilters getAtSomeTimeReportFilters() {
+    return new AtSomeTimeReportFilters(resolution, new LocalDateTimePeriod(null, null), paramFilters);
+  }
+
+  private MaxPeriodReportFilters getMaxPeriodReportFilters() {
+    return new MaxPeriodReportFilters(new LocalDateTimePeriod(null, null), paramFilters);
+  }
 }

@@ -13,3 +13,9 @@ export type ReportResultValue = {
   resolution: number,
   createdAt: string
 }
+
+export type PredefinedReportResult = {
+  report: ReportResult,
+  reportType: string,
+  name: string
+}

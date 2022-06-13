@@ -72,8 +72,8 @@ public class EventsController {
     
     _nofiticationService.sendFrom(valueReceived);
     
-    // var aggregation_Session = _sessionManager.getAggregateSession();
-    // aggregation_Session.insert(valueReceived);
+    var aggregationSession = _sessionManager.getAggregateSession(device.getLocationId().toString());
+    aggregationSession.insert(valueReceived);
 
     var session = _sessionManager.getSession(device.getLocationId().toString());
     session.insert(valueReceived);
