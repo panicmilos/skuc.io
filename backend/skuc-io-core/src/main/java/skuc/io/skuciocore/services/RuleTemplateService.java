@@ -110,6 +110,8 @@ public class RuleTemplateService extends CrudService<RuleTemplate> {
 
         var sb = new StringBuilder();
         sb.append("import skuc.io.skuciocore.models.csm.Location;\n");
+        sb.append("import java.util.*;\n");
+        sb.append("import java.time.*;\n");
         for (var potentialClass : potentialClasses) {
             if (_modelClasses.containsKey(potentialClass) && !potentialClass.equals("Location")) {
                 sb.append("import " + _modelClasses.get(potentialClass) + ";\n");
