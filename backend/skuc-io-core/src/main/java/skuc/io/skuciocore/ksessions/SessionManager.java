@@ -1,6 +1,5 @@
 package skuc.io.skuciocore.ksessions;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -159,16 +158,16 @@ public class SessionManager {
     if (!_aggregationSessions.containsKey(key)) {
       var session = _kieContainer.newKieSession("DefaultCepSession");
 
-      AggregationSessionSeeder.insertValue0005Aggregated(session, "4", "0", 9D, 22D, 44D, 12D, 4L);
-      AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "1", 10D, 22D, 44D, 11D, 4L);
-      AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "2", 2D, 33D, 100D, 20D, 5L);
-      AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "3", 1D, 1D, 1D, 1D, 1L);
-      AggregationSessionSeeder.insertValue0015Aggregated(session, "7", "4", 3D, 13D, 24D, 7D, 3L, -15);
-      AggregationSessionSeeder.insertValue0015Aggregated(session, "8", "5", 6D, 11D, 25D, 6.25D, 4L, -10);
-      AggregationSessionSeeder.insertValue0015Aggregated(session, "8", "6", 3D, 13D, 24D, 7D, 3L, -5);
-      AggregationSessionSeeder.insertValue0030Aggregated(session, "9", "7", 7D, 56D, 96D, 16D, 6L, -30);  
-      AggregationSessionSeeder.insertValue0030Aggregated(session, "9", "8", 11D, 13D, 24D, 12D, 2L, 0);
-      AggregationSessionSeeder.insertValue0060Aggregated(session, "", "9", 1D, 14D, 22D, 5.25D, 4L);
+      // AggregationSessionSeeder.insertValue0005Aggregated(session, "4", "0", 9D, 22D, 44D, 12D, 4L);
+      // AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "1", 10D, 22D, 44D, 11D, 4L);
+      // AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "2", 2D, 33D, 100D, 20D, 5L);
+      // AggregationSessionSeeder.insertValue0005Aggregated(session, "5", "3", 1D, 1D, 1D, 1D, 1L);
+      // AggregationSessionSeeder.insertValue0015Aggregated(session, "7", "4", 3D, 13D, 24D, 7D, 3L, -15);
+      // AggregationSessionSeeder.insertValue0015Aggregated(session, "8", "5", 6D, 11D, 25D, 6.25D, 4L, -10);
+      // AggregationSessionSeeder.insertValue0015Aggregated(session, "8", "6", 3D, 13D, 24D, 7D, 3L, -5);
+      // AggregationSessionSeeder.insertValue0030Aggregated(session, "9", "7", 7D, 56D, 96D, 16D, 6L, -30);  
+      // AggregationSessionSeeder.insertValue0030Aggregated(session, "9", "8", 11D, 13D, 24D, 12D, 2L, 0);
+      // AggregationSessionSeeder.insertValue0060Aggregated(session, "", "9", 1D, 14D, 22D, 5.25D, 4L);
 
       new AggregationThread("AggregationThread_for" + key, session).start();
       

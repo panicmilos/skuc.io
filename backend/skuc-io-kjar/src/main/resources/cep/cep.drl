@@ -60,7 +60,7 @@ rule "Require 0015 Aggregation"
   when
     Value0005Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
     $aggregation0005s : ArrayList() from collect(Value0005Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
-    eval($aggregation0005s.size() == 3)
+    eval($aggregation0005s.size() == 3) or (not Value0015Aggregated() and eval((LocalDateTime.now().getSecond() + LocalDateTime.now().getMinute() * 60) % 15 == 0))
     not AggregateParam(resolution == 15, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
   then
     System.out.println("Require 0015 Aggregation");
@@ -100,7 +100,7 @@ rule "Require 0030 Aggregation"
   when
     Value0015Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
     $aggregation0015s : ArrayList() from collect(Value0015Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
-    eval($aggregation0015s.size() == 2)
+    eval($aggregation0015s.size() == 2) or (not Value0030Aggregated() and eval((LocalDateTime.now().getSecond() + LocalDateTime.now().getMinute() * 60) % 30 == 0))
     not AggregateParam(resolution == 30, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
   then
     System.out.println("Require 0030 Aggregation");
@@ -139,7 +139,7 @@ rule "Require 0060 Aggregation"
   when
     Value0030Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
     $aggregation0030s : ArrayList() from collect(Value0030Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
-    eval($aggregation0030s.size() == 2)
+    eval($aggregation0030s.size() == 2) or (not Value0060Aggregated() and eval((LocalDateTime.now().getSecond() + LocalDateTime.now().getMinute() * 60) % 60 == 0))
     not AggregateParam(resolution == 60, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
   then
     System.out.println("Require 0060 Aggregation");
@@ -178,7 +178,7 @@ rule "Require 0240 Aggregation"
   when
     Value0060Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
     $aggregation0060s : ArrayList() from collect(Value0060Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
-    eval($aggregation0060s.size() == 4)
+    eval($aggregation0060s.size() == 4) or (not Value0240Aggregated() and eval((LocalDateTime.now().getSecond() + LocalDateTime.now().getMinute() * 60) % 240 == 0))
     not AggregateParam(resolution == 240, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
   then
     System.out.println("Require 0240 Aggregation");
@@ -217,7 +217,7 @@ rule "Require 0480 Aggregation"
   when
     Value0240Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
     $aggregation0240s : ArrayList() from collect(Value0240Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
-    eval($aggregation0240s.size() == 2)
+    eval($aggregation0240s.size() == 2) or (not Value0480Aggregated() and eval((LocalDateTime.now().getSecond() + LocalDateTime.now().getMinute() * 60) % 480 == 0))
     not AggregateParam(resolution == 480, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
   then
     System.out.println("Require 0480 Aggregation");
@@ -256,7 +256,7 @@ rule "Require 1440 Aggregation"
   when
     Value0480Aggregated($deviceId: deviceId, $deviceType: deviceType, $paramName: paramName)
     $aggregation0480s : ArrayList() from collect(Value0480Aggregated(isProcessed == false, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName))
-    eval($aggregation0480s.size() == 3)
+    eval($aggregation0480s.size() == 3) or (not Value1440Aggregated() and eval((LocalDateTime.now().getSecond() + LocalDateTime.now().getMinute() * 60) % 1440 == 0))
     not AggregateParam(resolution == 1440, deviceId == $deviceId, deviceType == $deviceType, paramName == $paramName)
   then
     System.out.println("Require 1440 Aggregation");
