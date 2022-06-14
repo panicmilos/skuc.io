@@ -21,7 +21,6 @@
 [when]{eventName1:\{?\w*\}?} or {eventName2:\{?\w*\}?} have occured=EventOccured(name == "{eventName1}" || name == "{eventName2}")
 [when]{eventName:\{?\w*\}?} has not occured=not EventOccured(name == "{eventName}")
 [when]{eventName:\{?\w*\}?} lasts more than {time:\d+}min=EventStarted(eventName == "{eventName}", startTime.plusMinutes({time}).compareTo(LocalDateTime.now()) < 0)
-[when]\{{eventName:\w+}\}=template_start{eventName}template_end
 
 [when]are {query:\w*}\(\)=are{query}()
 [when]is {query:\w*}\(\)=is{query}()
@@ -35,11 +34,11 @@
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getContextIfActive\({contextName1:\{?\w*\}?} or {contextName2:\{?\w*\}?}\)=exists(Context(name == "{contextName1}" || name == "{contextName2}")) \n $orContexts : ArrayList() from collect (Context(name == "{contextName1}" || name == "{contextName2}")) \n ${definedParam} : Context() from $orContexts.get(0)
 [when]def ${definedParam:[\w_-]*}\s?\=\s? getAnyContextIfActive\(\)=exists(Context()) \n $allContexts : ArrayList() from collect (Context()) \n ${definedParam} : Context() from $allContexts.get(0)
 
-[when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[max_{paramName:\w*}\]=${definedParam} : Float() from ${contextParam}.getMax("{paramName}")
-[when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[min_{paramName:\w*}\]=${definedParam} : Float() from ${contextParam}.getMin("{paramName}")
-[when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[expected_{paramName:\w*}\]=${definedParam} : String() from ${contextParam}.getStatus("{paramName}")
+[when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[max_{paramName:\{?\w*\}?}\]=${definedParam} : Float() from ${contextParam}.getMax("{paramName}")
+[when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[min_{paramName:\{?\w*\}?}\]=${definedParam} : Float() from ${contextParam}.getMin("{paramName}")
+[when]def ${definedParam:[\w_-]*}\s?\=\s?C\[${contextParam:[\w_-]*}\]\[expected_{paramName:\{?\w*\}?}\]=${definedParam} : String() from ${contextParam}.getStatus("{paramName}")
 
-[when]curr_{paramName:\w*}=ValueReceived(paramName == "{paramName}")
+[when]def $curr_{paramName:\{?\w*\}?}=$curr_{paramName}: ValueReceived(paramName == "{paramName}")
 [when]- manje od ${definedParam:[\w_-]*}=value < ${definedParam}
 [when]- manje od {definedParam:\{?[\w_-]*\}?}=value < {definedParam}
 [when]- manje ili jednako sa ${definedParam:[\w_-]*}=value <= ${definedParam}
@@ -53,16 +52,15 @@
 [when]- razlicito od ${definedParam:[\w_-]*}=value != ${definedParam}
 [when]- razlicito od {definedParam:\{?[\w_-]*\}?}=value != {definedParam}
 
-[when]\{{definedParam:[\w_-]+}\}=template_start{definedParam}template_end
+[when]\{{value:[\w_-]+}\}=template_start{value}template_end
 
 [then]informUser\(\)=Group group = (Group) kcontext.getKieRuntime().getObjects(new GroupObjectFilterer()).iterator().next(); \n EventOccured informUserEvent = new EventOccured("InformUser", new KeyValue<String, String>("groupId", group.getId()));
-[then]\s?with \"{param:[@\w\d-_]*}\"\s?:\s?{value:.*}=informUserEvent.addParam(new KeyValue<String, String>("{param}", {value}));
+[then]\s?with \"{param:\{?[@\w\d-_]*\}?}\"\s?:\s?\"{value:\{?.*\}?}\"=informUserEvent.addParam(new KeyValue<String, String>("{param}", "{value}"));
 [then]\s?\=\=\=>=notificationService.sendFrom(informUserEvent);
 
 [then]changeStatus\(\"{deviceType:[\w\d-_]*}\",\s?\"{value:[\w\d-_]*}\"\)=StatusReceived statusReceived = new StatusReceived("", "{deviceType}DeviceId", "{deviceType}", "{value}");\n ((NotificationService) kcontext.getKieRuntime().getGlobal("notificationService")).sendFrom(statusReceived); \n insert(statusReceived)
 
-[then]print\({printable:\{?.*\}?}\)=System.out.println({printable})
-[then]\"\{{printable:.*}\}\"="template_start{printable}template_end"
+[then]print\(\"{printable:\{?.*\}?}\"\)=System.out.println("{printable}")
 
 [then]dispatch\({eventName:\{?\w*\}?}\)=insert(new EventOccured("{eventName}"))
 [then]activateContext\({contextName:\{?\w*\}?}\)=insert(new ActivateContextByName("{contextName}"))
